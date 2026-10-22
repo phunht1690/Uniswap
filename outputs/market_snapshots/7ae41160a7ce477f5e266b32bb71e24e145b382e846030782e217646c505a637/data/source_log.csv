@@ -1,0 +1,2 @@
+source,endpoint,downloaded_at_utc,period_start,period_end,row_count,file_path,sha256,data_kind
+geckoterminal,https://api.geckoterminal.com/api/v2/networks/arbitrum/pools/0x92c63d0e701caae670c9415d91c474f686298f00/ohlcv/day,2026-10-21T06:42:50.724027+00:00,2025-10-23T00:00:00+00:00,2026-10-21T00:00:00+00:00,364,data/processed/history_arb-weth-3000.parquet,9ae333316b0af951dedfb6a48030531c3f7b4f44a37016512d8eace16c932c53,onchain_aggregator
