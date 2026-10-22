@@ -2,6 +2,8 @@
 
 RangeLab là web mô phỏng việc cung cấp thanh khoản trên Uniswap v3. Bạn có thể xem thị trường, tìm khoảng giá, so sánh LP với giữ token, thử tình huống rủi ro và thử chiến lược với dữ liệu quá khứ. Giao diện và API Python chạy cùng một máy chủ. Ứng dụng không kết nối ví hay gửi giao dịch.
 
+Giao diện có hiệu ứng ngắn khi đổi tab, vẽ biểu đồ và nhận số liệu mới. Giá trị thật luôn xuất hiện ngay; các lần kiểm tra API không có số mới sẽ không làm số liệu nhấp nháy. Hiệu ứng tự tắt khi thiết bị bật **Giảm chuyển động**.
+
 ## Mở web trên máy hiện tại
 
 Dự án đang nằm tại `C:\Users\ADMIN\Downloads\uniswap` và đã có môi trường `.venv`. Mở PowerShell rồi chạy:
@@ -164,7 +166,7 @@ Kiểm thử tùy chọn, không phải bước bắt buộc để mở web:
 
 ```powershell
 .\.venv\Scripts\python.exe -X utf8 -m pytest
-node --test tests/stress_view.cjs
+node --test tests/stress_view.cjs tests/motion.cjs
 node tests/frontend_flow.cjs dashboard/index.html
 node tests/offline_smoke.cjs dashboard/index.html
 ```

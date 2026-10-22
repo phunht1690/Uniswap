@@ -23,6 +23,8 @@ RangeLab giúp bạn thử việc cung cấp thanh khoản trên Uniswap: chọn
 
 Giới hạn “ra ngoài khoảng giá” đo tỷ lệ kịch bản có **ít nhất một ngày** giá nằm ngoài khoảng. Chỉ số này khác với tỷ lệ thời gian giá ở trong khoảng và không phải giới hạn số tiền có thể mất. Nếu chưa tìm được khoảng giá phù hợp, hãy xem lại giới hạn rủi ro và giả định trước khi chạy lại.
 
+Khi đổi tab hoặc có kết quả mới, giao diện dùng chuyển động ngắn để bạn dễ theo dõi: đường biểu đồ được vẽ ra, cột mở từ mốc 0 và số liệu mới được nhấn nhẹ. Số liệu luôn hiển thị ngay giá trị thật; hiệu ứng không thay đổi phép tính. Việc kiểm tra API không làm nhấp nháy các giá trị giữ nguyên. Nếu thiết bị bật **Giảm chuyển động**, các hiệu ứng này tự tắt.
+
 ## Đọc phần kiểm tra rủi ro
 
 Phần này dùng vị thế và dữ liệu của kết quả đã lưu. Chọn tình huống mẫu để chạy, hoặc chỉnh ba thanh trượt rồi bấm **Chạy kiểm tra rủi ro**:

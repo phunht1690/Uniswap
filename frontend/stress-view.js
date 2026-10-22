@@ -28,7 +28,7 @@
   results.forEach((r,i)=>{
    const center=L+step*(i+.5),bw=Math.min(current?110:32,step*.24),gap=current?16:5;
    [[-bw-gap/2,r.metrics.lp_value,'#630ed4','Cung cấp thanh khoản (LP)'],[gap/2,r.metrics.hodl_value,'#94a3b8','Giữ token (HODL)']].forEach(([offset,v,color,label])=>{
-    svg+=`<rect data-series="${label.startsWith('Cung')?'lp':'hodl'}" data-value="${v}" x="${center+offset}" y="${Math.min(zero,y(v))}" width="${bw}" height="${Math.abs(zero-y(v))}" rx="3" fill="${color}"><title>${esc(names[i]+' · '+label+': '+money(v))}</title></rect>`;
+    svg+=`<rect data-motion-bar data-motion-origin-y="${zero}" data-series="${label.startsWith('Cung')?'lp':'hodl'}" data-value="${v}" x="${center+offset}" y="${Math.min(zero,y(v))}" width="${bw}" height="${Math.abs(zero-y(v))}" rx="3" fill="${color}"><title>${esc(names[i]+' · '+label+': '+money(v))}</title></rect>`;
     if(current)svg+=`<text x="${center+offset+bw/2}" y="${Math.min(zero,y(v))-10}" text-anchor="middle">${esc(money(v))}</text>`;
    });
    svg+=`<text x="${center}" y="${H-15}" text-anchor="middle">${esc(names[i])}</text>`;

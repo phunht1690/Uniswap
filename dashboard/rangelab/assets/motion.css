@@ -1,0 +1,110 @@
+/* Motion supports orientation and feedback; values stay readable at every frame. */
+:root {
+  --rl-motion-quick: 160ms;
+  --rl-motion-normal: 200ms;
+  --rl-motion-ease: cubic-bezier(.2, .6, .3, 1);
+}
+
+.btn,
+.icon-btn,
+.segmented button,
+#sidebar nav a,
+.news-shortcut,
+.news-external,
+.news-item h3 a {
+  transition:
+    background-color var(--rl-motion-quick) ease,
+    color var(--rl-motion-quick) ease,
+    border-color var(--rl-motion-quick) ease,
+    box-shadow var(--rl-motion-normal) ease;
+}
+
+.risk-card,
+.scenario,
+.strategy-option {
+  transition:
+    background-color var(--rl-motion-quick) ease,
+    border-color var(--rl-motion-quick) ease,
+    box-shadow var(--rl-motion-normal) ease;
+}
+
+input.control,
+select.control,
+.input-prefix {
+  transition:
+    background-color var(--rl-motion-quick) ease,
+    border-color var(--rl-motion-quick) ease,
+    box-shadow var(--rl-motion-quick) ease;
+}
+
+/* Hover feedback belongs to controls, never to passive KPI or chart cards. */
+@media (hover: hover) and (pointer: fine) {
+  .icon-btn:not(:disabled):hover {
+    background-color: var(--lavender);
+  }
+
+  .segmented button:not(.active):not(:disabled):hover {
+    background-color: #e9e5f8;
+    color: var(--purple);
+  }
+
+  .risk-card:not(:has(input:disabled)):hover,
+  .strategy-option:not(:has(input:disabled)):hover,
+  .scenario:not(:disabled):hover {
+    box-shadow: 0 2px 9px #630ed415;
+  }
+}
+
+.segmented button:focus-visible,
+.scenario:focus-visible,
+.risk-card:has(input:focus-visible),
+.strategy-option:has(input:focus-visible) {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* JS may mark a changing metric; tabular digits prevent width jitter. */
+.rl-motion-number {
+  font-variant-numeric: tabular-nums;
+}
+
+dialog[open] {
+  animation: rl-dialog-enter var(--rl-motion-normal) var(--rl-motion-ease);
+}
+
+dialog[open]::backdrop {
+  animation: rl-backdrop-enter var(--rl-motion-quick) ease-out;
+}
+
+#toast:not([hidden]) {
+  animation: rl-toast-enter var(--rl-motion-normal) var(--rl-motion-ease);
+}
+
+@keyframes rl-dialog-enter {
+  from { opacity: .85; transform: translateY(7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rl-backdrop-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rl-toast-enter {
+  from { opacity: .85; transform: translate(-50%, 6px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Applies to the original loader, native scrolling and JS animation fallbacks. */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  *,
+  *::before,
+  *::after,
+  *::backdrop {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
