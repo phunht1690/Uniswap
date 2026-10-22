@@ -51,9 +51,9 @@ Mở **Tin tức & cộng đồng** từ menu hoặc từ màn hình **Kiểm tr
 
 Hai nguồn đang lấy được công khai là **Uniswap Labs Blog** và **diễn đàn quản trị Uniswap**. Diễn đàn chứa đề xuất và thảo luận của cộng đồng; một bài viết không có nghĩa thay đổi đó đã được thông qua. Bài về v4 hoặc hệ sinh thái Uniswap có thể chỉ là bối cảnh cho người dùng v3; đọc nhãn và mở bài gốc trước khi kết luận tin áp dụng cho pool.
 
-Máy chủ kiểm tra mỗi **5 phút**; khi mục tin đang mở, giao diện kiểm tra bộ nhớ đệm mỗi phút. Ngày đăng của bài và lần lấy thành công được hiển thị riêng. Tin lấy trước vẫn có thể được giữ khi nguồn lỗi, kèm trạng thái. Danh sách tối đa 100 tiêu đề trong 90 ngày không bảo đảm bao phủ mọi bài đăng.
+Máy chủ kiểm tra blog/diễn đàn mỗi **5 phút**. Khi có khóa, X mặc định mỗi 5 phút và Reddit/CryptoPanic mỗi phút, có thể lùi lịch theo hạn mức. Giao diện kiểm tra bộ nhớ đệm mỗi 30 giây khi mục tin đang mở. Ngày đăng của bài và lần lấy thành công được hiển thị riêng. Tin lấy trước vẫn có thể được giữ khi nguồn lỗi, kèm trạng thái. Danh sách tối đa 100 tiêu đề trong 90 ngày không bảo đảm bao phủ mọi bài đăng.
 
-**X, Reddit và CryptoPanic hiện chưa kết nối API.** Nút bên cạnh mở nguồn hoặc tìm kiếm bên ngoài để bạn tự đọc; không có nghĩa RangeLab đã nhận được tin từ các API đó. X và Reddit cần quyền truy cập hợp lệ; chưa có nguồn CryptoPanic không cần khóa được xác minh.
+**X, Reddit và CryptoPanic cần khóa/quyền để bật API.** Bấm **Hướng dẫn lấy API** trong bản tin để xem cách đăng ký. Chỉ trạng thái thành công kèm thời gian lấy mới xác nhận backend đã nhận dữ liệu; thiếu khóa, sai khóa, chưa đủ quyền và hết hạn mức được ghi riêng. Các nút mở nguồn/tìm kiếm vẫn dẫn tới trang bên ngoài. Hướng dẫn đầy đủ nằm trong [Kết nối API tin tức](news_api_setup.md).
 
 Nhãn **Token liên quan** nghĩa là bài nhắc tới một token trong cặp hoặc tên tương ứng; không xác nhận tác động giá. Chỉ có nhãn địa chỉ pool khi tìm thấy đúng địa chỉ. Tin tức không tự sửa đầu vào, chấm điểm cảm xúc hay thay đổi PnL của mô phỏng.
 

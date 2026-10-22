@@ -79,12 +79,12 @@ Nút **Thuật ngữ** giải thích các từ và chỉ số trong dashboard, k
 
 Mở **Tin tức & cộng đồng** trong menu hoặc trong **Kiểm tra rủi ro & dữ liệu**. Không cần chạy mô phỏng trước. Chọn pool để lọc bài liên quan đến token của cặp; chọn nguồn hoặc xem thông tin chung của hệ sinh thái Uniswap. Nhãn v3/v4 giúp phân biệt phiên bản được nhắc đến, không khẳng định tin áp dụng trực tiếp cho vị thế v3 đang mô phỏng.
 
-- **Đã nối nguồn công khai:** Uniswap Labs Blog và diễn đàn quản trị Uniswap. Máy chủ kiểm tra mỗi **5 phút**, dùng chung bộ nhớ đệm cho mọi người xem. Giao diện đọc bộ nhớ đệm mỗi phút khi mục tin tức đang mở. Hiển thị tối đa 100 tiêu đề trong 90 ngày gần nhất; đây không phải luồng sự kiện tức thời hay toàn bộ lịch sử bài đăng.
-- **X, Reddit, CryptoPanic:** hiện **chưa kết nối API**. Các nút mở nguồn/tìm kiếm bên ngoài không phải dữ liệu đã được nhập vào RangeLab. X và Reddit cần quyền truy cập hợp lệ; chưa xác minh được nguồn CryptoPanic công khai không cần khóa. Không cần thêm khóa để dùng hai nguồn công khai ở trên.
+- **Đã nối nguồn công khai:** Uniswap Labs Blog và diễn đàn quản trị Uniswap. Máy chủ kiểm tra mỗi **5 phút**, dùng chung bộ nhớ đệm cho mọi người xem. Giao diện đọc bộ nhớ đệm mỗi 30 giây khi mục tin tức đang mở. Hiển thị tối đa 100 tiêu đề trong 90 ngày gần nhất; đây không phải luồng sự kiện tức thời hay toàn bộ lịch sử bài đăng.
+- **X, Reddit, CryptoPanic:** đã có adapter API chính thức, cần khóa và quyền được cấp. X mặc định kiểm tra mỗi 300 giây, Reddit/CryptoPanic mỗi 60 giây; hiển thị trạng thái từng lần gọi thật. Không có khóa thì báo thiếu cấu hình, không gọi nguồn đó. Bấm **Hướng dẫn lấy API** trong bản tin hoặc đọc [hướng dẫn đăng ký và cấu hình](docs/news_api_setup.md). X có tính phí theo mức sử dụng; CryptoPanic có endpoint theo plan và độ trễ tùy gói. Không cần khóa để dùng blog và diễn đàn Uniswap.
 - **Đọc thời gian:** ngày đăng do nguồn cung cấp khác với lần lấy tin thành công. Khi nguồn lỗi, giữ tin lần trước và ghi rõ trạng thái trễ/lỗi. Đề xuất trên diễn đàn là thảo luận cộng đồng, không đồng nghĩa đã được biểu quyết hoặc triển khai.
 - **Liên quan đến pool:** nhãn token chỉ cho biết bài có nhắc tới token hoặc tên tương ứng; chỉ gắn nhãn địa chỉ pool khi tìm thấy đúng địa chỉ. Tin tức không được dùng làm đầu vào tự động cho PnL, stress hay tối ưu hóa.
 
-API `GET /api/v1/news?pool=weth-usdc-500` trả dữ liệu đã lọc theo pool cùng trạng thái từng nguồn; yêu cầu từ trình duyệt không gọi trực tiếp nhà cung cấp. Đặt `UNISWAP_NEWS_ENABLED=0` trước khi chạy để tắt kiểm tra tin. Nếu không đặt biến này, chế độ tắt `UNISWAP_LIVE_ENABLED=0` cũng tắt tin tức. Máy chủ hiện không đọc khóa X/Reddit/CryptoPanic; không thêm khóa vào `.env` với kỳ vọng tự kết nối các nguồn này.
+API `GET /api/v1/news?pool=weth-usdc-500` trả dữ liệu đã lọc theo pool cùng trạng thái từng nguồn; yêu cầu từ trình duyệt không gọi trực tiếp nhà cung cấp. Đặt `UNISWAP_NEWS_ENABLED=0` trước khi chạy để tắt kiểm tra tin. Nếu không đặt biến này, chế độ tắt `UNISWAP_LIVE_ENABLED=0` cũng tắt tin tức. Web tự nạp `.env` trong thư mục dự án khi khởi động; biến môi trường có sẵn được ưu tiên. Điền `X_BEARER_TOKEN`; thông tin Reddit OAuth và User-Agent; `CRYPTOPANIC_API_TOKEN` cùng `CRYPTOPANIC_PLAN`, rồi khởi động lại. X mặc định giới hạn 100 lượt/ngày của phiên máy chủ, tối đa 10 bài/lượt; bộ đếm đặt lại khi khởi động lại và không thay thế spending limit của nhà cung cấp. Chỉ đọc một trang/lượt; lùi lịch khi bị giới hạn. Chưa xác minh được ba nguồn bằng tài khoản thật trong phiên không có khóa.
 
 ## Dữ liệu thị trường mới và kết quả đã lưu
 
@@ -130,7 +130,7 @@ Chạy cổng khác khi cần:
 
 Sau đó mở **http://127.0.0.1:8002/**. Trong một phiên sử dụng, nên giữ cùng địa chỉ truy cập vì cấu hình trình duyệt được lưu theo địa chỉ và cổng.
 
-Biến môi trường tùy chọn: `ETHEREUM_RPC_URL`, `ARBITRUM_RPC_URL`, `UNISWAP_LIVE_ENABLED` và `UNISWAP_STATE_DIR`. Lệnh `run.cmd`/`manage.py run` đọc biến từ môi trường của tiến trình; **không tự nạp file `.env`**. Nếu cần thay đổi, đặt biến trong terminal trước khi khởi động. Không cần cấu hình các key tùy chọn chỉ để dùng nguồn công khai mặc định.
+Biến môi trường tùy chọn: `ETHEREUM_RPC_URL`, `ARBITRUM_RPC_URL`, `UNISWAP_LIVE_ENABLED` và `UNISWAP_STATE_DIR`. Web chạy qua `run.cmd`/`manage.py run` tự nạp file `.env` tại thư mục dự án; biến môi trường của tiến trình được ưu tiên. Nếu cần thay đổi cấu hình hoặc khóa, sửa `.env` rồi khởi động lại máy chủ. Không cần cấu hình các key tùy chọn chỉ để dùng nguồn công khai mặc định.
 
 ## Tải hoặc cập nhật dữ liệu nghiên cứu — khi cần
 
@@ -255,7 +255,7 @@ $env:THE_GRAPH_API_KEY = '<your-key>'
 $env:UNISWAP_SUBGRAPH_ID = '<subgraph-id>'
 ```
 
-`.env.example` liệt kê biến tùy chọn; `.env` nằm trong `.gitignore`. Nếu dùng `.env` khi chạy Uvicorn, thêm `--env-file .env` vào lệnh chạy; CLI ingestion đọc biến môi trường của process, không tự nạp `.env`. Chế độ tải công khai hiện tại không dùng Graph/BigQuery/key. Adapter The Graph tùy chọn cần key của bạn và đã kiểm thử bằng fixture, chưa xác minh live trong phiên không có key.
+`.env.example` liệt kê biến tùy chọn; `.env` nằm trong `.gitignore`. Web tự nạp `.env` khi startup; CLI ingestion đọc biến môi trường của process, không tự nạp `.env`. Chế độ tải công khai hiện tại không dùng Graph/BigQuery/key. Adapter The Graph tùy chọn cần key của bạn và đã kiểm thử bằng fixture, chưa xác minh live trong phiên không có key.
 
 ## Cấu trúc và phạm vi tiếp theo
 
@@ -274,7 +274,7 @@ paper/
 
 1. **Đã triển khai:** repo, config, API contract mock, phục vụ dashboard gốc, lưu run, Parquet/DuckDB fixture, source log, kiểm thử API.
 2. **Đã triển khai:** engine NumPy, v3/JS parity, GBM/bootstrap/GARCH, optimizer có trạng thái khả thi và tests no-look-ahead.
-3. **Đã triển khai nguồn công khai, có giới hạn độ phủ:** Binance/CoinGecko, DefiLlama, Ethereum RPC, GeckoTerminal, FRED tùy chọn; source log/hash, Parquet/DuckDB, checkpoint, quality/coverage. Tin tức công khai đọc riêng từ Uniswap Labs Blog và diễn đàn quản trị, không đưa vào tập dữ liệu mô phỏng. The Graph có adapter optional chưa chạy live; BigQuery không dùng. Kaiko/X/Reddit/CryptoPanic chưa kết nối API. Full raw on-chain history vẫn thiếu.
+3. **Đã triển khai nguồn công khai, có giới hạn độ phủ:** Binance/CoinGecko, DefiLlama, Ethereum RPC, GeckoTerminal, FRED tùy chọn; source log/hash, Parquet/DuckDB, checkpoint, quality/coverage. Tin tức công khai đọc riêng từ Uniswap Labs Blog và diễn đàn quản trị, không đưa vào tập dữ liệu mô phỏng. The Graph có adapter optional chưa chạy live; BigQuery không dùng. API tin tức X/Reddit/CryptoPanic đã có adapter và kiểm thử HTTP giả lập, cần khóa/quyền để gọi thật; không đưa vào bộ nghiên cứu hoặc thu thập toàn bộ lịch sử. Adapter ingestion Kaiko và lịch sử social vẫn chưa triển khai. Full raw on-chain history vẫn thiếu.
 4. **Đã triển khai:** frontend API/debounce/loading/error, 8 pool quan sát, tick thật, copy/nạp cấu hình theo run_id và JS fallback có nhãn.
 5. **Đã triển khai công cụ:** historical replay, panel/quantile regression, bootstrap theo thời gian, sensitivity/robustness và xuất CSV/PNG. **Chưa thể xác nhận OOS theo thiết kế gốc** vì thiếu pool price/volume 2022–2024 và active liquidity/gas lịch sử. Không coi kết quả có giả định là phí LP thực tế.
 

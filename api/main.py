@@ -20,6 +20,8 @@ from src.utils.config import ROOT, state_directory
 def create_app(state_dir: Path | None = None, *, live_enabled: bool | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
+        from src.utils.environment import NEWS_ENV_KEYS, load_local_environment
+        if state_dir is None:load_local_environment(ROOT/'.env')
         app.state.service = SimulationService(state_dir or state_directory())
         from src.data.live import LiveMarket
         app.state.live_enabled=(state_dir is None and os.getenv('UNISWAP_LIVE_ENABLED','1').lower() not in {'0','false','no'}) if live_enabled is None else live_enabled
@@ -27,7 +29,8 @@ def create_app(state_dir: Path | None = None, *, live_enabled: bool | None = Non
         app.state.live_market=live_market
         from src.data.news import NewsFeed
         news_enabled = state_dir is None and os.getenv('UNISWAP_NEWS_ENABLED', os.getenv('UNISWAP_LIVE_ENABLED', '1')).lower() not in {'0','false','no'}
-        news_feed = NewsFeed(app.state.service, enabled=news_enabled)
+        news_feed = NewsFeed(app.state.service, enabled=news_enabled,
+                             social_config={name: os.environ[name] for name in NEWS_ENV_KEYS if name in os.environ} if state_dir is None else {})
         app.state.news_feed = news_feed
         if app.state.live_enabled:await live_market.start()
         await news_feed.start()

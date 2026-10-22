@@ -43,7 +43,7 @@
 <section>
 <h3>Tin tức &amp; cộng đồng</h3>
 <p>Mở từ menu hoặc tab trong phần rủi ro, không cần chạy mô phỏng. Chọn cặp và lọc nguồn/nội dung; lựa chọn này không sửa vị thế đã lưu. Bài gốc từ Uniswap Blog và diễn đàn quản trị giữ nguyên tiêu đề, ghi riêng thời gian đăng và lấy tin. Nhãn v4 giúp tránh nhầm với v3.</p>
-<p>X, Reddit và CryptoPanic chưa kết nối API; chỉ có liên kết mở ngoài. Nguồn tin được kiểm tra khoảng 5 phút, trang đọc lại mỗi phút khi đang xem. Nguồn lỗi sẽ có trạng thái; tin không tham gia tính mô phỏng.</p>
+<p>X, Reddit và CryptoPanic có kết nối API chính thức, cần khóa và quyền truy cập trên máy chủ. Bấm <b>Hướng dẫn lấy API</b> để đăng ký; chỉ coi là đã lấy tin khi nguồn báo thành công. Mặc định X kiểm tra mỗi 5 phút, Reddit/CryptoPanic mỗi phút, blog/diễn đàn mỗi 5 phút; trang đọc bộ nhớ đệm mỗi 30 giây. Gói API có thể làm dữ liệu trễ hơn. Tin không tham gia tính mô phỏng.</p>
 </section>
 <section>
 <h3>Giới hạn cần nhớ</h3>
@@ -51,4 +51,17 @@
 <p>Phòng hộ được điều chỉnh mỗi ngày, chưa tính phí vay, phí duy trì hay ký quỹ. Kết quả không tái dựng từng giao dịch thực tế. Bạn có thể tải PDF, JSON hoặc CSV ở màn hình tương ứng; nút <b>Thuật ngữ</b> giải thích thêm các chỉ số.</p>
 </section>`
  };
+ globalThis.RangeLabGuide.apiHtml = `<div class="dashboard-guide">
+<h3>1. Đăng ký X API</h3>
+<p>Vào <a class="news-external" href="https://developer.x.com/" target="_blank" rel="noopener noreferrer">X Developer Console</a>, tạo ứng dụng được cấp quyền đọc bài đăng, rồi lấy <b>Bearer Token</b> trong Keys and tokens. Đặt vào <code>X_BEARER_TOKEN</code>. X tính phí theo mức sử dụng; kiểm tra giá và đặt spending limit trong tài khoản trước khi bật. <a class="news-external" href="https://docs.x.com/x-api/getting-started/pricing" target="_blank" rel="noopener noreferrer">Giá và hạn mức X</a>.</p>
+<h3>2. Xin quyền Reddit</h3>
+<p>Đọc <a class="news-external" href="https://support.reddithelp.com/hc/en-us/articles/14945211791892-Developer-Platform-Accessing-Reddit-Data" target="_blank" rel="noopener noreferrer">hướng dẫn truy cập Reddit</a> và đăng ký Data API cho đúng mục đích. Nghiên cứu học thuật cần Reddit for Researchers. Sau khi được chấp thuận, dùng OAuth token được cấp, hoặc client ID/secret của ứng dụng có quyền. Chỉ lấy tiêu đề và liên kết bài mới trong r/Uniswap.</p>
+<p>Điền <code>REDDIT_CLIENT_ID</code>, <code>REDDIT_CLIENT_SECRET</code> và <code>REDDIT_USER_AGENT</code>; nếu được cấp refresh token thì thêm <code>REDDIT_REFRESH_TOKEN</code>. Có thể dùng <code>REDDIT_ACCESS_TOKEN</code> thay thế, nhưng token này cần được thay khi hết hạn. Không cần nhập mật khẩu Reddit.</p>
+<h3>3. Lấy token CryptoPanic</h3>
+<p>Đăng nhập <a class="news-external" href="https://cryptopanic.com/developers/api/" target="_blank" rel="noopener noreferrer">CryptoPanic API</a>, xác minh email và xem gói API được cấp. Điền <code>CRYPTOPANIC_API_TOKEN</code> và <code>CRYPTOPANIC_PLAN</code> đúng với tài khoản: developer, growth hoặc enterprise. Quyền, phí và độ trễ phụ thuộc gói; có tài khoản chưa đồng nghĩa đã có API thời gian thực.</p>
+<h3>4. Đưa khóa vào máy chủ</h3>
+<p>Mở tệp <code>.env</code> trong thư mục dự án, điền các trường tương ứng rồi khởi động lại máy chủ bằng <code>run.cmd</code>. Web tự đọc tệp này; biến môi trường có sẵn được ưu tiên. Không đưa khóa vào chat, mã frontend hoặc GitHub.</p>
+<p>Mặc định X lấy tối đa 10 bài/lượt, kiểm tra mỗi 300 giây và giới hạn 100 lượt/ngày của phiên máy chủ; đây không phải hạn mức thanh toán và bộ đếm đặt lại khi máy chủ khởi động lại. Reddit và CryptoPanic kiểm tra mỗi 60 giây. Hệ thống lùi thời gian gọi khi bị giới hạn, không tự mua gói hoặc nạp tiền.</p>
+<p>Mở <b>Tình trạng kết nối 5 nguồn</b> để xem lần gọi thành công, lỗi và thời điểm thử lại. Chưa có khóa thì chưa có dữ liệu thật từ nguồn đó; các nguồn khác vẫn hoạt động.</p>
+</div>`;
 })();

@@ -1,7 +1,6 @@
 """Public Uniswap headlines, cached independently of simulation inputs.
 
-Only the two fixed public origins below are read. Social providers are explicitly
-unconnected; their links are searches, never presented as an API integration.
+Public sources and authenticated social APIs use independent refresh schedules.
 No article bodies, credentials, or news records are written to research data.
 """
 import asyncio
@@ -20,6 +19,7 @@ from urllib.parse import urlencode, urlsplit
 import xml.etree.ElementTree as ET
 
 import httpx
+from src.data.news_providers import SocialProviders, ProviderFailure
 
 LOOKBACK_DAYS = 90
 MAX_BYTES = 2_000_000
@@ -161,7 +161,7 @@ def classify(item, pool):
 
 
 class NewsFeed:
-    def __init__(self, service, interval_seconds=300, transport=None, enabled=True):
+    def __init__(self, service, interval_seconds=300, transport=None, enabled=True, social_config=None):
         self.interval_seconds = float(interval_seconds)
         if not math.isfinite(self.interval_seconds) or self.interval_seconds <= 0:
             raise ValueError('News interval must be positive and finite')
@@ -179,6 +179,17 @@ class NewsFeed:
                               'status': 'pending' if enabled else 'disabled', 'last_checked_at': None,
                               'fetched_at': None, 'age_seconds': None, 'message': 'Đang chờ lấy tin công khai.' if enabled else 'Tự cập nhật tin đang tắt.'}
                          for key, (name, url) in PUBLIC_SOURCES.items()}
+        self._social = SocialProviders(social_config, transport=transport)
+        self._social_due = {}; self._social_retry = {}
+        for key, (name, url, _) in SOCIAL_SOURCES.items():
+            missing = self._social.missing(key)
+            self._items[key] = []
+            self._social_due[key] = 0.; self._social_retry[key] = 0.
+            self._sources[key] = {'id': key, 'name': name, 'url': url, 'status': 'not_connected' if missing else 'pending' if enabled else 'disabled',
+                'last_checked_at': None, 'fetched_at': None, 'age_seconds': None,
+                'message': 'Thiếu cấu hình: '+', '.join(missing)+'. Xem hướng dẫn API; điền .env rồi khởi động lại.' if missing else 'Đang chờ lần gọi API đầu tiên.' if enabled else 'Tự cập nhật tin đang tắt.',
+                'missing_configuration': missing, 'configured': not missing,
+                'interval_seconds': self._social.intervals[key], 'next_retry_at': None, 'http_status': None}
 
     def snapshot(self, pool_id):
         if pool_id not in self._pools:
@@ -190,19 +201,20 @@ class NewsFeed:
         for source in sources:
             if source['fetched_at']:
                 source['age_seconds'] = max(0., (now-datetime.fromisoformat(source['fetched_at'])).total_seconds())
-                if source['status'] == 'ok' and source['age_seconds'] > 3*self.interval_seconds:
+                if source['status'] == 'ok' and source['age_seconds'] > 3*source.get('interval_seconds', self.interval_seconds):
                     source.update(status='stale', message='Chưa kiểm tra lại nguồn đúng chu kỳ; đang giữ tin lấy gần nhất.')
             source['search_url'] = source['url']
         for key, (name, url, message) in SOCIAL_SOURCES.items():
             search = 'https://x.com/search?'+urlencode({'q': '(Uniswap OR from:Uniswap) ('+pool['base']+' OR '+pool['quote']+')', 'f': 'live'}) if key == 'x' else 'https://www.reddit.com/r/Uniswap/search/?'+urlencode({'q': pool['base']+' OR '+pool['quote'], 'restrict_sr': 'on', 'sort': 'new'}) if key == 'reddit' else url
-            sources.append({'id': key, 'name': name, 'url': url, 'search_url': search, 'status': 'not_connected',
-                            'last_checked_at': None, 'fetched_at': None, 'age_seconds': None, 'message': message})
+            next(source for source in sources if source['id'] == key)['search_url'] = search
         result = []
         for item in items:
             if _date(item['published_at'], now):
                 item.update(classify(item, pool)); item.pop('summary', None); result.append(item)
         result.sort(key=lambda row: row['published_at'], reverse=True)
-        return {'enabled': self.enabled, 'server_time': now.isoformat(), 'refresh_interval_seconds': self.interval_seconds,
+        active_intervals = [s['interval_seconds'] for s in sources if s.get('configured')]
+        return {'enabled': self.enabled, 'server_time': now.isoformat(), 'refresh_interval_seconds': min([self.interval_seconds]+active_intervals),
+                'public_interval_seconds': self.interval_seconds, 'browser_refresh_seconds': 30,
                 'lookback_days': LOOKBACK_DAYS, 'pool': {key: pool.get(key, pool_id if key == 'id' else None) for key in ('id', 'base', 'quote', 'network', 'address')},
                 'sources': sources, 'items': result[:100]}
 
@@ -247,16 +259,47 @@ class NewsFeed:
         if not self.enabled:
             return
         async with self._refresh_lock:
-            if not force and time.monotonic() < self._next_refresh:
-                return
-            await asyncio.gather(*(self._fetch_source(key) for key in PUBLIC_SOURCES))
-            self._next_refresh = time.monotonic()+self.interval_seconds
+            public_due = force or time.monotonic() >= self._next_refresh
+            tasks = [self._fetch_source(key) for key in PUBLIC_SOURCES] if public_due else []
+            for key in SOCIAL_SOURCES:
+                if not self._social.missing(key) and time.monotonic() >= self._social_retry[key] and (force or time.monotonic() >= self._social_due[key]):
+                    tasks.append(self._fetch_social(key))
+            if tasks:await asyncio.gather(*tasks)
+            if public_due:self._next_refresh = time.monotonic()+self.interval_seconds
+
+    async def _fetch_social(self, key):
+        checked = _now().isoformat(); delay = self._social.intervals[key]
+        try:
+            async with asyncio.timeout(20.):
+                rows, more = await self._social.fetch(key, _now())
+            fetched = _now().isoformat(); merged = {}
+            with self._lock:
+                if key == 'x':
+                    merged = {row['url']: row for row in self._items[key] if _date(row['published_at'], _now())}
+                for row in rows:
+                    merged[row['url']] = {**row, 'id': hashlib.sha256(row['url'].encode()).hexdigest()[:24],
+                        'source_id': key, 'source_name': SOCIAL_SOURCES[key][0], 'fetched_at': fetched}
+                self._items[key] = sorted(merged.values(), key=lambda row: row['published_at'], reverse=True)[:100]
+                self._sources[key].update(status='ok', fetched_at=fetched, last_checked_at=checked,
+                    next_retry_at=None, http_status=200,
+                    message='Đã lấy API thật. Một trang mỗi chu kỳ; không bảo đảm đầy đủ bài đăng.'+(' Nguồn còn các trang chưa lấy.' if more else ''))
+        except (ProviderFailure, httpx.HTTPError, ValueError, TypeError, TimeoutError) as error:
+            delay = max(delay, error.retry_seconds if isinstance(error, ProviderFailure) else 300)
+            self._social_retry[key] = time.monotonic()+delay
+            with self._lock:
+                self._sources[key].update(status=error.status if isinstance(error, ProviderFailure) else 'error',
+                    last_checked_at=checked, http_status=error.http_status if isinstance(error, ProviderFailure) else None,
+                    next_retry_at=(_now()+timedelta(seconds=delay)).isoformat(),
+                    message=(error.message if isinstance(error, ProviderFailure) else 'Chưa lấy được API do kết nối hoặc định dạng phản hồi.')+
+                            (' Đang giữ lần lấy thành công gần nhất.' if self._sources[key]['fetched_at'] else ' Chưa có tin lấy thành công.'))
+        self._social_due[key] = time.monotonic()+delay
 
     async def _loop(self):
         while not self._stop_event.is_set():
             await self.refresh()
             try:
-                await asyncio.wait_for(self._stop_event.wait(), timeout=max(.05, self._next_refresh-time.monotonic()))
+                deadlines = [self._next_refresh]+[self._social_due[key] for key in SOCIAL_SOURCES if not self._social.missing(key)]
+                await asyncio.wait_for(self._stop_event.wait(), timeout=max(.05, min(deadlines)-time.monotonic()))
             except asyncio.TimeoutError:
                 pass
 
@@ -276,3 +319,4 @@ class NewsFeed:
         async with self._refresh_lock:
             if self._client is not None:
                 await self._client.aclose(); self._client = None
+            await self._social.close()
