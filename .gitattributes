@@ -1,0 +1,3 @@
+# Research provenance and saved snapshots depend on exact file bytes.
+# Preserve them across Windows, macOS and Linux checkouts.
+* -text

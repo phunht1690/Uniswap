@@ -1,0 +1,9 @@
+pool,pair,fee_bps,history_days,start,end,mean_daily_volume_usd,median_daily_volume_usd,data_kind,result_label
+weth-usdc-500,WETH/USDC,5,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,96842803.0216,61628000.2165,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+weth-usdc-3000,WETH/USDC,30,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,8110349.32274,4556352.73287,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+weth-usdt-500,WETH/USDT,5,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,19848082.7605,13887028.9692,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+weth-usdt-3000,WETH/USDT,30,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,31408197.251,24089816.745,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+wbtc-weth-500,WBTC/WETH,5,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,23429623.1127,18646002.6184,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+wbtc-weth-3000,WBTC/WETH,30,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,2243844.13656,748067.664737,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+usdc-usdt-100,USDC/USDT,1,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,14873013.0504,10921453.9648,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"
+usdc-usdt-500,USDC/USDT,5,364,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,111076.519127,57655.8017708,observed_history,"Observed historical inputs; modelled LP fees; descriptive, not confirmed OOS"

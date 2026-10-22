@@ -1,0 +1,7 @@
+{
+  "source": "Uniswap LP Optimizer \u2013 Research Simulator.html",
+  "source_sha256": "a803f174fc09b212cdd7f361c66478b37aa54104a0268dab492ccbc680ce3169",
+  "math_sha256": "da5ac4a14879600a6757087df21f4d230ac1b2c029c1ece1213eb993f0f2a067",
+  "note": "Unmodified pos/run/agg from user-supplied HTML. Original probability normalization bug retained only in this test oracle.",
+  "math_normalized_sha256": "8688d2a3821eaea113e5a9088d35abd6fe197cf01da0194557a9218471d48799"
+}

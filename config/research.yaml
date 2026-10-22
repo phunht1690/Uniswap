@@ -1,0 +1,33 @@
+stage: 5
+seed: 42
+numeraire: USD
+warning: Công cụ mô phỏng nghiên cứu, không phải lời khuyên đầu tư.
+splits:
+  warmup: {start: earliest_available, end: '2021-12-31'}
+  train: {start: '2022-01-01', end: '2023-12-31'}
+  validation: {start: '2024-01-01', end: '2024-12-31'}
+  test: {start: '2025-01-01', end: latest_available_in_2026}
+  use_test_for_selection: false
+  tuning_max_timestamp: '2024-12-31T23:59:59Z'
+estimation:
+  volume_fit_lookback_days: 180
+  min_volume_regime_rows: 10
+  feature_lag_periods: 1
+  backfill_missing: false
+  bootstrap_returns_and_volume_jointly: true
+optimizer:
+  grid_points: 20
+  auto_max_width_floor_log: 0.5
+  auto_max_width_sigma_multiplier: 4
+simulation:
+  volume_factor_cap: 3
+  volume_shock_scale: 0.8
+  zero_volatility_volume: declared_mean
+  min_scaled_half_width_log: 0.01
+html_compatibility:
+  n_paths: 300
+  background_concentration: 3
+  fixed_half_width_log: 0.2
+  volatility_multiplier: 1.5
+  dynamic_rebalance_gas_multiplier: 2
+  # Preserve these for parity tests in step 2; do not treat them as real data.

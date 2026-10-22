@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"tertiary":"#961e3b","on-surface":"#131b2e","on-tertiary-container":"#ffdee0","tertiary-fixed-dim":"#ffb2ba","primary-fixed-dim":"#d2bbff","surface-variant":"#dae2fd","tertiary-container":"#b73852","on-error-container":"#93000a","inverse-surface":"#283044","surface":"#faf8ff","inverse-on-surface":"#eef0ff","on-tertiary-fixed":"#400011","surface-container":"#eaedff","primary-fixed":"#eaddff","on-tertiary":"#ffffff","surface-dim":"#d2d9f4","tertiary-fixed":"#ffd9dc","on-background":"#131b2e","on-primary":"#ffffff","on-secondary":"#ffffff","secondary-fixed":"#89f5e7","primary-container":"#7c3aed","surface-tint":"#732ee4","error":"#ba1a1a","on-secondary-fixed-variant":"#005049","outline":"#7b7487","surface-container-high":"#e2e7ff","on-primary-fixed-variant":"#5a00c6","secondary":"#006a61","on-secondary-fixed":"#00201d","inverse-primary":"#d2bbff","surface-container-lowest":"#ffffff","surface-container-low":"#f2f3ff","outline-variant":"#ccc3d8","surface-container-highest":"#dae2fd","error-container":"#ffdad6","on-surface-variant":"#4a4455","on-tertiary-fixed-variant":"#8b1433","on-primary-fixed":"#25005a","background":"#faf8ff","secondary-fixed-dim":"#6bd8cb","surface-bright":"#faf8ff","on-primary-container":"#ede0ff","secondary-container":"#86f2e4","primary":"#630ed4","on-error":"#ffffff","on-secondary-container":"#006f66"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin-desktop":"2rem","space-sm":"0.5rem","space-xl":"1.5rem","gutter-desktop":"1.25rem","gutter":"1rem","margin":"1rem","space-md":"0.75rem","space-2xs":"0.125rem","space-2xl":"2rem","space-lg":"1rem","space-xs":"0.25rem"},"fontFamily":{"headline-md":["Inter"],"headline-lg":["Inter"],"body-sm":["Inter"],"data-mono-lg":["JetBrains Mono"],"label-lg":["Inter"],"label-md":["Inter"],"label-sm":["Inter"],"data-mono-sm":["JetBrains Mono"],"headline-sm":["Inter"],"headline-xl":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"data-mono-md":["JetBrains Mono"]},"fontSize":{"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"data-mono-lg":["20px",{"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-lg":["13px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"500"}],"label-md":["11px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.06em","fontWeight":"600"}],"data-mono-sm":["11px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"headline-sm":["15px",{"lineHeight":"22px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-xl":["32px",{"lineHeight":"40px","letterSpacing":"-0.025em","fontWeight":"700"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"data-mono-md":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"500"}]}}}};</script>
+<style>
+  .chart-node {
+    transition: r 0.18s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.18s ease, filter 0.18s ease;
+    cursor: pointer;
+  }
+  .chart-node:hover, .chart-node.is-active {
+    r: 6.5;
+    stroke-width: 3.5px;
+    filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.45));
+  }
+</style>
+</head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-60 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="px-space-lg pt-space-lg pb-space-md"><div class="flex items-center gap-space-sm mb-space-xs"><div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">science</span></div><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-bold">RangeLab</span></div><div class="inline-flex items-center gap-space-2xs px-space-xs py-space-2xs rounded bg-surface-container text-primary font-label-sm text-label-sm font-semibold tracking-wider uppercase">UNISWAP V3 RESEARCH</div></div><div class="px-space-md py-space-xs"><div class="px-space-sm py-space-2xs font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">CÔNG CỤ PHÂN TÍCH</div></div><nav class="flex flex-col gap-space-2xs px-space-md" data-active-classes="bg-primary-container text-on-primary font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-label-lg text-label-lg">Tổng quan</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="lp-optimizer" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-label-lg text-label-lg">Tối ưu hóa LP</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="optimization-results" href="#"><span class="material-symbols-outlined text-[18px]">bar_chart</span><span class="font-label-lg text-label-lg">Kết quả tối ưu hóa</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg transition-colors bg-primary-container text-on-primary font-semibold" data-path="strategy-backtesting" href="#"><span class="material-symbols-outlined text-[18px]">history</span><span class="font-label-lg text-label-lg">Backtesting chiến lược</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="risk-and-research" href="#"><span class="material-symbols-outlined text-[18px]">shield</span><span class="font-label-lg text-label-lg">Phân tích rủi ro &amp; nghiên cứu</span></a></nav></div><div class="p-space-md flex flex-col gap-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-surface-container-low"><div class="flex items-center gap-space-xs"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Mô phỏng đang hoạt động</span></div><span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">60 fps</span></div><a class="flex items-center gap-space-xs px-space-sm py-space-2xs text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md" data-path="data-and-methodology" href="#"><span class="material-symbols-outlined text-[16px]">menu_book</span><span>Dữ liệu &amp; Phương pháp</span></a><div class="flex items-center justify-between px-space-sm pt-space-xs text-on-surface-variant font-label-sm text-label-sm"><span class="font-data-mono-sm text-data-mono-sm">v1.0 (Bản học thuật)</span><span class="material-symbols-outlined text-[14px]">verified</span></div></div></aside><div class="pl-60 flex flex-col min-h-screen"><header class="fixed top-0 left-60 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"><span class="material-symbols-outlined text-[16px]">domain</span><span>RangeLab</span><span class="material-symbols-outlined text-[14px]">chevron_right</span></div><span class="font-label-md text-label-md text-on-surface font-semibold">Bàn làm việc phân tích</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-sm py-space-2xs rounded bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-data-mono-sm text-data-mono-sm text-on-surface font-semibold">WETH / USDC</span><span class="font-label-sm text-label-sm text-on-surface-variant px-space-2xs rounded bg-surface-container">0.30%</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-2xs rounded bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">date_range</span><span class="font-label-md text-label-md">Dữ liệu 30 ngày</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-2xs rounded bg-surface-container-low"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span></span><span class="font-label-sm text-label-sm text-secondary font-semibold">Dữ liệu lịch sử &amp; Mô phỏng</span></div><button class="flex items-center gap-space-2xs px-space-sm py-space-2xs rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">help</span><span>Thuật ngữ</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="flex-1 pt-16 bg-surface px-space-lg py-space-lg"><div class="flex flex-col w-full gap-space-lg">
+<!-- Sub-header Breadcrumb / Metadata Context -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary">history</span>
+<span>Mô phỏng</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+</div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Động cơ Backtesting chiến lược</h1>
+<div class="inline-flex items-center gap-space-2xs px-space-xs py-space-2xs rounded bg-surface-container text-primary font-data-mono-sm text-data-mono-sm font-semibold">
+        WETH / USDC (0.30%)
+      </div>
+<div class="inline-flex items-center gap-space-2xs px-space-xs py-space-2xs rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+        Tham chiếu: 50:50 HODL
+      </div>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-data-mono-sm text-data-mono-sm text-secondary flex items-center gap-space-2xs">
+<span class="h-2 w-2 rounded-full bg-secondary"></span> Đã đồng bộ phát lại 30 ngày
+      </span>
+<button class="flex items-center gap-space-2xs px-space-sm py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+<span>Xuất file CSV</span>
+</button>
+</div>
+</div>
+<!-- Configuration Bar -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
+<div class="flex flex-wrap items-end gap-space-md justify-between">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-space-md flex-1">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-2xs">CẶP TÀI SẢN POOL</label>
+<div class="font-data-mono-md text-data-mono-md text-on-surface bg-surface-container-low px-space-sm py-space-xs rounded font-medium flex items-center justify-between">
+<span>WETH / USDC</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">lock</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-2xs">NGÀY BẮT ĐẦU</label>
+<div class="font-data-mono-md text-data-mono-md text-on-surface bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between">
+<span>2024-05-01</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">calendar_today</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-2xs">NGÀY KẾT THÚC</label>
+<div class="font-data-mono-md text-data-mono-md text-on-surface bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between">
+<span>2024-05-31</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">30N</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-2xs">VỐN BAN ĐẦU</label>
+<div class="font-data-mono-md text-data-mono-md text-on-surface bg-surface-container-low px-space-sm py-space-xs rounded font-medium">
+            10.000 USD
+          </div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-2xs">FEE TIER</label>
+<div class="font-data-mono-md text-data-mono-md text-on-surface bg-surface-container-low px-space-sm py-space-xs rounded font-medium">
+            0,30%
+          </div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-2xs">CHI PHÍ GAS</label>
+<div class="font-data-mono-md text-data-mono-md text-on-surface bg-surface-container-low px-space-sm py-space-xs rounded flex items-center justify-between">
+<span>15,00 USD / lần</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">local_gas_station</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-sm self-end">
+<button class="px-space-sm py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors flex items-center gap-space-2xs" type="button">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+<span>Đặt lại</span>
+</button>
+<button class="px-space-md py-space-xs rounded-lg bg-primary-container hover:bg-primary text-on-primary font-label-md text-label-md transition-colors flex items-center gap-space-2xs shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">play_arrow</span>
+<span>Chạy Backtesting lịch sử</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Strategy Selector Pills / Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-sm">
+<!-- Strategy 1 -->
+<label class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all shadow-[0_1px_3px_rgba(15,23,42,0.05)] relative overflow-hidden group">
+<div class="flex items-start justify-between gap-space-2xs mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox"/>
+<span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Khoảng giá rộng / Toàn dải</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-xs">
+        Tương đương 0 đến vô cực. Đặc tính thanh khoản Classic v2, không bao giờ lệch ngoài khoảng với hệ số đòn bẩy vốn tối thiểu.
+      </p>
+<div class="flex items-center justify-between pt-space-xs mt-auto font-data-mono-sm text-data-mono-sm">
+<span class="text-on-surface-variant">Lợi nhuận:</span>
+<span class="text-secondary font-semibold">+1,45%</span>
+</div>
+</label>
+<!-- Strategy 2 -->
+<label class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all shadow-[0_1px_3px_rgba(15,23,42,0.05)] relative overflow-hidden group">
+<div class="flex items-start justify-between gap-space-2xs mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<input checked="" class="w-4 h-4 rounded text-primary focus:ring-0 cursor-pointer" type="checkbox"/>
+<span class="h-2.5 w-2.5 rounded-full bg-primary-container"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Khoảng giá đối xứng cố định</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-xs">
+        Dải biên cố định ±15% quanh tick vào lệnh không rebalance chủ động.
+      </p>
+<div class="flex items-center justify-between pt-space-xs mt-auto font-data-mono-sm text-data-mono-sm">
+<span class="text-on-surface-variant">Lợi nhuận:</span>
+<span class="text-secondary font-semibold">+3,65%</span>
+</div>
+</label>
+<!-- Strategy 3: Highlighted Winner -->
+<label class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container-lowest shadow-[0_4px_12px_-2px_rgba(15,23,42,0.08)] cursor-pointer transition-all relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-secondary text-on-secondary px-space-xs py-space-2xs rounded-bl font-label-sm text-label-sm font-semibold tracking-wider uppercase">
+        CHIẾN THẮNG
+      </div>
+<div class="flex items-start justify-between gap-space-2xs mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<input checked="" class="w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer" type="checkbox"/>
+<span class="h-2.5 w-2.5 rounded-full bg-secondary"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Khoảng giá theo Volatility</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-xs">
+        Dải biến thiên động 1,5x độ lệch chuẩn trượt 14 ngày. Khoảng cách thích ứng giúp giảm thiểu rủi ro đuôi.
+      </p>
+<div class="flex items-center justify-between pt-space-xs mt-auto font-data-mono-sm text-data-mono-sm">
+<span class="text-on-surface-variant">Lợi nhuận:</span>
+<span class="text-secondary font-semibold">+4,12%</span>
+</div>
+</label>
+<!-- Strategy 4 -->
+<label class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all shadow-[0_1px_3px_rgba(15,23,42,0.05)] relative overflow-hidden group">
+<div class="flex items-start justify-between gap-space-2xs mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<input checked="" class="w-4 h-4 rounded text-amber-500 focus:ring-0 cursor-pointer" type="checkbox"/>
+<span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Khoảng giá điều chỉnh động</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-xs">
+        Tự động thiết lập lại hàng tuần theo giá spot với chi phí gas định kỳ 15 USD.
+      </p>
+<div class="flex items-center justify-between pt-space-xs mt-auto font-data-mono-sm text-data-mono-sm">
+<span class="text-on-surface-variant">Lợi nhuận:</span>
+<span class="text-secondary font-semibold">+2,85%</span>
+</div>
+</label>
+<!-- Strategy 5: HODL Benchmark -->
+<label class="flex flex-col justify-between p-space-sm rounded-xl bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all shadow-[0_1px_3px_rgba(15,23,42,0.05)] relative overflow-hidden group">
+<div class="flex items-start justify-between gap-space-2xs mb-space-xs">
+<div class="flex items-center gap-space-xs">
+<input checked="" class="w-4 h-4 rounded text-slate-400 focus:ring-0 cursor-pointer" type="checkbox"/>
+<span class="h-2.5 w-2.5 rounded-full bg-slate-400"></span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">HODL (50:50)</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-space-xs">
+        Lưu ký thụ động 1,667 WETH + 5.000 USDC tham chiếu mà không tham gia pool.
+      </p>
+<div class="flex items-center justify-between pt-space-xs mt-auto font-data-mono-sm text-data-mono-sm">
+<span class="text-on-surface-variant">Lợi nhuận:</span>
+<span class="text-secondary font-semibold">+3,30%</span>
+</div>
+</label>
+</div>
+<!-- Main Chart Section: Portfolio Value Over Time -->
+<div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)] relative flex flex-col" id="chart-card">
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-space-md gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">show_chart</span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Giá trị danh mục theo thời gian</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Quỹ đạo tài sản mô phỏng trên động lực thanh khoản tick lịch sử (Di chuột vào điểm để kiểm tra)</p>
+</div>
+</div>
+<!-- Toggle Segment -->
+<div class="inline-flex p-space-2xs rounded-lg bg-surface-container-low">
+<button class="px-space-sm py-space-2xs rounded font-label-md text-label-md font-semibold bg-surface-container-lowest text-on-surface shadow-sm" type="button">
+          Giá trị danh mục (USD)
+        </button>
+<button class="px-space-sm py-space-2xs rounded font-label-md text-label-md font-medium text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+          Lợi nhuận tích lũy (%)
+        </button>
+</div>
+</div>
+<!-- Chart Visualization Stage -->
+<div class="relative w-full h-80 pt-space-sm pb-space-xs flex flex-col justify-between" id="chart-stage">
+<!-- Grid Lines & Y-Axis values -->
+<div class="absolute inset-x-0 inset-y-0 flex flex-col justify-between pointer-events-none text-on-surface-variant font-data-mono-sm text-data-mono-sm pl-2">
+<div class="flex items-center justify-between border-b border-surface-container-high/60 pr-space-sm pb-1">
+<span>$10,800</span>
+<span class="font-label-sm text-label-sm text-outline-variant">+8.00%</span>
+</div>
+<div class="flex items-center justify-between border-b border-surface-container-high/60 pr-space-sm pb-1">
+<span>$10,500</span>
+<span class="font-label-sm text-label-sm text-outline-variant">+5.00%</span>
+</div>
+<div class="flex items-center justify-between border-b border-surface-container-high/60 pr-space-sm pb-1">
+<span>$10,200</span>
+<span class="font-label-sm text-label-sm text-outline-variant">+2.00%</span>
+</div>
+<div class="flex items-center justify-between border-b border-surface-container-high/60 pr-space-sm pb-1">
+<span class="font-semibold text-on-surface">$10,000 (Cơ sở)</span>
+<span class="font-label-sm text-label-sm text-outline-variant">0.00%</span>
+</div>
+<div class="flex items-center justify-between border-b border-surface-container-high/60 pr-space-sm pb-1">
+<span>$9,800</span>
+<span class="font-label-sm text-label-sm text-outline-variant">-2.00%</span>
+</div>
+<div class="flex items-center justify-between pr-space-sm pb-1">
+<span>$9,600</span>
+<span class="font-label-sm text-label-sm text-outline-variant">-4.00%</span>
+</div>
+</div>
+<!-- Multi-line SVG chart representation -->
+<div class="relative w-full h-full cursor-crosshair" id="svg-chart-container">
+<svg class="w-full h-full overflow-visible" id="backtest-svg" preserveaspectratio="none" viewbox="0 0 1000 300">
+<!-- Baseline $10,000 reference -->
+<line class="text-outline-variant/40" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1.5" x1="60" x2="980" y1="180" y2="180"></line>
+<!-- Curve 1: Wide / Full Range (Blue) -->
+<path d="M 60 180 C 180 185, 280 178, 400 170 C 520 162, 650 168, 750 158 C 850 152, 920 150, 980 148" fill="none" stroke="#3b82f6" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Curve 5: HODL Benchmark (Slate-400 dashed) -->
+<path d="M 60 180 C 150 195, 260 210, 360 190 C 470 165, 580 130, 720 125 C 820 120, 900 110, 980 105" fill="none" stroke="#94a3b8" stroke-dasharray="6 4" stroke-linecap="round" stroke-width="2"></path>
+<!-- Curve 4: Rolling Dynamic (Amber) -->
+<path d="M 60 180 C 160 175, 270 160, 370 150 C 480 145, 590 140, 700 135 C 800 130, 900 125, 980 118" fill="none" stroke="#f59e0b" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Curve 2: Fixed Symmetric (Purple) -->
+<path d="M 60 180 C 170 170, 290 155, 410 140 C 510 130, 640 115, 760 105 C 860 98, 930 96, 980 94" fill="none" stroke="#7c3aed" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Curve 3: Volatility Scaled (Teal - Winner) -->
+<path d="M 60 180 C 160 168, 280 145, 400 128 C 530 110, 660 92, 780 82 C 860 76, 920 74, 980 72" fill="none" stroke="#006a61" stroke-linecap="round" stroke-width="3.5"></path>
+<!-- Milestone Multi-point Interactive Nodes (May 01, May 06, May 11, May 16, May 21, May 26, May 31) -->
+<!-- Milestone May 01 (x=60) -->
+<g class="milestone-group" data-index="0">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="60" cy="180" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="60" cy="180" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="60" cy="180" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="60" cy="180" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="60" cy="180" r="3.5" stroke-width="2"></circle>
+</g>
+<!-- Milestone May 06 (x=213) -->
+<g class="milestone-group" data-index="1">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="213" cy="160" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="213" cy="165" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="213" cy="204" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="213" cy="168" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="213" cy="183" r="3.5" stroke-width="2"></circle>
+</g>
+<!-- Milestone May 11 (x=366) -->
+<g class="milestone-group" data-index="2">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="366" cy="134" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="366" cy="146" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="366" cy="188" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="366" cy="151" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="366" cy="172" r="3.5" stroke-width="2"></circle>
+</g>
+<!-- Milestone May 16 (x=520) -->
+<g class="milestone-group" data-index="3">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="520" cy="111" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="520" cy="128" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="520" cy="148" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="520" cy="143" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="520" cy="164" r="3.5" stroke-width="2"></circle>
+</g>
+<!-- Milestone May 21 / Day 22 (x=720) Default / Interactive -->
+<g class="milestone-group" data-index="4">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="720" cy="88" r="5" stroke-width="3"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="720" cy="108" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="720" cy="125" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="720" cy="133" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="720" cy="160" r="4" stroke-width="2.5"></circle>
+</g>
+<!-- Milestone May 26 (x=850) -->
+<g class="milestone-group" data-index="5">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="850" cy="77" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="850" cy="99" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="850" cy="116" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="850" cy="128" r="3.5" stroke-width="2"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="850" cy="152" r="3.5" stroke-width="2"></circle>
+</g>
+<!-- Milestone May 31 (x=980) -->
+<g class="milestone-group" data-index="6">
+<circle class="chart-node fill-surface-container-lowest stroke-secondary" cx="980" cy="72" r="4.5" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-primary-container" cx="980" cy="94" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-slate-400" cx="980" cy="105" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-amber-500" cx="980" cy="118" r="4" stroke-width="2.5"></circle>
+<circle class="chart-node fill-surface-container-lowest stroke-blue-500" cx="980" cy="148" r="4" stroke-width="2.5"></circle>
+</g>
+<!-- Dynamic Interactive Scrubber Crosshair Line -->
+<line class="text-on-surface-variant/40 transition-all duration-75" id="crosshair-line" stroke="currentColor" stroke-dasharray="3 3" stroke-width="1.5" x1="720" x2="720" y1="20" y2="280"></line>
+<!-- Active Scrubber Tracking Intersection Dots -->
+<circle class="fill-surface-container-lowest stroke-secondary pointer-events-none transition-all duration-75" cx="720" cy="88" id="cross-dot-vol" r="5" stroke-width="3"></circle>
+<circle class="fill-surface-container-lowest stroke-primary-container pointer-events-none transition-all duration-75" cx="720" cy="108" id="cross-dot-fixed" r="4" stroke-width="2.5"></circle>
+<circle class="fill-surface-container-lowest stroke-slate-400 pointer-events-none transition-all duration-75" cx="720" cy="125" id="cross-dot-hodl" r="4" stroke-width="2.5"></circle>
+<circle class="fill-surface-container-lowest stroke-amber-500 pointer-events-none transition-all duration-75" cx="720" cy="133" id="cross-dot-dyn" r="4" stroke-width="2.5"></circle>
+<circle class="fill-surface-container-lowest stroke-blue-500 pointer-events-none transition-all duration-75" cx="720" cy="160" id="cross-dot-wide" r="4" stroke-width="2.5"></circle>
+</svg>
+<!-- Enriched Interactive Tooltip Card -->
+<div class="absolute left-[64%] top-[10%] w-72 bg-surface-container-lowest/95 backdrop-blur-md rounded-xl p-space-sm shadow-[0_8px_24px_-4px_rgba(15,23,42,0.18)] border border-surface-container-high transition-all duration-150 z-20 pointer-events-none" id="interactive-tooltip">
+<div class="flex items-center justify-between pb-space-2xs mb-space-xs border-b border-surface-container-low font-label-sm text-label-sm">
+<div class="flex items-center gap-space-2xs">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse" id="tooltip-pulse-dot"></span>
+<span class="font-semibold text-on-surface" id="tooltip-date-header">Điểm kiểm tra: Ngày 22 (22 tháng 5)</span>
+</div>
+<span class="font-data-mono-sm text-on-surface-variant font-medium" id="tooltip-spot-header">Spot: 3.640 USD</span>
+</div>
+<!-- In-Range Active Badge -->
+<div class="mb-space-xs flex items-center justify-between bg-surface-container-low/70 px-space-xs py-1 rounded text-[11px] font-sans">
+<span class="text-on-surface-variant font-medium">Dải thanh khoản:</span>
+<span class="font-semibold text-secondary flex items-center gap-1" id="tooltip-range-badge">
+<span class="material-symbols-outlined text-[13px]">check_circle</span>
+Trong vùng hoạt động: 100% WETH/USDC
+</span>
+</div>
+<div class="space-y-space-2xs font-data-mono-sm text-data-mono-sm">
+<div class="flex items-center justify-between p-0.5 rounded transition-colors hover:bg-surface-container-low" id="tip-row-vol">
+<span class="flex items-center gap-space-2xs text-secondary font-medium"><span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>Vol-Scaled:</span>
+<span class="text-on-surface font-semibold" id="val-vol">10.384 USD <span class="text-secondary text-[10px] font-medium" id="pct-vol">(+3,84%)</span></span>
+</div>
+<div class="flex items-center justify-between p-0.5 rounded transition-colors hover:bg-surface-container-low" id="tip-row-fixed">
+<span class="flex items-center gap-space-2xs text-primary font-medium"><span class="h-1.5 w-1.5 rounded-full bg-primary-container"></span>Fixed Sym:</span>
+<span class="text-on-surface font-semibold" id="val-fixed">10.320 USD <span class="text-secondary text-[10px] font-medium" id="pct-fixed">(+3,20%)</span></span>
+</div>
+<div class="flex items-center justify-between p-0.5 rounded transition-colors hover:bg-surface-container-low" id="tip-row-hodl">
+<span class="flex items-center gap-space-2xs text-slate-500 font-medium"><span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>HODL Base:</span>
+<span class="text-on-surface font-semibold" id="val-hodl">10.265 USD <span class="text-secondary text-[10px] font-medium" id="pct-hodl">(+2,65%)</span></span>
+</div>
+<div class="flex items-center justify-between p-0.5 rounded transition-colors hover:bg-surface-container-low" id="tip-row-dyn">
+<span class="flex items-center gap-space-2xs text-amber-600 font-medium"><span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Dynamic:</span>
+<span class="text-on-surface font-semibold" id="val-dyn">10.225 USD <span class="text-secondary text-[10px] font-medium" id="pct-dyn">(+2,25%)</span></span>
+</div>
+<div class="flex items-center justify-between p-0.5 rounded transition-colors hover:bg-surface-container-low" id="tip-row-wide">
+<span class="flex items-center gap-space-2xs text-blue-600 font-medium"><span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>Wide Range:</span>
+<span class="text-on-surface font-semibold" id="val-wide">10.120 USD <span class="text-secondary text-[10px] font-medium" id="pct-wide">(+1,20%)</span></span>
+</div>
+</div>
+<div class="mt-space-xs pt-1 border-t border-surface-container-low flex items-center justify-between text-[10px] text-on-surface-variant font-sans">
+<span>Tính tại Block 19839420</span>
+<span class="text-primary font-medium">Tự động đồng bộ</span>
+</div>
+</div>
+</div>
+<!-- X-Axis Timestamps -->
+<div class="flex justify-between pl-14 pr-4 pt-space-xs text-on-surface-variant font-data-mono-sm text-data-mono-sm select-none" id="x-axis-labels">
+<span class="cursor-pointer hover:text-primary transition-colors" data-index="0">01 tháng 5</span>
+<span class="cursor-pointer hover:text-primary transition-colors" data-index="1">06 tháng 5</span>
+<span class="cursor-pointer hover:text-primary transition-colors" data-index="2">11 tháng 5</span>
+<span class="cursor-pointer hover:text-primary transition-colors" data-index="3">16 tháng 5</span>
+<span class="font-semibold text-on-surface cursor-pointer hover:text-primary transition-colors" data-index="4">21 tháng 5</span>
+<span class="cursor-pointer hover:text-primary transition-colors" data-index="5">26 tháng 5</span>
+<span class="cursor-pointer hover:text-primary transition-colors" data-index="6">31 tháng 5</span>
+</div>
+</div>
+</div>
+<!-- Quantitative Performance Table -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)] overflow-hidden">
+<div class="p-space-md flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-primary">analytics</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Bảng so sánh chiến lược thực nghiệm (Ex-Post)</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">
+        KHUNG THỜI GIAN 30 NGÀY CHUẨN HÓA • TÍNH THEO USD
+      </span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">
+<th class="py-space-sm px-space-md">ĐẶC TẢ CHIẾN LƯỢC</th>
+<th class="py-space-sm px-space-sm text-right">LỢI NHUẬN RÒNG</th>
+<th class="py-space-sm px-space-sm text-right">CHÊNH LỆCH VS HODL</th>
+<th class="py-space-sm px-space-sm text-right">TỔNG PHÍ</th>
+<th class="py-space-sm px-space-sm text-right">IMPERMANENT LOSS</th>
+<th class="py-space-sm px-space-sm text-right">GAS &amp; REBALANCE</th>
+<th class="py-space-sm px-space-sm text-right">TỶ LỆ TRONG KHOẢNG %</th>
+<th class="py-space-sm px-space-sm text-right">MAX DD</th>
+<th class="py-space-sm px-space-sm text-center">SỰ KIỆN</th>
+<th class="py-space-sm px-space-md text-center">ĐÁNH GIÁ RỦI RO</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low font-data-mono-md text-data-mono-md">
+<!-- Row 1: Volatility Scaled -->
+<tr class="bg-surface-container-low/30 hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-md font-sans">
+<div class="flex items-center gap-space-xs">
+<span class="h-2.5 w-2.5 rounded-full bg-secondary"></span>
+<span class="font-semibold text-on-surface">Khoảng giá theo Volatility</span>
+<span class="text-[10px] font-semibold uppercase px-space-2xs py-0.5 rounded bg-secondary-fixed text-on-secondary-fixed-variant">KHUYẾN NGHỊ</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-right font-semibold text-secondary">+4,12%</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-secondary">+0,82%</td>
+<td class="py-space-sm px-space-sm text-right text-secondary">+210,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-108,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-on-surface-variant">-20,00 USD</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-on-surface">88,5%</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-5,2%</td>
+<td class="py-space-sm px-space-sm text-center">1</td>
+<td class="py-space-sm px-space-md text-center font-sans">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded text-label-sm font-semibold bg-emerald-50 text-emerald-700">Điều chỉnh rủi ro tốt nhất</span>
+</td>
+</tr>
+<!-- Row 2: Fixed Symmetric -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-md font-sans">
+<div class="flex items-center gap-space-xs">
+<span class="h-2.5 w-2.5 rounded-full bg-primary-container"></span>
+<span class="font-medium text-on-surface">Khoảng giá đối xứng cố định (±15%)</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-right font-semibold text-secondary">+3,65%</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-secondary">+0,35%</td>
+<td class="py-space-sm px-space-sm text-right text-secondary">+180,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-95,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-on-surface-variant">-20,00 USD</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-on-surface">78,0%</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-6,8%</td>
+<td class="py-space-sm px-space-sm text-center">0</td>
+<td class="py-space-sm px-space-md text-center font-sans">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded text-label-sm font-semibold bg-surface-container text-on-surface-variant">Cân bằng</span>
+</td>
+</tr>
+<!-- Row 3: Rolling / Dynamic -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-md font-sans">
+<div class="flex items-center gap-space-xs">
+<span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+<span class="font-medium text-on-surface">Khoảng giá điều chỉnh động</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-right font-semibold text-on-surface">+2,85%</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-tertiary">-0,45%</td>
+<td class="py-space-sm px-space-sm text-right text-secondary">+265,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-125,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary font-semibold">-75,00 USD</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-on-surface">96,0%</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-8,1%</td>
+<td class="py-space-sm px-space-sm text-center">5</td>
+<td class="py-space-sm px-space-md text-center font-sans">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded text-label-sm font-semibold bg-rose-50 text-tertiary">Chi phí Gas cao</span>
+</td>
+</tr>
+<!-- Row 4: Wide / Full Range -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-md font-sans">
+<div class="flex items-center gap-space-xs">
+<span class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>
+<span class="font-medium text-on-surface">Khoảng giá rộng / Toàn dải (v2)</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-right font-semibold text-on-surface">+1,45%</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-tertiary">-1,85%</td>
+<td class="py-space-sm px-space-sm text-right text-secondary">+45,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-10,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-on-surface-variant">-20,00 USD</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-on-surface">100,0%</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-3,5%</td>
+<td class="py-space-sm px-space-sm text-center">0</td>
+<td class="py-space-sm px-space-md text-center font-sans">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded text-label-sm font-semibold bg-blue-50 text-blue-700">Thận trọng</span>
+</td>
+</tr>
+<!-- Row 5: HODL Benchmark -->
+<tr class="bg-surface-container-low/10 hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-md font-sans">
+<div class="flex items-center gap-space-xs">
+<span class="h-2.5 w-2.5 rounded-full bg-slate-400"></span>
+<span class="font-medium text-on-surface">HODL Benchmark (50:50)</span>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-right font-semibold text-on-surface">+3,30%</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-on-surface-variant">0,00% (Cơ sở)</td>
+<td class="py-space-sm px-space-sm text-right text-on-surface-variant">0,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-on-surface-variant">0,00 USD</td>
+<td class="py-space-sm px-space-sm text-right text-on-surface-variant">0,00 USD</td>
+<td class="py-space-sm px-space-sm text-right font-medium text-on-surface-variant">N/A</td>
+<td class="py-space-sm px-space-sm text-right text-tertiary">-7,2%</td>
+<td class="py-space-sm px-space-sm text-center">0</td>
+<td class="py-space-sm px-space-md text-center font-sans">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded text-label-sm font-semibold bg-surface-container text-on-surface font-mono">Tham chiếu</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Secondary Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg">
+<!-- Chart A: Fee Income vs Impermanent Loss -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-secondary">compare_arrows</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Lợi suất phí giao dịch so với Tổn thất Impermanent Loss</h4>
+</div>
+<div class="flex items-center gap-space-sm font-label-sm text-label-sm">
+<span class="flex items-center gap-space-2xs text-secondary"><span class="h-2 w-2 rounded-full bg-secondary"></span>Phí thu được</span>
+<span class="flex items-center gap-space-2xs text-tertiary"><span class="h-2 w-2 rounded-full bg-tertiary"></span>Tổn thất IL</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">So sánh mức thu nhập phí tích lũy với chi phí phân kỳ từ khối lượng giao dịch</p>
+</div>
+<!-- Grouped Bar Chart -->
+<div class="space-y-space-md font-data-mono-sm text-data-mono-sm pt-space-xs">
+<!-- Vol-Scaled -->
+<div>
+<div class="flex justify-between text-on-surface mb-1">
+<span class="font-sans font-medium text-body-sm">Volatility-Scaled (Chiến thắng)</span>
+<span>+210,00 USD / -108,00 USD <span class="text-secondary font-semibold">(+102,00 USD Ròng)</span></span>
+</div>
+<div class="flex gap-1 h-3 rounded-full overflow-hidden bg-surface-container">
+<div class="bg-secondary rounded-l h-full" style="width: 79%;"></div>
+<div class="bg-tertiary rounded-r h-full" style="width: 41%;"></div>
+</div>
+</div>
+<!-- Fixed Symmetric -->
+<div>
+<div class="flex justify-between text-on-surface mb-1">
+<span class="font-sans font-medium text-body-sm">Fixed Symmetric</span>
+<span>+180,00 USD / -95,00 USD <span class="text-secondary font-semibold">(+85,00 USD Ròng)</span></span>
+</div>
+<div class="flex gap-1 h-3 rounded-full overflow-hidden bg-surface-container">
+<div class="bg-secondary/80 rounded-l h-full" style="width: 68%;"></div>
+<div class="bg-tertiary/80 rounded-r h-full" style="width: 36%;"></div>
+</div>
+</div>
+<!-- Rolling Dynamic -->
+<div>
+<div class="flex justify-between text-on-surface mb-1">
+<span class="font-sans font-medium text-body-sm">Rolling / Dynamic</span>
+<span>+265,00 USD / -125,00 USD <span class="text-secondary font-semibold">(+140,00 USD Phí thô)</span></span>
+</div>
+<div class="flex gap-1 h-3 rounded-full overflow-hidden bg-surface-container">
+<div class="bg-secondary rounded-l h-full" style="width: 100%;"></div>
+<div class="bg-tertiary rounded-r h-full" style="width: 47%;"></div>
+</div>
+</div>
+<!-- Wide Full Range -->
+<div>
+<div class="flex justify-between text-on-surface mb-1">
+<span class="font-sans font-medium text-body-sm">Wide / Full Range (v2)</span>
+<span>+45,00 USD / -10,00 USD <span class="text-secondary font-semibold">(+35,00 USD Ròng)</span></span>
+</div>
+<div class="flex gap-1 h-3 rounded-full overflow-hidden bg-surface-container">
+<div class="bg-secondary/60 rounded-l h-full" style="width: 17%;"></div>
+<div class="bg-tertiary/60 rounded-r h-full" style="width: 4%;"></div>
+</div>
+</div>
+</div>
+<div class="pt-space-sm text-right font-label-sm text-label-sm text-on-surface-variant">
+        *Giá trị chuẩn hóa theo quy mô vốn ban đầu 10.000 USD
+      </div>
+</div>
+<!-- Chart B: Operating Friction & Gas Drag -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)] flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px] text-tertiary">local_gas_station</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Ma sát vận hành &amp; Chi phí Gas</h4>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-low px-space-xs py-space-2xs rounded">
+            15,00 USD / Lần Rebalance
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">Chi phí vận hành thực tế làm giảm lợi nhuận gộp trong quá trình thiết lập lại vị thế</p>
+</div>
+<!-- Cost Breakdown Visual -->
+<div class="space-y-space-md pt-space-xs">
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-on-surface font-medium">Rolling / Dynamic (5 lần Rebalance)</span>
+<span class="font-data-mono-md text-tertiary font-bold">Chi phí Gas 75,00 USD (0,75% vốn)</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden flex">
+<div class="bg-tertiary h-full w-[75%]"></div>
+<div class="bg-tertiary-fixed-dim h-full w-[25%]"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant mt-1">
+<span>5 giao dịch On-chain</span>
+<span>60,00 USD Rebalance + 15,00 USD Vào lệnh</span>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-on-surface font-medium">Volatility-Scaled (1 lần Rebalance)</span>
+<span class="font-data-mono-md text-on-surface font-medium">Chi phí Gas 20,00 USD (0,20% vốn)</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden flex">
+<div class="bg-amber-500 h-full w-[20%]"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant mt-1">
+<span>1 lần mở rộng dải biến động</span>
+<span>Hiệu quả tỷ lệ Rủi ro/Lợi nhuận tối ưu</span>
+</div>
+</div>
+<div>
+<div class="flex justify-between font-label-md text-label-md mb-1">
+<span class="text-on-surface font-medium">Fixed Symmetric &amp; Wide Range</span>
+<span class="font-data-mono-md text-secondary font-medium">20,00 USD Chi phí cố định</span>
+</div>
+<div class="w-full bg-surface-container h-3 rounded-full overflow-hidden flex">
+<div class="bg-surface-variant h-full w-[20%]"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant mt-1">
+<span>0 lần Rebalance hoạt động</span>
+<span>Thiết lập thụ động cố định</span>
+</div>
+</div>
+</div>
+<div class="p-space-xs mt-space-sm rounded bg-surface-container-low flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">info</span>
+<span>Các chiến lược rebalance tần suất cao phải tạo ra lợi nhuận phụ trội &gt;28 bps hàng tháng để bù đắp chi phí gas L1.</span>
+</div>
+</div>
+</div>
+<!-- Quantitative Insights & Key Findings Panel -->
+<div class="bg-surface-container-lowest p-space-md rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)]">
+<div class="flex items-center gap-space-xs pb-space-sm mb-space-sm border-b border-surface-container-low">
+<span class="material-symbols-outlined text-[20px] text-primary">tips_and_updates</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Nhận định &amp; Phát hiện chiến lược định lượng</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Finding 1 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low/50 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-xs mb-space-xs text-secondary font-semibold font-label-md text-label-md uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>TẠO RA ALPHA</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-snug">
+<strong>Khoảng giá theo Volatility</strong> đạt lợi nhuận ròng lịch sử cao nhất (<span class="font-data-mono-sm text-secondary font-bold">+4,12%</span>), tạo ra phần bù phí vượt trội để khắc phục tổn thất IL với tỷ lệ duy trì trong khoảng giá 88,5%.
+          </p>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant pt-space-xs">+0,82% Lợi nhuận vượt HODL</span>
+</div>
+<!-- Finding 2 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low/50 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-xs mb-space-xs text-tertiary font-semibold font-label-md text-label-md uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+<span>MA SÁT REBALANCE</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-snug">
+<strong>Chiến lược điều chỉnh động</strong> tạo ra tổng phí cao nhất (<span class="font-data-mono-sm text-on-surface font-semibold">265,00 USD</span>) nhưng kém hiệu quả hơn HODL do chịu <span class="font-data-mono-sm text-tertiary font-semibold">75,00 USD</span> chi phí gas tái thiết lập, dẫn đến lợi nhuận vượt mức là -0,45%.
+          </p>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant pt-space-xs">5 giao dịch • Xáo trộn hàng tuần</span>
+</div>
+<!-- Finding 3 -->
+<div class="p-space-sm rounded-lg bg-surface-container-low/50 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-xs mb-space-xs text-blue-600 font-semibold font-label-md text-label-md uppercase tracking-wider">
+<span class="material-symbols-outlined text-[16px]">balance</span>
+<span>KÉM HIỆU QUẢ VỐN</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface leading-snug">
+<strong>Toàn dải (Full Range)</strong> không gặp thời gian chết ngoài khoảng giá nhưng chỉ thu được <span class="font-data-mono-sm text-on-surface font-semibold">45,00 USD</span> phí, thấp hơn HODL <span class="font-data-mono-sm text-tertiary font-bold">-1,85%</span> do mật độ phân bổ vốn bị phân tán rộng.
+          </p>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant pt-space-xs">Hệ số nhân thanh khoản 1,0x</span>
+</div>
+</div>
+</div>
+<!-- Validation & Methodology Accordion / Details -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_1px_3px_rgba(15,23,42,0.05)] p-space-md">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm pb-space-sm mb-space-sm border-b border-surface-container-low">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">menu_book</span>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Phương pháp kiểm định ngoài mẫu (Out-Of-Sample Validation)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Các tham số backtest xác định ngăn chặn sai lệch nhìn trước (look-ahead bias) và hiện tượng overfitting</p>
+</div>
+</div>
+<button class="px-space-sm py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors flex items-center gap-space-2xs self-start md:self-auto" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span>Xuất tập dữ liệu Backtest đầy đủ (CSV)</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md font-body-sm text-body-sm">
+<div class="bg-surface-container-low/30 p-space-sm rounded">
+<div class="font-label-md text-label-md text-on-surface font-semibold mb-space-2xs">Tiến trình dữ liệu</div>
+<div class="space-y-space-2xs text-on-surface-variant font-data-mono-sm text-data-mono-sm">
+<div><span class="text-on-surface font-medium">Huấn luyện:</span> 2023-01-01 → 2023-12-31</div>
+<div><span class="text-on-surface font-medium">Kiểm định:</span> 2024-01-01 → 2024-04-30</div>
+<div><span class="text-secondary font-semibold">Kiểm thử (Replay):</span> 2024-05-01 → 2024-05-31</div>
+</div>
+</div>
+<div class="bg-surface-container-low/30 p-space-sm rounded">
+<div class="font-label-md text-label-md text-on-surface font-semibold mb-space-2xs">Chống Look-Ahead Bias</div>
+<p class="text-on-surface-variant leading-relaxed">
+          Không sử dụng thông tin tương lai. Các tính toán khoảng giá động chỉ dựa vào độ lệch chuẩn trượt 14 ngày tính tại thời điểm block.
+        </p>
+</div>
+<div class="bg-surface-container-low/30 p-space-sm rounded">
+<div class="font-label-md text-label-md text-on-surface font-semibold mb-space-2xs">Động cơ khớp lệnh Tick</div>
+<p class="text-on-surface-variant leading-relaxed">
+          Quá trình tái hiện swap lịch sử khớp chính xác theo phân phối thanh khoản tập trung theo giá trung bình nhân bên trong tick.
+        </p>
+</div>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-low py-space-sm px-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col sm:flex-row items-center justify-between gap-space-xs text-on-surface-variant font-label-sm text-label-sm"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-tertiary">warning</span><span>Công cụ mô phỏng phục vụ nghiên cứu — Không phải khuyến nghị đầu tư. Dành cho nghiên cứu học thuật và mô hình hóa định lượng.</span></div><div class="flex items-center gap-space-md font-data-mono-sm text-data-mono-sm"><span>LATENCY: 12ms</span><span>SUBGRAPH: v3-mainnet</span><span>BLOCK: 19842103</span></div></div></footer></div>
+<script>
+  // Dataset definition for interactive multi-strategy crosshair tooltip
+  const backtestData = [
+    {
+      day: 0,
+      date: '01 tháng 5',
+      dateFull: 'Ngày 0 (01 tháng 5)',
+      spot: '3.000 USD',
+      svgX: 60,
+      inRange: true,
+      rangeText: 'Trong vùng hoạt động: 100% WETH/USDC',
+      yValues: { vol: 180, fixed: 180, hodl: 180, dyn: 180, wide: 180 },
+      strategies: {
+        vol: { val: '10.000 USD', pct: '+0,00%' },
+        fixed: { val: '10.000 USD', pct: '+0,00%' },
+        hodl: { val: '10.000 USD', pct: '+0,00%' },
+        dyn: { val: '10.000 USD', pct: '+0,00%' },
+        wide: { val: '10.000 USD', pct: '+0,00%' }
+      }
+    },
+    {
+      day: 5,
+      date: '06 tháng 5',
+      dateFull: 'Ngày 5 (06 tháng 5)',
+      spot: '3.140 USD',
+      svgX: 213,
+      inRange: true,
+      rangeText: 'Trong vùng hoạt động: 100% tập trung',
+      yValues: { vol: 160, fixed: 165, hodl: 204, dyn: 168, wide: 183 },
+      strategies: {
+        vol: { val: '10.120 USD', pct: '+1,20%' },
+        fixed: { val: '10.090 USD', pct: '+0,90%' },
+        hodl: { val: '9.820 USD', pct: '-1,80%' },
+        dyn: { val: '10.075 USD', pct: '+0,75%' },
+        wide: { val: '10.020 USD', pct: '+0,20%' }
+      }
+    },
+    {
+      day: 10,
+      date: '11 tháng 5',
+      dateFull: 'Ngày 10 (11 tháng 5)',
+      spot: '3.320 USD',
+      svgX: 366,
+      inRange: true,
+      rangeText: 'Trong vùng hoạt động: 94% tập trung',
+      yValues: { vol: 134, fixed: 146, hodl: 188, dyn: 151, wide: 172 },
+      strategies: {
+        vol: { val: '10.215 USD', pct: '+2,15%' },
+        fixed: { val: '10.180 USD', pct: '+1,80%' },
+        hodl: { val: '9.940 USD', pct: '-0,60%' },
+        dyn: { val: '10.150 USD', pct: '+1,50%' },
+        wide: { val: '10.060 USD', pct: '+0,60%' }
+      }
+    },
+    {
+      day: 15,
+      date: '16 tháng 5',
+      dateFull: 'Ngày 15 (16 tháng 5)',
+      spot: '3.490 USD',
+      svgX: 520,
+      inRange: true,
+      rangeText: 'Trong vùng hoạt động: 100% WETH/USDC',
+      yValues: { vol: 111, fixed: 128, hodl: 148, dyn: 143, wide: 164 },
+      strategies: {
+        vol: { val: '10.290 USD', pct: '+2,90%' },
+        fixed: { val: '10.240 USD', pct: '+2,40%' },
+        hodl: { val: '10.160 USD', pct: '+1,60%' },
+        dyn: { val: '10.195 USD', pct: '+1,95%' },
+        wide: { val: '10.085 USD', pct: '+0,85%' }
+      }
+    },
+    {
+      day: 22,
+      date: '21 tháng 5',
+      dateFull: 'Ngày 22 (22 tháng 5)',
+      spot: '3.640 USD',
+      svgX: 720,
+      inRange: true,
+      rangeText: 'Trong vùng hoạt động: 100% WETH/USDC',
+      yValues: { vol: 88, fixed: 108, hodl: 125, dyn: 133, wide: 160 },
+      strategies: {
+        vol: { val: '10.384 USD', pct: '+3,84%' },
+        fixed: { val: '10.320 USD', pct: '+3,20%' },
+        hodl: { val: '10.265 USD', pct: '+2,65%' },
+        dyn: { val: '10.225 USD', pct: '+2,25%' },
+        wide: { val: '10.120 USD', pct: '+1,20%' }
+      }
+    },
+    {
+      day: 25,
+      date: '26 tháng 5',
+      dateFull: 'Ngày 26 (26 tháng 5)',
+      spot: '3.780 USD',
+      svgX: 850,
+      inRange: true,
+      rangeText: 'Trong vùng hoạt động: Cận biên trên',
+      yValues: { vol: 77, fixed: 99, hodl: 116, dyn: 128, wide: 152 },
+      strategies: {
+        vol: { val: '10.405 USD', pct: '+4,05%' },
+        fixed: { val: '10.345 USD', pct: '+3,45%' },
+        hodl: { val: '10.305 USD', pct: '+3,05%' },
+        dyn: { val: '10.250 USD', pct: '+2,50%' },
+        wide: { val: '10.135 USD', pct: '+1,35%' }
+      }
+    },
+    {
+      day: 30,
+      date: '31 tháng 5',
+      dateFull: 'Ngày 30 (31 tháng 5)',
+      spot: '3.825 USD',
+      svgX: 980,
+      inRange: true,
+      rangeText: 'Kết thúc kỳ: Vol-Scaled thắng thế',
+      yValues: { vol: 72, fixed: 94, hodl: 105, dyn: 118, wide: 148 },
+      strategies: {
+        vol: { val: '10.412 USD', pct: '+4,12%' },
+        fixed: { val: '10.365 USD', pct: '+3,65%' },
+        hodl: { val: '10.330 USD', pct: '+3,30%' },
+        dyn: { val: '10.285 USD', pct: '+2,85%' },
+        wide: { val: '10.145 USD', pct: '+1,45%' }
+      }
+    }
+  ];
+
+  const tooltip = document.getElementById('interactive-tooltip');
+  const crosshair = document.getElementById('crosshair-line');
+  const dotVol = document.getElementById('cross-dot-vol');
+  const dotFixed = document.getElementById('cross-dot-fixed');
+  const dotHodl = document.getElementById('cross-dot-hodl');
+  const dotDyn = document.getElementById('cross-dot-dyn');
+  const dotWide = document.getElementById('cross-dot-wide');
+
+  const tooltipDateHeader = document.getElementById('tooltip-date-header');
+  const tooltipSpotHeader = document.getElementById('tooltip-spot-header');
+  const tooltipRangeBadge = document.getElementById('tooltip-range-badge');
+
+  const valVol = document.getElementById('val-vol');
+  const valFixed = document.getElementById('val-fixed');
+  const valHodl = document.getElementById('val-hodl');
+  const valDyn = document.getElementById('val-dyn');
+  const valWide = document.getElementById('val-wide');
+
+  const chartContainer = document.getElementById('svg-chart-container');
+  const milestoneGroups = document.querySelectorAll('.milestone-group');
+  const xAxisLabels = document.querySelectorAll('#x-axis-labels span');
+
+  function renderDataPoint(index, isHoveringNode = false) {
+    const item = backtestData[index];
+    if (!item) return;
+
+    // Crosshair line position
+    crosshair.setAttribute('x1', item.svgX);
+    crosshair.setAttribute('x2', item.svgX);
+
+    // Dynamic intersecting dots
+    dotVol.setAttribute('cx', item.svgX);
+    dotVol.setAttribute('cy', item.yValues.vol);
+    dotFixed.setAttribute('cx', item.svgX);
+    dotFixed.setAttribute('cy', item.yValues.fixed);
+    dotHodl.setAttribute('cx', item.svgX);
+    dotHodl.setAttribute('cy', item.yValues.hodl);
+    dotDyn.setAttribute('cx', item.svgX);
+    dotDyn.setAttribute('cy', item.yValues.dyn);
+    dotWide.setAttribute('cx', item.svgX);
+    dotWide.setAttribute('cy', item.yValues.wide);
+
+    // Update node states
+    milestoneGroups.forEach((g, idx) => {
+      const nodes = g.querySelectorAll('.chart-node');
+      nodes.forEach(node => {
+        if (idx === index) {
+          node.classList.add('is-active');
+        } else {
+          node.classList.remove('is-active');
+        }
+      });
+    });
+
+    // Populate tooltip content
+    tooltipDateHeader.textContent = 'Điểm kiểm tra: ' + item.dateFull;
+    tooltipSpotHeader.textContent = 'Spot: ' + item.spot;
+    tooltipRangeBadge.innerHTML = `<span class="material-symbols-outlined text-[13px]">check_circle</span> ${item.rangeText}`;
+
+    valVol.innerHTML = `${item.strategies.vol.val} <span class="text-secondary text-[10px] font-medium">(${item.strategies.vol.pct})</span>`;
+    valFixed.innerHTML = `${item.strategies.fixed.val} <span class="text-secondary text-[10px] font-medium">(${item.strategies.fixed.pct})</span>`;
+    valHodl.innerHTML = `${item.strategies.hodl.val} <span class="text-secondary text-[10px] font-medium">(${item.strategies.hodl.pct})</span>`;
+    valDyn.innerHTML = `${item.strategies.dyn.val} <span class="text-secondary text-[10px] font-medium">(${item.strategies.dyn.pct})</span>`;
+    valWide.innerHTML = `${item.strategies.wide.val} <span class="text-secondary text-[10px] font-medium">(${item.strategies.wide.pct})</span>`;
+
+    // Position tooltip nicely avoiding overflow
+    const pctX = (item.svgX / 1000) * 100;
+    if (pctX > 68) {
+      tooltip.style.left = 'auto';
+      tooltip.style.right = (100 - pctX + 4) + '%';
+    } else {
+      tooltip.style.right = 'auto';
+      tooltip.style.left = Math.max(5, pctX - 10) + '%';
+    }
+  }
+
+  // Find closest milestone data point on mouse movement
+  function handleChartMouseMove(e) {
+    const rect = chartContainer.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const normX = Math.max(0, Math.min(1, mouseX / rect.width));
+    const svgCoordX = 60 + normX * (980 - 60);
+
+    let closestIdx = 0;
+    let minDiff = Infinity;
+    backtestData.forEach((d, idx) => {
+      const diff = Math.abs(d.svgX - svgCoordX);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIdx = idx;
+      }
+    });
+
+    renderDataPoint(closestIdx);
+  }
+
+  chartContainer.addEventListener('mousemove', handleChartMouseMove);
+
+  // Click / hover on milestone nodes directly
+  milestoneGroups.forEach(g => {
+    const idx = parseInt(g.getAttribute('data-index'), 10);
+    g.addEventListener('mouseenter', () => renderDataPoint(idx, true));
+    g.addEventListener('click', () => renderDataPoint(idx, true));
+  });
+
+  // Click on x-axis labels
+  xAxisLabels.forEach(lbl => {
+    const idx = parseInt(lbl.getAttribute('data-index'), 10);
+    lbl.addEventListener('mouseenter', () => renderDataPoint(idx));
+    lbl.addEventListener('click', () => renderDataPoint(idx));
+  });
+
+  // Initial render at Day 22 default
+  renderDataPoint(4);
+</script>
+</body></html>

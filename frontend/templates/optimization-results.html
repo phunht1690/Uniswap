@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"tertiary":"#961e3b","on-surface":"#131b2e","on-tertiary-container":"#ffdee0","tertiary-fixed-dim":"#ffb2ba","primary-fixed-dim":"#d2bbff","surface-variant":"#dae2fd","tertiary-container":"#b73852","on-error-container":"#93000a","inverse-surface":"#283044","surface":"#faf8ff","inverse-on-surface":"#eef0ff","on-tertiary-fixed":"#400011","surface-container":"#eaedff","primary-fixed":"#eaddff","on-tertiary":"#ffffff","surface-dim":"#d2d9f4","tertiary-fixed":"#ffd9dc","on-background":"#131b2e","on-primary":"#ffffff","on-secondary":"#ffffff","secondary-fixed":"#89f5e7","primary-container":"#7c3aed","surface-tint":"#732ee4","error":"#ba1a1a","on-secondary-fixed-variant":"#005049","outline":"#7b7487","surface-container-high":"#e2e7ff","on-primary-fixed-variant":"#5a00c6","secondary":"#006a61","on-secondary-fixed":"#00201d","inverse-primary":"#d2bbff","surface-container-lowest":"#ffffff","surface-container-low":"#f2f3ff","outline-variant":"#ccc3d8","surface-container-highest":"#dae2fd","error-container":"#ffdad6","on-surface-variant":"#4a4455","on-tertiary-fixed-variant":"#8b1433","on-primary-fixed":"#25005a","background":"#faf8ff","secondary-fixed-dim":"#6bd8cb","surface-bright":"#faf8ff","on-primary-container":"#ede0ff","secondary-container":"#86f2e4","primary":"#630ed4","on-error":"#ffffff","on-secondary-container":"#006f66"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"margin-desktop":"2rem","space-sm":"0.5rem","space-xl":"1.5rem","gutter-desktop":"1.25rem","gutter":"1rem","margin":"1rem","space-md":"0.75rem","space-2xs":"0.125rem","space-2xl":"2rem","space-lg":"1rem","space-xs":"0.25rem"},"fontFamily":{"headline-md":["Inter"],"headline-lg":["Inter"],"body-sm":["Inter"],"data-mono-lg":["JetBrains Mono"],"label-lg":["Inter"],"label-md":["Inter"],"label-sm":["Inter"],"data-mono-sm":["JetBrains Mono"],"headline-sm":["Inter"],"headline-xl":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"data-mono-md":["JetBrains Mono"]},"fontSize":{"headline-md":["18px",{"lineHeight":"26px","letterSpacing":"-0.015em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"18px","letterSpacing":"0.005em","fontWeight":"400"}],"data-mono-lg":["20px",{"lineHeight":"28px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-lg":["13px",{"lineHeight":"18px","letterSpacing":"0.01em","fontWeight":"500"}],"label-md":["11px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.06em","fontWeight":"600"}],"data-mono-sm":["11px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"headline-sm":["15px",{"lineHeight":"22px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-xl":["32px",{"lineHeight":"40px","letterSpacing":"-0.025em","fontWeight":"700"}],"body-lg":["15px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"data-mono-md":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"500"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-screen w-60 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between select-none"><div class="flex flex-col"><div class="px-space-lg pt-space-lg pb-space-md"><div class="flex items-center gap-space-sm mb-space-xs"><div class="w-8 h-8 rounded-lg bg-primary-container text-on-primary flex items-center justify-center"><span class="material-symbols-outlined text-[18px]">science</span></div><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-bold">RangeLab</span></div><div class="inline-flex items-center gap-space-2xs px-space-xs py-space-2xs rounded bg-surface-container text-primary font-label-sm text-label-sm font-semibold tracking-wider uppercase">NGHIÊN CỨU UNISWAP V3</div></div><div class="px-space-md py-space-xs"><div class="px-space-sm py-space-2xs font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">CÔNG CỤ PHÂN TÍCH</div></div><nav class="flex flex-col gap-space-2xs px-space-md" data-active-classes="bg-primary-container text-on-primary font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="overview" href="#"><span class="material-symbols-outlined text-[18px]">dashboard</span><span class="font-label-lg text-label-lg">Tổng quan</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="lp-optimizer" href="#"><span class="material-symbols-outlined text-[18px]">tune</span><span class="font-label-lg text-label-lg">Tối ưu hóa LP</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg transition-colors bg-primary-container text-on-primary font-semibold" data-path="optimization-results" href="#"><span class="material-symbols-outlined text-[18px]">bar_chart</span><span class="font-label-lg text-label-lg">Kết quả tối ưu hóa</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="strategy-backtesting" href="#"><span class="material-symbols-outlined text-[18px]">history</span><span class="font-label-lg text-label-lg">Backtesting chiến lược</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="risk-and-research" href="#"><span class="material-symbols-outlined text-[18px]">shield</span><span class="font-label-lg text-label-lg">Phân tích rủi ro &amp; nghiên cứu</span></a></nav></div><div class="p-space-md flex flex-col gap-space-xs"><div class="flex items-center justify-between px-space-sm py-space-xs rounded bg-surface-container-low"><div class="flex items-center gap-space-xs"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span></span><span class="font-label-sm text-label-sm text-on-surface font-semibold">Mô phỏng đang hoạt động</span></div><span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">60 fps</span></div><a class="flex items-center gap-space-xs px-space-sm py-space-2xs text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md" data-path="data-and-methodology" href="#"><span class="material-symbols-outlined text-[16px]">menu_book</span><span>Dữ liệu &amp; Phương pháp</span></a><div class="flex items-center justify-between px-space-sm pt-space-xs text-on-surface-variant font-label-sm text-label-sm"><span class="font-data-mono-sm text-data-mono-sm">v1.0 (Bản học thuật)</span><span class="material-symbols-outlined text-[14px]">verified</span></div></div></aside><div class="pl-60 flex flex-col min-h-screen"><header class="fixed top-0 left-60 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 flex items-center justify-between px-space-lg"><div class="flex items-center gap-space-sm"><div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface-variant"><span class="material-symbols-outlined text-[16px]">domain</span><span>RangeLab</span><span class="material-symbols-outlined text-[14px]">chevron_right</span></div><span class="font-label-md text-label-md text-on-surface font-semibold">Bàn làm việc phân tích</span></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-sm py-space-2xs rounded bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="font-data-mono-sm text-data-mono-sm text-on-surface font-semibold">WETH / USDC</span><span class="font-label-sm text-label-sm text-on-surface-variant px-space-2xs rounded bg-surface-container">0.30%</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-2xs rounded bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[16px] text-on-surface-variant">date_range</span><span class="font-label-md text-label-md">Dữ liệu 30 ngày</span></div><div class="flex items-center gap-space-xs px-space-sm py-space-2xs rounded bg-surface-container-low"><span class="relative flex h-2 w-2"><span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span></span><span class="font-label-sm text-label-sm text-secondary font-semibold">Dữ liệu lịch sử &amp; Mô phỏng</span></div><button class="flex items-center gap-space-2xs px-space-sm py-space-2xs rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button"><span class="material-symbols-outlined text-[16px]">help</span><span>Thuật ngữ</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="flex-1 pt-16 bg-surface px-space-lg py-space-lg"><div class="flex flex-col w-full gap-space-xl">
+<!-- Top Metadata & Control Context -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md p-space-md bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)]">
+<div class="flex flex-wrap items-center gap-x-space-md gap-y-space-xs font-label-md text-label-md text-on-surface-variant">
+<div class="flex items-center gap-space-2xs bg-surface-container px-space-sm py-space-xs rounded-lg text-on-surface">
+<span class="font-bold text-primary">POOL:</span>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface font-semibold">WETH / USDC</span>
+<span class="text-on-surface-variant/60 font-normal">|</span>
+<span class="font-data-mono-sm text-data-mono-sm">0.30%</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="text-on-surface-variant uppercase tracking-wider font-semibold">VỐN:</span>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface font-semibold">10.000 USD</span>
+</div>
+<span class="text-surface-dim">/</span>
+<div class="flex items-center gap-space-2xs">
+<span class="text-on-surface-variant uppercase tracking-wider font-semibold">THỜI GIAN:</span>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface">30 Ngày</span>
+</div>
+<span class="text-surface-dim">/</span>
+<div class="flex items-center gap-space-2xs">
+<span class="text-on-surface-variant uppercase tracking-wider font-semibold">THỜI ĐIỂM CHẠY:</span>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface">Hôm nay, 14:32 UTC</span>
+</div>
+<span class="text-surface-dim">/</span>
+<div class="flex items-center gap-space-2xs">
+<span class="text-on-surface-variant uppercase tracking-wider font-semibold">BỘ GIẢI:</span>
+<span class="font-data-mono-sm text-data-mono-sm text-primary">v1.4-QuantEngine</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm self-start lg:self-auto">
+<span class="inline-flex items-center gap-space-2xs px-space-sm py-space-xs rounded-full bg-secondary-container/40 text-secondary font-label-sm text-label-sm font-semibold tracking-wide">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+        Kết quả minh họa (Bản Demo)
+      </span>
+<button class="px-space-xs py-space-xs text-on-surface-variant hover:text-on-surface rounded bg-surface-container hover:bg-surface-container-high transition-colors" onclick="navigator.clipboard.writeText('Simulation-19842103'); alert('Simulation payload hash copied to clipboard');" title="Sao chép mã băm mô phỏng" type="button">
+<span class="material-symbols-outlined text-[16px]">share</span>
+</button>
+</div>
+</div>
+<!-- Hero Section: Suggested Price Range Recommendation -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)] p-space-lg flex flex-col gap-space-lg relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-primary/5 pointer-events-none blur-2xl"></div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md relative z-10">
+<div>
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">CỐT LÕI TỐI ƯU HÓA</span>
+<span class="text-surface-variant">•</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tỷ lệ Phí trên IL tối đa</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Khoảng giá thanh khoản tập trung đề xuất</h1>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="text-right">
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">ĐỘ RỘNG KHOẢNG GIÁ</div>
+<div class="font-data-mono-lg text-data-mono-lg text-on-surface font-semibold">20,0% <span class="font-body-sm text-body-sm text-on-surface-variant font-normal">(±10% trung bình)</span></div>
+</div>
+<div class="h-8 w-px bg-surface-container"></div>
+<div class="text-right">
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant">KHOẢNG TIN CẬY</div>
+<div class="font-data-mono-lg text-data-mono-lg text-secondary font-semibold">78,0% CI</div>
+</div>
+</div>
+</div>
+<!-- Parameter Quad (Min/Max/Ticks/Ref) -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-md p-space-md bg-surface rounded-xl">
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-semibold">GIỚI HẠN GIÁ DƯỚI</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-data-mono-lg text-data-mono-lg text-on-surface font-bold">2.750,00 USD</span>
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">-8,3%</span>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">Tick dưới: -8.340</span>
+</div>
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-semibold">GIÁ THAM CHIẾU HIỆN TẠI</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-data-mono-lg text-data-mono-lg text-primary font-bold">3.000,00 USDC</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant"></span>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">Tick tâm: 0</span>
+</div>
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-semibold">GIỚI HẠN GIÁ TRÊN</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-data-mono-lg text-data-mono-lg text-on-surface font-bold">3.350,00 USD</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">+11,7%</span>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">Tick trên: +11.100</span>
+</div>
+<div class="flex flex-col gap-space-2xs">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant font-semibold">HỆ SỐ HIỆU QUẢ VỐN</span>
+<div class="flex items-baseline gap-space-xs">
+<span class="font-data-mono-lg text-data-mono-lg text-secondary font-bold">10,42x</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">so với v2 Toàn dải</span>
+</div>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">Mức độ tập trung: Cao</span>
+</div>
+</div>
+<!-- Spatial Gauge Visualization -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<div class="flex items-center justify-between font-data-mono-sm text-data-mono-sm text-on-surface-variant">
+<span>2.400 USDC (Vùng Bear)</span>
+<span class="font-semibold text-on-surface">Target Liquidity Spectrum</span>
+<span>3.700 USDC (Vùng Bull)</span>
+</div>
+<div class="relative w-full h-14 bg-surface-container-high rounded-xl p-1 overflow-hidden flex items-center">
+<!-- Out-of-Range Left (<$2,750: 100% WETH) -->
+<div class="h-full bg-error-container/30 rounded-l flex items-center justify-center relative group" style="width: 26.9%;">
+<span class="font-label-sm text-label-sm text-tertiary font-bold tracking-tight px-space-xs truncate">100% WETH (Ngoài khoảng giá)</span>
+<div class="absolute bottom-1 left-2 font-data-mono-sm text-data-mono-sm text-tertiary font-semibold">2.400 USDC</div>
+</div>
+<!-- Shaded Teal Active Earning Zone ($2,750 to $3,350) -->
+<div class="h-full bg-secondary-fixed/50 relative flex items-center justify-between px-space-sm shadow-[inset_0_0_12px_rgba(0,106,97,0.1)]" style="width: 46.2%;">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm uppercase font-bold text-secondary">TỐI THIỂU: 2.750 USD</span>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">-8,3%</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-bold text-secondary px-space-xs py-space-2xs bg-surface-container-lowest/80 rounded">VÙNG SINH PHÍ HOẠT ĐỘNG (0,30% PHÍ)</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-sm text-label-sm uppercase font-bold text-secondary">TỐI ĐA: 3.350 USD</span>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">+11,7%</span>
+</div>
+<!-- Current Reference Price Pin: $3,000 (Positioned ~41.6% within active zone) -->
+<div class="absolute top-0 bottom-0 flex flex-col items-center pointer-events-none" style="left: 41.6%;">
+<div class="w-3 h-3 rounded-full bg-primary ring-4 ring-surface-container-lowest shadow-md -mt-1.5 z-20"></div>
+<div class="w-0.5 h-full bg-primary z-10"></div>
+<div class="absolute top-8 px-space-xs py-space-2xs bg-inverse-surface text-inverse-on-surface rounded shadow-md font-data-mono-sm text-data-mono-sm font-bold whitespace-nowrap z-20">
+              3.000,00 Hiện tại
+            </div>
+</div>
+</div>
+<!-- Out-of-Range Right (>$3,350: 100% USDC) -->
+<div class="h-full bg-error-container/30 rounded-r flex items-center justify-center relative" style="width: 26.9%;">
+<span class="font-label-sm text-label-sm text-tertiary font-bold tracking-tight px-space-xs truncate">100% USDC (Ngoài khoảng giá)</span>
+<div class="absolute bottom-1 right-2 font-data-mono-sm text-data-mono-sm text-tertiary font-semibold">3.700 USDC</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs pt-space-xs text-on-surface-variant font-body-sm text-body-sm">
+<p class="flex items-center gap-space-2xs">
+<span class="material-symbols-outlined text-[16px] text-primary">auto_graph</span>
+          Biên tối ưu suy ra từ nón biến động 30 ngày (62,5% biến động năm). Tối đa hóa tỷ lệ phí trên IL trong khoảng tin cậy 78%.
+        </p>
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant/80">Bước nhảy Tick: 60 (Khoảng cách: 0,60%)</span>
+</div>
+</div>
+</div>
+<!-- Six KPI Metric Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-space-md">
+<!-- 1. Expected Trading Fees -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">PHÍ GIAO DỊCH</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">payments</span>
+</div>
+<div>
+<div class="font-data-mono-lg text-data-mono-lg text-secondary font-bold">+180,00 USD</div>
+<div class="flex items-center gap-space-2xs mt-space-2xs">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded bg-secondary-container/40 text-secondary font-label-sm text-label-sm font-semibold">+1,80% thô</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">lợi suất 30 ngày</span>
+</div>
+</div>
+</div>
+<!-- 2. Expected Impermanent Loss -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">IMPERMANENT LOSS</span>
+<span class="material-symbols-outlined text-[18px] text-tertiary">trending_down</span>
+</div>
+<div>
+<div class="font-data-mono-lg text-data-mono-lg text-tertiary font-bold">-95,00 USD</div>
+<div class="flex items-center gap-space-2xs mt-space-2xs">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded bg-error-container/40 text-tertiary font-label-sm text-label-sm font-semibold">-0,95% trượt giá</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">so với HODL</span>
+</div>
+</div>
+</div>
+<!-- 3. Estimated Gas Costs -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">GAS &amp; MA SÁT</span>
+<span class="material-symbols-outlined text-[18px] text-outline">local_gas_station</span>
+</div>
+<div>
+<div class="font-data-mono-lg text-data-mono-lg text-on-surface-variant font-bold">-20,00 USD</div>
+<div class="flex items-center gap-space-2xs mt-space-2xs">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded bg-surface-container text-on-surface font-label-sm text-label-sm">1 lần mint</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Nắm giữ thụ động</span>
+</div>
+</div>
+</div>
+<!-- 4. Expected Net LP Return -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">LỢI NHUẬN RÒNG LP</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">account_balance_wallet</span>
+</div>
+<div>
+<div class="font-data-mono-lg text-data-mono-lg text-secondary font-bold">+3,65%</div>
+<div class="flex items-center gap-space-2xs mt-space-2xs">
+<span class="font-data-mono-sm text-data-mono-sm text-secondary font-semibold">44,4% APY</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">quy năm</span>
+</div>
+</div>
+</div>
+<!-- 5. Active Probability -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">XÁC SUẤT HOẠT ĐỘNG</span>
+<span class="material-symbols-outlined text-[18px] text-primary">pie_chart</span>
+</div>
+<div>
+<div class="font-data-mono-lg text-data-mono-lg text-primary font-bold">78,0%</div>
+<div class="flex items-center gap-space-2xs mt-space-2xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Kỳ vọng trong khoảng giá</span>
+</div>
+</div>
+</div>
+<!-- 6. Excess LP Return (Alpha) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex flex-col justify-between">
+<div class="flex items-center justify-between text-on-surface-variant mb-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">LỢI NHUẬN VƯỢT HODL</span>
+<span class="material-symbols-outlined text-[18px] text-secondary">verified</span>
+</div>
+<div>
+<div class="font-data-mono-lg text-data-mono-lg text-secondary font-bold">+65,00 USD</div>
+<div class="flex items-center gap-space-2xs mt-space-2xs">
+<span class="inline-flex items-center px-space-xs py-space-2xs rounded bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold">+0,65% alpha</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 2-Column Split: LP vs HODL Benchmark & Performance Decomposition -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- Left: LP vs HODL Comparison Stage (7 cols) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)] p-space-lg flex flex-col justify-between gap-space-lg">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">MÔ PHỎNG SO SÁNH</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Vị thế LP tập trung so với HODL tham chiếu</h2>
+</div>
+<span class="px-space-sm py-space-xs rounded bg-surface-container-high text-on-surface font-label-sm text-label-sm font-semibold">
+          Lợi thế: +65,00 USD (+0,63%)
+        </span>
+</div>
+<!-- Comparative Bar Visuals -->
+<div class="flex flex-col gap-space-md">
+<!-- Metric Cards -->
+<div class="grid grid-cols-2 gap-space-md">
+<div class="p-space-md bg-surface rounded-xl">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-label-sm text-label-sm uppercase font-semibold text-on-surface-variant">CHIẾN LƯỢC HODL</span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline"></span>
+</div>
+<div class="font-data-mono-lg text-data-mono-lg text-on-surface font-bold">10.300,00 USD</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-space-2xs">+3,00% lợi nhuận tham chiếu</div>
+</div>
+<div class="p-space-md bg-secondary-fixed/20 rounded-xl">
+<div class="flex items-center justify-between mb-space-2xs">
+<span class="font-label-sm text-label-sm uppercase font-bold text-secondary">CHIẾN LƯỢC LP TỐI ƯU</span>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+</div>
+<div class="font-data-mono-lg text-data-mono-lg text-secondary font-bold">10.365,00 USD</div>
+<div class="font-label-sm text-label-sm text-secondary font-semibold mt-space-2xs">+3,65% lợi nhuận ròng (+0,65% alpha)</div>
+</div>
+</div>
+<!-- Grouped Scale Visualizer -->
+<div class="flex flex-col gap-space-sm p-space-md bg-surface rounded-xl">
+<div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>So sánh giá trị danh mục (Vốn ban đầu 10.000 USD)</span>
+<span class="font-data-mono-sm text-data-mono-sm">Giá trị Ngày 30 cuối kỳ</span>
+</div>
+<!-- Initial Reference Line -->
+<div class="flex flex-col gap-space-2xs">
+<div class="flex justify-between font-data-mono-sm text-data-mono-sm text-on-surface-variant">
+<span>Vốn ban đầu</span>
+<span>10.000,00 USD</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-outline-variant rounded-full" style="width: 80%;"></div>
+</div>
+</div>
+<!-- HODL Line -->
+<div class="flex flex-col gap-space-2xs">
+<div class="flex justify-between font-data-mono-sm text-data-mono-sm text-on-surface">
+<span class="flex items-center gap-space-2xs"><span class="w-2 h-2 rounded-full bg-outline"></span> Giá trị HODL cuối kỳ</span>
+<span class="font-semibold">10.300,00 USD (+3,00%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-outline rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+<!-- LP Line -->
+<div class="flex flex-col gap-space-2xs">
+<div class="flex justify-between font-data-mono-sm text-data-mono-sm text-secondary">
+<span class="flex items-center gap-space-2xs"><span class="w-2 h-2 rounded-full bg-secondary"></span> Giá trị LP tối ưu cuối kỳ</span>
+<span class="font-bold">10.365,00 USD (+3,65%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 90.5%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Inventory Metadata Note -->
+<div class="p-space-sm bg-surface rounded-lg flex items-start gap-space-sm">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">info</span>
+<div class="font-body-sm text-body-sm text-on-surface-variant">
+<span class="font-semibold text-on-surface">Phân bổ danh mục khởi tạo chính xác:</span> Cả hai chiến lược khởi đầu với danh mục tỷ lệ 50:50 giống nhau (<span class="font-data-mono-sm text-data-mono-sm text-on-surface">1,667 WETH + 5.000 USDC</span>) tại mức giá ban đầu 3.000,00 USD.
+        </div>
+</div>
+</div>
+<!-- Right: Performance Decomposition Waterfall Breakdown (5 cols) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)] p-space-lg flex flex-col justify-between gap-space-md">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">PHÂN RÃ HIỆU QUẢ ĐẦU TƯ</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Phân rã hiệu suất</h2>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- Initial Base -->
+<div class="flex items-center justify-between p-space-xs rounded bg-surface">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="font-label-md text-label-md text-on-surface">Vốn đầu tư ban đầu</span>
+</div>
+<span class="font-data-mono-md text-data-mono-md text-on-surface font-semibold">10.000,00 USD</span>
+</div>
+<!-- HODL Asset Appreciation -->
+<div class="flex items-center justify-between p-space-xs rounded hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">trending_up</span>
+<span class="font-label-md text-label-md text-on-surface">Tăng trưởng giá tài sản (HODL)</span>
+</div>
+<span class="font-data-mono-md text-data-mono-md text-secondary font-semibold">+300,00 USD</span>
+</div>
+<!-- Trading Fee Yield -->
+<div class="flex items-center justify-between p-space-xs rounded bg-secondary-container/20">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">add_circle</span>
+<span class="font-label-md text-label-md text-secondary font-bold">Đóng góp từ phí giao dịch</span>
+</div>
+<span class="font-data-mono-md text-data-mono-md text-secondary font-bold">+180,00 USD</span>
+</div>
+<!-- Impermanent Loss Drag -->
+<div class="flex items-center justify-between p-space-xs rounded bg-error-container/20">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">remove_circle</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">Tổn thất Impermanent Loss</span>
+</div>
+<span class="font-data-mono-md text-data-mono-md text-tertiary font-bold">-95,00 USD</span>
+</div>
+<!-- Gas & Friction -->
+<div class="flex items-center justify-between p-space-xs rounded bg-surface">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">local_gas_station</span>
+<span class="font-label-md text-label-md text-on-surface-variant">Chi phí Gas &amp; Khớp lệnh</span>
+</div>
+<span class="font-data-mono-md text-data-mono-md text-on-surface-variant font-semibold">-20,00 USD</span>
+</div>
+<!-- Visual Stacked Bar -->
+<div class="pt-space-xs flex flex-col gap-space-2xs">
+<div class="w-full h-4 bg-surface-container rounded flex overflow-hidden">
+<div class="h-full bg-secondary" style="width: 58%;" title="Đóng góp từ phí (+180 USD)"></div>
+<div class="h-full bg-tertiary" style="width: 32%;" title="Tổn thất IL (-95 USD)"></div>
+<div class="h-full bg-outline" style="width: 10%;" title="Chi phí Gas (-20 USD)"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>Phí (+180 USD)</span>
+<span>IL (-95 USD)</span>
+<span>Gas (-20 USD)</span>
+</div>
+</div>
+<!-- Net LP Value -->
+<div class="mt-space-xs p-space-sm bg-surface-container rounded-xl flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">GIÁ TRỊ RÒNG LP CUỐI KỲ</div>
+<div class="font-label-sm text-label-sm text-secondary font-semibold">Alpha ròng: +65,00 USD so với HODL</div>
+</div>
+<span class="font-data-mono-lg text-data-mono-lg text-primary font-bold">10.365,00 USD</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive 30-Day Historical Price & Selected Range Chart -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)] p-space-lg flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs mb-space-2xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-semibold">KHUNG MÔ PHỎNG</span>
+<span class="text-surface-variant">•</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Thời gian trong khoảng giá: 23,4 / 30 Ngày (78,0%)</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Quỹ đạo lịch sử của ETH với Kênh thanh khoản tối ưu</h2>
+</div>
+<!-- Chart Legend & Controls -->
+<div class="flex flex-wrap items-center gap-space-md font-label-sm text-label-sm">
+<div class="flex items-center gap-space-2xs">
+<span class="w-3 h-0.5 bg-on-surface"></span>
+<span class="text-on-surface font-medium">Giá ETH</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="w-3 h-0.5 bg-primary border-b border-dashed"></span>
+<span class="text-on-surface font-medium">Giới hạn giá trên (3.350 USD)</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="w-3 h-0.5 bg-tertiary border-b border-dashed"></span>
+<span class="text-on-surface font-medium">Giới hạn giá dưới (2.750 USD)</span>
+</div>
+<div class="flex items-center gap-space-2xs">
+<span class="w-3 h-3 rounded bg-secondary-container/40"></span>
+<span class="text-on-surface font-medium">Vùng hoạt động</span>
+</div>
+</div>
+</div>
+<!-- Scaled SVG Chart Stage -->
+<div class="relative w-full h-80 bg-surface rounded-xl p-space-md flex flex-col justify-between overflow-hidden">
+<!-- Background Grid Lines & Y-Axis Labels -->
+<div class="absolute inset-0 flex flex-col justify-between p-space-md pointer-events-none">
+<div class="flex items-center justify-between border-b border-surface-container-high/60 w-full pt-1 pb-1">
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">3.500 USD</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant/40">Trần trên</span>
+</div>
+<div class="flex items-center justify-between border-b border-primary/30 w-full pt-1 pb-1">
+<span class="font-data-mono-sm text-data-mono-sm text-primary font-bold">3.350 USD Giới hạn trên (+11,7%)</span>
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold">Ngưỡng 100% USDC</span>
+</div>
+<div class="flex items-center justify-between border-b border-surface-container-high/60 w-full pt-1 pb-1">
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant font-semibold">3.000 USD Giá vào lệnh hiện tại</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant/60">Neo điểm giữa</span>
+</div>
+<div class="flex items-center justify-between border-b border-tertiary/30 w-full pt-1 pb-1">
+<span class="font-data-mono-sm text-data-mono-sm text-tertiary font-bold">2.750 USD Giới hạn dưới (-8,3%)</span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase font-bold">Ngưỡng 100% WETH</span>
+</div>
+<div class="flex items-center justify-between w-full pt-1 pb-1">
+<span class="font-data-mono-sm text-data-mono-sm text-on-surface-variant">2.500 USD</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant/40">Sàn dưới</span>
+</div>
+</div>
+<!-- Active Range Band Graphic -->
+<div class="absolute left-16 right-4 top-[24%] bottom-[24%] bg-secondary-fixed/20 pointer-events-none rounded shadow-[inset_0_0_8px_rgba(0,106,97,0.06)]"></div>
+<!-- SVG Trajectory Rendering -->
+<svg class="relative z-10 w-full h-full pl-12" preserveaspectratio="none" viewbox="0 0 900 280">
+<defs>
+<lineargradient id="priceLineGlow" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#630ed4" stop-opacity="0.15"></stop>
+<stop offset="100%" stop-color="#630ed4" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Area fill under line -->
+<path d="M 0 140 Q 60 160 120 135 T 240 110 T 360 85 T 480 95 T 600 130 T 720 155 T 840 125 L 900 130 L 900 280 L 0 280 Z" fill="url(#priceLineGlow)"></path>
+<!-- Upper Bound Dashed Line ($3,350 -> Y=68) -->
+<line opacity="0.8" stroke="#7c3aed" stroke-dasharray="4 4" stroke-width="1.5" x1="0" x2="900" y1="68" y2="68"></line>
+<!-- Lower Bound Dashed Line ($2,750 -> Y=212) -->
+<line opacity="0.8" stroke="#961e3b" stroke-dasharray="4 4" stroke-width="1.5" x1="0" x2="900" y1="212" y2="212"></line>
+<!-- Historical 30-Day ETH Price Curve -->
+<path d="M 0 140 
+                 C 50 160, 80 170, 120 150 
+                 C 160 130, 200 110, 240 115 
+                 C 280 120, 310 90, 360 85 
+                 C 410 80, 440 60, 480 64 
+                 C 520 68, 560 120, 600 135 
+                 C 640 150, 680 170, 720 160 
+                 C 760 150, 810 115, 850 125 
+                 L 900 128" fill="none" stroke="#131b2e" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Out-of-Range Event Marker at Peak (Day 16: $3,370) -->
+<circle cx="480" cy="64" fill="#ba1a1a" r="5" stroke="#ffffff" stroke-width="2"></circle>
+<text fill="#ba1a1a" font-family="JetBrains Mono" font-size="11" font-weight="600" x="490" y="58">Vượt nhẹ ngoài khoảng: 3.370 USD</text>
+<!-- Current Anchor Marker (Day 30) -->
+<circle cx="900" cy="128" fill="#630ed4" r="6" stroke="#ffffff" stroke-width="2.5"></circle>
+</svg>
+<!-- Date X-Axis Callouts -->
+<div class="relative z-10 flex items-center justify-between pl-16 pt-space-xs font-data-mono-sm text-data-mono-sm text-on-surface-variant">
+<span>Ngày 1 (30 ngày trước)</span>
+<span>Ngày 7</span>
+<span>Ngày 14</span>
+<span>Ngày 21</span>
+<span>Ngày 28</span>
+<span class="text-on-surface font-bold">Ngày 30 (Gần nhất)</span>
+</div>
+</div>
+</div>
+<!-- Model Assumptions & Mathematical Rigor (Interactive Accordion) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)] overflow-hidden">
+<button class="w-full flex items-center justify-between p-space-md text-left hover:bg-surface-container-low transition-colors" onclick="document.getElementById('assumptions-panel').classList.toggle('hidden'); document.getElementById('assumptions-chevron').classList.toggle('rotate-180');" type="button">
+<div class="flex items-center gap-space-sm">
+<div class="w-7 h-7 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">functions</span>
+</div>
+<div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Tham số giả định &amp; Hiệu chuẩn mô hình</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant ml-space-sm">Bộ giải tối ưu hóa Nelder-Mead trên số liệu sổ lệnh lịch sử 1 phút</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform" id="assumptions-chevron">expand_more</span>
+</button>
+<div class="p-space-md pt-0 border-t border-surface-container-high/40 flex flex-col gap-space-md" id="assumptions-panel">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-space-sm p-space-sm bg-surface rounded-xl">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">VOLATILITY NĂM</span>
+<span class="font-data-mono-md text-data-mono-md text-on-surface font-semibold">62,5%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">KHỐI LƯỢNG TB 24H</span>
+<span class="font-data-mono-md text-data-mono-md text-on-surface font-semibold">320,0M USD</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">FEE TIER CỦA POOL</span>
+<span class="font-data-mono-md text-data-mono-md text-primary font-semibold">0,30% (30 bps)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">CHI PHÍ GAS CƠ SỞ</span>
+<span class="font-data-mono-md text-data-mono-md text-on-surface font-semibold">22 Gwei (15 USD)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">CHÍNH SÁCH REBALANCE</span>
+<span class="font-data-mono-md text-data-mono-md text-on-surface font-semibold">Thụ động (Nắm giữ)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">HỆ SỐ TRÔI BROWNIAN</span>
+<span class="font-data-mono-md text-data-mono-md text-on-surface font-semibold">μ = 0,05</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">NHÂN ĐỘNG CƠ</span>
+<span class="font-data-mono-md text-data-mono-md text-secondary font-semibold">v1.4 Academic</span>
+</div>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">
+        Mathematical Formulation: Liquidity concentration bounds are solved numerically to maximize terminal wealth expectation:
+        <span class="font-data-mono-sm text-data-mono-sm text-on-surface font-semibold">max_{p_a, p_b} E[W_T] = E[V_{LP}(S_T, p_a, p_b) + \int_0^T \delta(S_t \in [p_a, p_b]) \gamma \frac{V_t}{L_t} dt] - C_{gas}</span>. 
+        Boundary conditions assume jump-diffusion continuity without forced boundary execution.
+      </div>
+</div>
+</div>
+<!-- Persistent Execution Action Bar -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-space-md p-space-md bg-surface-container-lowest rounded-xl shadow-[0_1px_4px_rgba(15,23,42,0.04)]">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px] text-secondary">verified_user</span>
+<span>Khoảng giá khuyến nghị được kiểm định qua 10.000 kịch bản Monte Carlo</span>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Edit Parameters -->
+<a class="px-space-md py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-colors flex items-center gap-space-xs" data-path="lp-optimizer" href="#">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+<span>Chỉnh sửa thông số</span>
+</a>
+<!-- Run Stress Test -->
+<a class="px-space-md py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-colors flex items-center gap-space-xs" data-path="risk-and-research" href="#">
+<span class="material-symbols-outlined text-[16px]">shield</span>
+<span>Chạy Stress Test</span>
+</a>
+<!-- Export Research Brief -->
+<button class="px-space-md py-space-xs rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-colors flex items-center gap-space-xs" onclick="alert('Đang xuất Báo cáo Tóm tắt Nghiên cứu Định lượng PDF...')" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span>Xuất báo cáo tóm tắt</span>
+</button>
+<!-- Compare Strategies (Primary Action to Backtest Screen 04) -->
+<a class="px-space-md py-space-xs rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg transition-colors shadow-sm flex items-center gap-space-xs" data-path="strategy-backtesting" href="#">
+<span>So sánh các chiến lược</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<script>
+  // Dynamic client interaction bindings
+  document.addEventListener('DOMContentLoaded', () => {
+    // Nav synchronization indicator if present
+    const navItems = document.querySelectorAll('aside nav a');
+    navItems.forEach(item => {
+      if (item.getAttribute('data-path') === 'optimization-results') {
+        item.classList.add('bg-primary-container', 'text-on-primary', 'font-semibold');
+        item.classList.remove('text-on-surface-variant');
+      }
+    });
+  });
+</script></main><footer class="w-full bg-surface-container-low py-space-sm px-space-lg shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col sm:flex-row items-center justify-between gap-space-xs text-on-surface-variant font-label-sm text-label-sm"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[16px] text-tertiary">warning</span><span>Công cụ mô phỏng phục vụ nghiên cứu — Không phải khuyến nghị đầu tư. Dành cho nghiên cứu học thuật và mô hình hóa định lượng.</span></div><div class="flex items-center gap-space-md font-data-mono-sm text-data-mono-sm"><span>LATENCY: 12ms</span><span>SUBGRAPH: v3-mainnet</span><span>BLOCK: 19842103</span></div></div></footer></div></body></html>

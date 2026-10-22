@@ -1,0 +1,5 @@
+function pos(V,c,w){const pl=w==null?1e-9:c*Math.exp(-w),pu=w==null?1e9:c*Math.exp(w);const L=V/(2*Math.sqrt(c)-c/Math.sqrt(pu)-Math.sqrt(pl));return{pl,pu,L,val:P=>{const q=Math.min(Math.max(P,pl),pu);return L*(1/Math.sqrt(q)-1/Math.sqrt(pu))*P+L*(Math.sqrt(q)-Math.sqrt(pl))}}}
+function run(path,mode,w,o){let c=1,po=pos(o.cap,1,mode=='full'?null:w),fees=0,gas=o.gas,reb=0,act=0,exit=0,last=-99;const H=path.a.length-1,sd=o.sig/Math.sqrt(365),Lb=o.tvl*1e6*CONC/2;
+for(let d=1;d<=H;d++){const P=path.a[d],inr=P>=po.pl&&P<=po.pu;if(inr){act++;const vd=o.v*1e6*Math.min(3,path.z[d]/(sd*.8));fees+=vd*o.fee*po.L/(po.L+Lb)}else{exit=1;if(mode=='dyn'&&d-last>=o.reb){po=pos(po.val(P),P,w);gas+=o.gas*2;reb++;last=d}}}
+const PT=path.a[H],lp=po.val(PT),hodl=o.cap/2*(1+PT);return{fees,gas,il:hodl-lp,ex:lp+fees-gas-hodl,act:act/H,exit}}
+function agg(P,mode,w,o){const R=P.map(p=>run(p,mode,w,o)),m=k=>R.reduce((s,r)=>s+r[k],0)/N/o.cap,ex=R.map(r=>r.ex/o.cap).sort((a,b)=>a-b);return{fees:m('fees'),gas:m('gas'),il:m('il'),ex:m('ex'),act:m('act'),exit:m('exit'),q5:ex[Math.floor(N*.05)]}}

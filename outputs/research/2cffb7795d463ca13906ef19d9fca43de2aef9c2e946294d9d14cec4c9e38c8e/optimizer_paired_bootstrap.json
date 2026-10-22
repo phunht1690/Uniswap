@@ -1,0 +1,1 @@
+{"ci95_high":0.020386876700070267,"ci95_low":0.009446485901559205,"circular_block_windows":2,"mean_optimizer_minus_fixed":0.014790149709883975,"not_confirmatory_OOS":true,"paired_pool_windows":88,"repetitions":999,"seed":42,"status":"exploratory_model_conditional","time_windows":11}

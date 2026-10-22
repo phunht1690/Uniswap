@@ -1,0 +1,22 @@
+version: stage5-historical-replay-v2
+label: Giá/volume lịch sử quan sát; phí ước tính bằng mô hình TVL, không phải phí LP đã tái dựng.
+volatility_window_days: 30
+volume_window_days: 30
+scaled_width_multiplier: 1.5
+minimum_scaled_width: 0.01
+fixed_width: 0.2
+concentration_default: 3
+tvl_publication_lag_days: 1
+tvl_max_age_days: 7
+optimizer_paths: 256
+optimizer_grid_points: 20
+optimizer_horizon: requested_holding_period
+seed: 42
+panel_holding_days: 30
+panel_widths: [0.05, 0.1, 0.2, 0.4]
+quantiles: [0.1, 0.5, 0.9]
+hac_lags: 2
+bootstrap_repetitions: 999
+bootstrap_block_windows: 2
+quantile_bootstrap_repetitions: 99
+selection_policy: Fixed prior rules; no hyperparameter selection on 2025-2026 outcomes.

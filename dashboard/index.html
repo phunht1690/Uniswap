@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Uniswap LP Optimizer – Research Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E8EEF1;--panel:#FFFFFF;--ink:#13233B;--mute:#5B6B80;--line:#D5DEE5;--fee:#12936A;--il:#E2553A;--net:#13233B;--acc:#0E7C86;--band:rgba(14,124,134,.14);--bar:#C3D0DA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0C1520;--panel:#142030;--ink:#E6EEF5;--mute:#8FA2B6;--line:#243549;--fee:#3DD6A0;--il:#FF7A5C;--net:#E6EEF5;--acc:#39C5D1;--band:rgba(57,197,209,.16);--bar:#2C3F55}}
+:root[data-theme="dark"]{--bg:#0C1520;--panel:#142030;--ink:#E6EEF5;--mute:#8FA2B6;--line:#243549;--fee:#3DD6A0;--il:#FF7A5C;--net:#E6EEF5;--acc:#39C5D1;--band:rgba(57,197,209,.16);--bar:#2C3F55}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Figtree,system-ui,sans-serif}
+h1,h2,.big{font-family:'Bricolage Grotesque',Figtree,sans-serif;margin:0}
+header{padding:28px clamp(16px,4vw,40px) 8px;display:flex;flex-wrap:wrap;gap:12px 32px;align-items:end;justify-content:space-between}
+h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+header p{margin:6px 0 0;color:var(--mute);max-width:560px}
+.warn{border:1px solid var(--il);color:var(--il);border-radius:10px;padding:8px 12px;font-size:13px;max-width:340px}
+main{display:grid;grid-template-columns:300px 1fr;gap:20px;padding:16px clamp(16px,4vw,40px) 40px;align-items:start}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+aside{position:sticky;top:12px}@media(max-width:900px){aside{position:static}}
+label{display:block;font-weight:600;font-size:13px;margin:14px 0 4px}
+label output{float:right;color:var(--acc);font-variant-numeric:tabular-nums}
+select,input[type=number]{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+input[type=range]{width:100%;accent-color:var(--acc)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.grid{display:grid;gap:16px}
+.hero{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px}
+@media(max-width:1100px){.hero{grid-template-columns:1fr 1fr}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.kpi small{color:var(--mute);display:block}
+.kpi .big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi.main{background:var(--acc);border-color:var(--acc);color:#fff}.kpi.main small{color:rgba(255,255,255,.8)}
+.kpi.main .big{font-size:34px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:1100px){.two{grid-template-columns:1fr}}
+h2{font-size:18px;margin-bottom:2px}.sub{color:var(--mute);font-size:13px;margin:0 0 10px}
+svg{width:100%;height:auto;display:block}svg text{fill:var(--mute);font:11px Figtree,sans-serif}
+.leg{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mute);margin-top:4px}.leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:620px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child{text-align:left}
+th{font-weight:600;color:var(--mute);font-size:12px}tr.best td{background:var(--band);font-weight:600}
+.pos{color:var(--fee)}.neg{color:var(--il)}
+.st{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chips span{border:1px solid var(--acc);color:var(--acc);border-radius:99px;padding:3px 12px;font-size:13px;font-weight:600}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}.btn:hover{border-color:var(--acc)}
+.hd{display:flex;justify-content:space-between;gap:10px;align-items:start;flex-wrap:wrap}
+.eco{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}@media(max-width:1100px){.eco{grid-template-columns:1fr 1fr}}@media(max-width:560px){.eco{grid-template-columns:1fr}}
+.eco div{border:1px solid var(--line);border-radius:12px;padding:12px}.eco b{display:block;font-family:'Bricolage Grotesque',sans-serif}.eco small{color:var(--mute);display:block;margin-bottom:8px}.eco p{margin:8px 0 0;font-size:12px;color:var(--mute)}.eco em{font-style:normal;font-weight:600;font-size:13px;display:block}
+.imp{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}@media(max-width:900px){.imp{grid-template-columns:1fr 1fr}}.imp div{background:var(--band);border-radius:12px;padding:12px}.imp b{display:block}.imp small{color:var(--mute)}
+footer{padding:0 clamp(16px,4vw,40px) 30px;color:var(--mute);font-size:12px;max-width:900px}
+
+.restore-row{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}.restore-row input{flex:1;min-width:180px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:12px ui-monospace,monospace}
+main{grid-template-columns:300px minmax(0,1fr)}.grid{grid-template-columns:minmax(0,1fr)}.panel,.kpi,.two,.hero,.eco>div{min-width:0}header>div:last-child{display:flex;flex-direction:column;align-items:flex-end;gap:8px}header .theme{float:none;margin-top:0}@media(max-width:900px){main{grid-template-columns:minmax(0,1fr)}}
+[hidden]{display:none!important}.workspace{min-width:0}.mode-panel{margin:0 clamp(16px,4vw,40px) 16px}.actions{display:flex;flex-wrap:wrap;gap:8px}.mode-panel .hd{gap:14px;align-items:start}.run-line{font-size:12px;color:var(--mute);margin:8px 0;overflow-wrap:anywhere}.run-line code{font-size:11px;color:var(--ink)}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}.tabs [aria-selected="true"]{background:var(--acc);border-color:var(--acc);color:var(--panel)}.theme{margin-top:8px;float:right}.pool-facts{font-size:12px;color:var(--mute);border-bottom:1px solid var(--line);padding-bottom:10px}.pool-facts dl{display:grid;grid-template-columns:1fr 1.1fr;gap:4px;margin:10px 0}.pool-facts dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+details{font-size:13px}summary{cursor:pointer;color:var(--acc);font-weight:600}.advanced,.assumptions{margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}textarea{width:100%;font:12px/1.5 ui-monospace,monospace;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:8px;resize:vertical}.empty{padding:32px 14px;text-align:center;color:var(--mute);font-size:13px;background:var(--band);border-radius:10px}.mode-panel[data-mode="fallback"]{border-color:var(--il)}.mode-panel[data-mode="api"]{border-color:var(--acc)}#simulationPanel[aria-busy="true"]{opacity:.65}.bt-controls{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:12px}.bt-controls input{width:100%;padding:9px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;font:inherit}.bt-submit{margin-top:18px}.assumptions li{margin:7px 0}.ecosystem{margin-top:16px}#copyStatus:empty{display:none}
+@media(max-width:600px){.bt-controls{grid-template-columns:1fr}.mode-panel .hd{display:block}.actions{margin-top:12px}.hero .big{font-size:22px}.pool-facts dl{grid-template-columns:1fr 1fr}}
+</style></head><body>
+<header><div><h1>Uniswap LP Optimizer</h1><p>Mô phỏng nghiên cứu: phí giao dịch, impermanent loss và vùng giá cho thanh khoản tập trung Uniswap v3.</p><div class="chips"><span>AMM Modelling</span><span>Simulation</span><span>Optimisation</span></div></div>
+<div><div class="warn">Research simulator, không phải lời khuyên đầu tư. Giá trị tương lai là kết quả mô phỏng; kiểm tra nguồn và thời điểm dữ liệu.</div><button class="btn theme" id="themeToggle" type="button">Sáng / tối</button></div></header>
+<section class="panel mode-panel" id="modePanel" aria-label="Nguồn dữ liệu và trạng thái tính toán">
+<div class="hd"><div><b id="modeLabel">Đang kết nối API</b><p id="apiStageStatus" class="sub" role="status" aria-live="polite">Đang tải danh sách pool…</p><p id="dataAsOf" class="sub"></p></div>
+<div class="actions"><button class="btn" id="copyConfig" type="button" disabled>Sao chép cấu hình</button><button class="btn" id="apiStageRetry" type="button">Thử lại API</button><a class="btn" id="apiStageDocs" href="/docs" target="_blank" rel="noopener">API docs</a></div></div>
+<p class="run-line">run_id: <code id="runId">—</code></p><p id="copyStatus" class="sub" role="status"></p>
+<details id="configDetails"><summary>Cấu hình tái lập</summary><textarea id="configText" rows="8" readonly aria-label="Cấu hình JSON để tái lập"></textarea><label for="savedRunId">Nạp cấu hình từ run_id đã lưu</label><div class="restore-row"><input id="savedRunId" type="text" maxlength="64" placeholder="SHA256 gồm 64 ký tự" autocomplete="off"><button class="btn" id="loadSavedRun" type="button">Nạp cấu hình</button></div><p id="restoreStatus" class="sub" role="status"></p></details>
+</section>
+<main>
+<aside class="panel">
+<h2>Tham số đầu vào</h2><p class="sub">Cập nhật sau khi ngừng kéo 300 ms.</p>
+<label for="pool">Pool</label><select id="pool"></select>
+<div id="poolFacts" class="pool-facts"></div>
+<label for="cap">Vốn (USD)</label><input id="cap" type="number" value="50000" min="1" max="100000000" step="any">
+<label for="hor">Thời hạn <output id="horO"></output></label><input id="hor" type="range" min="7" max="180" value="60">
+<label for="vol">Biến động GBM (năm) <output id="volO"></output></label><input id="vol" type="range" min="0" max="500" step="0.1" value="65">
+<label for="gas">Gas mỗi giao dịch (USD) <output id="gasO"></output></label><input id="gas" type="range" min="0" max="100" value="15">
+<label for="risk">Khẩu vị rủi ro</label><select id="risk"><option value="0.15">Thận trọng (rời range ≤ 15%)</option><option value="0.4" selected>Cân bằng (≤ 40%)</option><option value="0.75">Mạo hiểm (≤ 75%)</option></select>
+<label for="reb">Giãn cách rebalance tối thiểu</label><select id="reb"><option value="1">1 ngày</option><option value="7" selected>7 ngày</option><option value="30">30 ngày</option></select>
+<details class="advanced"><summary>Mô hình và khả năng tái lập</summary>
+<label for="priceModel">Mô hình giá</label><select id="priceModel"><option value="gbm">GBM · biến động tự chọn</option><option value="bootstrap">Historical block bootstrap</option><option value="garch">GARCH(1,1)</option></select>
+<label for="nPaths">Số đường giá</label><input id="nPaths" type="number" min="1" max="5000" step="1" value="300">
+<label for="seed">Seed</label><input id="seed" type="number" min="0" max="4294967295" step="1" value="42">
+<label for="slippage">Slippage mỗi rebalance (bps)</label><input id="slippage" type="number" min="0" max="1000" value="0" step="1">
+<label for="maxRebalances">Số rebalance tối đa</label><input id="maxRebalances" type="number" min="0" max="365" value="52" step="1">
+</details><p id="modelNote" class="sub"></p>
+</aside>
+<div class="workspace">
+<div class="tabs" role="tablist" aria-label="Chế độ nghiên cứu"><button class="btn" id="tabSim" role="tab" aria-controls="simulationPanel" aria-selected="true" type="button">Mô phỏng</button><button class="btn" id="tabBacktest" role="tab" aria-controls="backtestPanel" aria-selected="false" type="button" tabindex="-1">Backtest lịch sử</button></div>
+<p id="calculationStatus" class="sub" role="status" aria-live="polite"></p>
+<div class="grid" id="simulationPanel" role="tabpanel" aria-labelledby="tabSim" aria-busy="false">
+<section class="hero">
+<div class="kpi main"><small>Vùng giá đề xuất</small><div class="big" id="kRange">—</div><small id="kRangeS"></small></div>
+<div class="kpi"><small>Tỷ lệ ngày trong range</small><div class="big" id="kAct">—</div></div>
+<div class="kpi"><small>Lợi nhuận ròng kỳ vọng</small><div class="big" id="kNet">—</div><small id="kNetS"></small></div>
+<div class="kpi"><small>Vượt HODL (ΔR)</small><div class="big" id="kEx">—</div><small id="kExS"></small></div>
+</section>
+<section class="panel"><div class="hd"><div><h2>P&amp;L chiến lược LP so với HODL</h2><p class="sub" id="pnlCaption">Một đường giá mô phỏng, giữ range đề xuất.</p></div><button class="btn" id="nextPath" type="button">Đổi đường giá</button></div><div id="cPnl"></div><div class="leg"><span><i style="background:var(--fee)"></i>Chiến lược LP</span><span><i style="background:var(--acc)"></i>HODL 50/50</span><span id="pnlEnd"></span></div></section>
+<section class="panel"><h2>Phí so với IL theo độ rộng range</h2><p class="sub">Range đối xứng theo log giá; các giá trị là tỷ lệ trên vốn ban đầu.</p><div id="cSweep"></div><div class="leg"><span><i style="background:var(--fee)"></i>Phí kỳ vọng</span><span><i style="background:var(--il)"></i>IL + gas + slippage</span><span><i style="background:var(--net)"></i>ΔR so với HODL</span><span><i style="background:var(--acc)"></i>Điểm tối ưu khả thi</span></div></section>
+<div class="two"><section class="panel"><h2>Đường giá và range đã chọn</h2><p class="sub" id="pathCaption">Tối đa 30 đường giá mô phỏng; vùng xanh là range khả thi.</p><div id="cPath"></div></section>
+<section class="panel"><h2>Thanh khoản theo tick</h2><p class="sub" id="tickCaption"></p><div id="cTick"></div><div class="leg"><span><i style="background:var(--bar)"></i>Thanh khoản nền</span><span><i style="background:var(--acc)"></i>Vị thế của bạn</span></div></section></div>
+<section class="panel"><h2>So sánh chiến lược</h2><p class="sub">Cùng đường giá và giả định. Q5% là phân vị 5% của ΔR. Dòng tô màu có ΔR cao nhất trong các chiến lược thỏa ngưỡng rời range; optimizer chỉ quét lưới độ rộng.</p><div class="tw"><table><thead><tr><th>Chiến lược</th><th>Phí</th><th>IL + slippage</th><th>Gas</th><th>ΔR vs HODL</th><th>Q5%</th><th>Active</th><th>Rời range</th></tr></thead><tbody id="tbl"></tbody></table></div></section>
+<section class="panel"><h2>Kịch bản căng thẳng</h2><p class="sub">Giá đổi ±30% cuối kỳ; giữ phí kỳ vọng cố định, chưa mô hình hóa phản ứng thanh khoản.</p><div class="st" id="stress"></div><details class="assumptions"><summary>Giả định và phạm vi dữ liệu</summary><ul id="assumptionList"></ul></details></section>
+</div>
+<section class="panel" id="backtestPanel" role="tabpanel" aria-labelledby="tabBacktest" hidden>
+<h2>Backtest lịch sử có giả định phí</h2><p class="sub">Đường giá và volume pool lịch sử quan sát; phí LP ước tính từ TVL trễ. Chưa tái dựng active liquidity/fee-growth lịch sử. Đây là historical replay mô tả, chưa phải kiểm chứng ngoài mẫu.</p>
+<div class="bt-controls"><div><label for="btStart">Từ ngày (UTC)</label><input type="date" id="btStart" value="2025-10-22"></div><div><label for="btEnd">Đến ngày (UTC)</label><input type="date" id="btEnd" value="2026-10-20"></div><div><label for="btStrategy">Chiến lược</label><select id="btStrategy"><option value="fixed">Cố định</option><option value="full">Full range</option><option value="vol_scaled">Theo biến động</option><option value="dynamic">Dynamic</option><option value="optimizer">Optimizer</option></select></div></div>
+<details class="advanced"><summary>Giả định phí và kiểm tra độ nhạy</summary><p class="sub">Dùng vốn, gas, seed, min_gap và slippage đang chọn bên trái. Volatility được tính từ lịch sử trước entry; range volatility-scaled/optimizer dùng chân trời backtest.</p><label for="btConcentration">Hệ số thanh khoản C (chưa hiệu chỉnh)</label><input id="btConcentration" type="number" min="0.1" max="100" step="0.1" value="3"><label for="btProtocolFee">Phần phí dành cho protocol (%) — giả định</label><input id="btProtocolFee" type="number" min="0" max="100" step="any" value="0"><label for="btVolWindow">Cửa sổ volatility (ngày)</label><input id="btVolWindow" type="number" min="7" max="90" value="30"><label for="btPriceSource">Nguồn giá cho robustness</label><select id="btPriceSource"><option value="pool">Giá pool quan sát</option><option value="reference">Giá Binance tham chiếu (giữ volume pool)</option></select></details>
+<button class="btn bt-submit" id="loadBacktest" type="button">Tải backtest</button><p id="btStatus" class="sub" role="status" aria-live="polite">Chọn khoảng ngày rồi tải. Phần ngoài phạm vi dữ liệu/warmup sẽ được ghi rõ.</p><p id="btMeta" class="sub"></p><div id="backtestSummary"></div><div id="backtestChart"></div><div class="leg" id="backtestLegend" hidden><span><i style="background:var(--fee)"></i>LP (phí ước tính)</span><span><i style="background:var(--acc)"></i>HODL 50/50</span></div><div class="actions"><a class="btn" id="downloadBacktestCsv" hidden>Tải curve CSV</a><a class="btn" id="downloadBacktestJson" hidden>Cấu hình và kết quả JSON</a></div>
+<details class="advanced"><summary>Báo cáo nghiên cứu, hồi quy và hình xuất</summary><p class="sub">Thiếu dữ liệu pool 2022–2024 để hiệu chỉnh. Hồi quy và các so sánh hiện là mô tả trên dữ liệu 2025–2026 với phí mô hình; không suy luận nhân quả hoặc xác nhận OOS.</p><button class="btn" id="loadResearch" type="button">Tải danh mục nghiên cứu</button><p id="researchStatus" class="sub" role="status"></p><div id="researchFiles"></div></details>
+</section>
+<section class="panel ecosystem"><h2>Hệ sinh thái dữ liệu</h2><p class="sub">Độ phủ khác nhau giữa các nguồn. <a id="dataStatusLink" href="/api/v1/data/status" target="_blank" rel="noopener">Xem phạm vi dữ liệu đã tải</a>.</p>
+<div class="eco"><div><b>Market Data</b><small>Tham chiếu off-chain</small><em>Binance · CoinGecko</em><p>Giá tham chiếu; volume toàn thị trường không được dùng như volume pool. Kaiko chưa triển khai.</p></div>
+<div><b>On-chain Data</b><small>Snapshot và OHLCV pool</small><em>Ethereum RPC · GeckoTerminal</em><p>Pool/ticks đã xác minh và OHLCV công khai có giới hạn lịch sử. The Graph/BigQuery chưa kết nối trong phiên này.</p></div>
+<div><b>DeFi Data</b><small>TVL và bối cảnh</small><em>DefiLlama · Uniswap v3</em><p>TVL và fee tier; không dùng APY/APR dựng sẵn để tính lợi nhuận.</p></div>
+<div><b>Macro Data</b><small>Lãi suất, CPI, USD</small><em>FRED</em><p>Lượt tải công khai chưa thành công. DTWEXBGS là chỉ số USD rộng, không phải ICE DXY.</p></div>
+<div><b>News &amp; Social</b><small>Chưa triển khai</small><em>X · Reddit · CryptoPanic</em><p>Chưa có dữ liệu sentiment trong mô hình.</p></div></div>
+<div class="imp"><div><b>Research Papers</b><small>Nền tảng học thuật</small></div><div><b>Open-source Code</b><small>Config, seed và run_id</small></div><div><b>Interactive Dashboard</b><small>API và chế độ offline</small></div><div><b>Research Results</b><small>Historical replay và hồi quy có giả định</small></div></div></section>
+</div></main>
+<footer>V(P) = x·P + y theo công thức v3; phí = volume × fee tier × L/(L + L nền) khi giá trong range. HODL là 50/50 ban đầu. ΔR = (LP + phí − gas − chi phí rebalance − HODL)/vốn. Monte Carlo giữ snapshot L cố định; historical replay dùng proxy TVL trễ và protocol fee giả định. Gas và slippage là giả định; chưa mô hình hóa MEV/JIT hoặc tác động thị trường.</footer>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const CONC = 3;
+const PAIR_PRESETS = {
+  'weth-usdc': {base:'WETH',quote:'USDC',p0:3200,vol:65,tvl:180e6,volume:140e6,fees:[500,3000]},
+  'weth-usdt': {base:'WETH',quote:'USDT',p0:3200,vol:65,tvl:40e6,volume:25e6,fees:[500,3000]},
+  'wbtc-weth': {base:'WBTC',quote:'WETH',p0:28,vol:45,tvl:60e6,volume:20e6,fees:[500,3000]},
+  'usdc-usdt': {base:'USDC',quote:'USDT',p0:1,vol:3,tvl:90e6,volume:120e6,fees:[100,500]}
+};
+const OFFLINE_POOLS = new Map(Object.entries(PAIR_PRESETS).flatMap(([pair,p]) => p.fees.map(fee => {
+  const id=pair+'-'+fee;
+  return [id,{id,label:p.base+'/'+p.quote+' '+(fee/10000)+'%',base:p.base,quote:p.quote,p0:p.p0,
+    fee_tier:fee,fee_rate:fee/1e6,tvl_usd:p.tvl,volume_24h_usd:p.volume,vol_assumption_annual:p.vol/100,
+    vol_realized_7d:null,vol_realized_30d:null,data_kind:'illustrative',data_asof:null}];
+})));
+const app = {revision:0,timer:null,controller:null,apiPools:null,result:null,source:null,pathIndex:0,volTouched:false,
+  backtestRevision:0,backtestController:null,extraConfig:{}};
+const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const finite = value => typeof value === 'number' && Number.isFinite(value);
+const pc = (value,digits=1) => (value>0?'+':'')+(value*100).toFixed(digits)+'%';
+const pl = value => (value*100).toFixed(1)+'%';
+const cls = value => value>=0?'pos':'neg';
+const money = value => finite(value)?new Intl.NumberFormat('vi-VN',{style:'currency',currency:'USD',notation:'compact',maximumFractionDigits:2}).format(value):'—';
+const price = value => value>0&&(value<.0001||value>=1e9)?value.toExponential(2):new Intl.NumberFormat('en-US',{maximumFractionDigits:value>=100?2:value>=5?3:6}).format(value);
+function dateLabel(value) {
+  if (!value || !Number.isFinite(new Date(value).getTime())) return '—';
+  return new Intl.DateTimeFormat('vi-VN',{dateStyle:'short',timeStyle:'short',timeZone:'Asia/Bangkok'}).format(new Date(value))+' UTC+7';
+}
+const empty = message => '<div class="empty">'+esc(message)+'</div>';
+const svg = (width,height,content,label) => '<svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+esc(label)+'">'+content+'</svg>';
+function line(points,sx,sy) {return points.map((point,index)=>(index?'L':'M')+sx(point[0]).toFixed(2)+' '+sy(point[1]).toFixed(2)).join('');}
+function rng(seed) {return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function normal(random) {return Math.sqrt(-2*Math.log(1-random()))*Math.cos(2*Math.PI*random());}
+function pos(capital,center,width) {
+  const low=width==null?1e-9:center*Math.exp(-width),high=width==null?1e9:center*Math.exp(width);
+  const L=capital/(2*Math.sqrt(center)-center/Math.sqrt(high)-Math.sqrt(low));
+  return {low,high,L,value:P=>{const q=Math.min(Math.max(P,low),high);return L*(1/Math.sqrt(q)-1/Math.sqrt(high))*P+L*(Math.sqrt(q)-Math.sqrt(low));}};
+}
+function offlinePaths(config) {
+  const random=rng(config.seed),sd=config.vol_annual/Math.sqrt(365),result=[];
+  for(let i=0;i<config.n_paths;i++){let P=1;const prices=[1],shocks=[0];for(let day=0;day<config.horizon_days;day++){const e=normal(random)*sd;P*=Math.exp(-sd*sd/2+e);prices.push(P);shocks.push(Math.abs(e));}result.push({prices,shocks});}
+  return result;
+}
+function offlineRun(path,mode,width,config,pool,trace=false) {
+  let position=pos(config.capital,1,mode==='full'?null:width),fees=0,gas=config.gas_usd,rebalanceCost=0,active=0,exit=0,last=-99,count=0;
+  const sd=config.vol_annual/Math.sqrt(365),background=pool.tvl_usd*CONC/2,H=path.prices.length-1;
+  const curve=trace?[{day:0,lp:-gas/config.capital,hodl:0}]:[];
+  for(let day=1;day<=H;day++){
+    const P=path.prices[day],inside=P>=position.low&&P<=position.high;
+    if(inside){active++;fees+=pool.volume_24h_usd*(sd>0?Math.min(3,path.shocks[day]/(sd*.8)):1)*pool.fee_rate*position.L/(position.L+background);}
+    else {exit=1;if(mode==='dynamic'&&day-last>=config.min_rebalance_gap_days&&count<config.max_rebalances){const value=position.value(P);rebalanceCost+=value*config.rebalance_slippage_bps/10000;position=pos(value,P,width);gas+=2*config.gas_usd;count++;last=day;}}
+    if(trace)curve.push({day,lp:(position.value(P)+fees-gas-rebalanceCost)/config.capital-1,hodl:(1+P)/2-1});
+  }
+  const terminal=position.value(path.prices[H]),hodl=config.capital*(1+path.prices[H])/2;
+  return {fees:fees/config.capital,gas:gas/config.capital,il:(hodl-terminal)/config.capital,
+    net:(terminal+fees-gas-rebalanceCost)/config.capital-1,excess_vs_hodl:(terminal+fees-gas-rebalanceCost-hodl)/config.capital,
+    active_share:active/H,exit_prob:exit,rebalance_count:count,rebalance_cost:rebalanceCost/config.capital,curve};
+}
+function offlineAggregate(paths,mode,width,config,pool) {
+  const rows=paths.map(path=>offlineRun(path,mode,width,config,pool)),mean=key=>rows.reduce((sum,row)=>sum+row[key],0)/rows.length;
+  const sorted=rows.map(row=>row.excess_vs_hodl).sort((a,b)=>a-b),tail=Math.ceil(sorted.length*.05);
+  const result={half_width:width,p_low:pool.p0*(width==null?1e-9:Math.exp(-width)),p_high:pool.p0*(width==null?1e9:Math.exp(width)),
+    q5:sorted[Math.floor(sorted.length*.05)],cvar5:sorted.slice(0,tail).reduce((a,b)=>a+b,0)/tail};
+  for(const key of ['fees','gas','il','net','excess_vs_hodl','active_share','exit_prob','rebalance_count','rebalance_cost'])result[key]=mean(key);
+  result.feasible=result.exit_prob<=config.risk_max_exit_prob;
+  return result;
+}
+function fallbackSimulate(requested) {
+  const pool=OFFLINE_POOLS.get(requested.pool)||OFFLINE_POOLS.values().next().value;
+  const config={...requested,pool:pool.id,price_model:'gbm',n_paths:Math.min(requested.n_paths,300),calibration_asof:null};
+  config.path_index%=config.n_paths;
+  const paths=offlinePaths(config),lower=config.min_half_width||.005,upper=config.max_half_width??Math.max(.5,4*config.vol_annual*Math.sqrt(config.horizon_days/365));
+  const sweep=Array.from({length:20},(_,i)=>offlineAggregate(paths,'fixed',lower*Math.exp(i*Math.log(upper/lower)/19),config,pool));
+  const candidates=sweep.filter(row=>row.feasible),optimum=candidates.length?candidates.reduce((a,b)=>b.excess_vs_hodl>a.excess_vs_hodl?b:a):null;
+  const scaled=Math.max(.01,1.5*config.vol_annual*Math.sqrt(config.horizon_days/365));
+  const strategies=[['full','Full range','full',null],['fixed','Cố định ±20% (log)','fixed',.2],['vol_scaled','Theo biến động (1,5σ√T)','fixed',scaled],['dynamic','Động (recenter)','dynamic',scaled]]
+    .map(([id,label,mode,width])=>({id,label,...offlineAggregate(paths,mode,width,config,pool)}));
+  const stress=[];let pnl=[];
+  if(optimum){strategies.push({id:'optimizer',label:'Optimizer (trong mô phỏng)',...optimum});pnl=offlineRun(paths[config.path_index],'fixed',optimum.half_width,config,pool,true).curve;
+    const position=pos(config.capital,1,optimum.half_width);for(const shock of [-.3,.3]){const lp=(position.value(1+shock)+optimum.fees*config.capital-config.gas_usd)/config.capital-1;stress.push({shock,lp_return:lp,hodl_return:shock/2,excess_vs_hodl:lp-shock/2,status:'Phí kỳ vọng giữ cố định'});}}
+  const messages=optimum?[]:['Không có range trên lưới thỏa ngưỡng rời range; không trả range thay thế như một optimum.'];
+  if(requested.price_model!=='gbm')messages.push('Chế độ minh họa offline dùng GBM; bootstrap/GARCH cần API và lịch sử đã ghi nguồn.');
+  if(requested.n_paths>300)messages.push('Chế độ offline giới hạn 300 đường giá để giao diện tiếp tục phản hồi.');
+  return {optimum,sweep,strategies,sample_paths:paths.slice(0,30).map(path=>path.prices.map(P=>P*pool.p0)),pnl_path:pnl,stress,liquidity_ticks:[],
+    meta:{run_id:null,seed:config.seed,data_kind:'illustrative',data_asof:null,model_version:'javascript-offline-v4',optimization_status:optimum?'feasible':'infeasible',messages,
+      assumptions:{pool,effective_config:config,effective_vol_annual_for_width:config.vol_annual,implemented_price_model:'gbm',background_liquidity:{method:'illustrative_TVL_times_CONC_over_2'},
+        volume_method:'Illustrative volume scaled by simulated innovation',quote_usd_assumption:'Quote/USD held constant',liquidity_ticks_status:'illustrative_js_profile'}}};
+}
+function numberInput(id,label,min,max,integer=false) {
+  const raw=String($(id).value).trim(),value=Number(raw);
+  if(raw===''||!Number.isFinite(value)||value<min||value>max||(integer&&!Number.isInteger(value))){const error=new Error(label+' cần '+(integer?'số nguyên ':'giá trị ')+'từ '+min+' đến '+max+'.');error.input=true;throw error;}
+  return value;
+}
+function readConfig() {
+  const n=numberInput('nPaths','Số đường giá',1,5000,true),H=numberInput('hor','Thời hạn',1,365,true);
+  if(n*H>1000000){const error=new Error('Số đường giá × thời hạn không được vượt 1.000.000; hãy giảm một trong hai giá trị.');error.input=true;throw error;}
+  return {...app.extraConfig,pool:$('pool').value,capital:numberInput('cap','Vốn USD',1,100000000),horizon_days:H,
+    vol_annual:numberInput('vol','Biến động (%)',0,500)/100,gas_usd:numberInput('gas','Gas USD',0,1000000),
+    risk_max_exit_prob:numberInput('risk','Ngưỡng rời range',0,1),min_rebalance_gap_days:numberInput('reb','Giãn cách rebalance',1,365,true),
+    price_model:$('priceModel').value,n_paths:n,seed:numberInput('seed','Seed',0,4294967295,true),path_index:app.pathIndex%n,
+    max_rebalances:numberInput('maxRebalances','Số rebalance tối đa',0,365,true),rebalance_slippage_bps:numberInput('slippage','Slippage bps',0,1000)};
+}
+function updateOutputs() {
+  $('horO').textContent=$('hor').value+' ngày';$('volO').textContent=$('vol').value+'%';$('gasO').textContent='$'+$('gas').value;
+  $('vol').disabled=$('priceModel').value!=='gbm';
+}
+function populatePools(pools) {
+  const selected=$('pool').value;$('pool').replaceChildren();
+  for(const pool of pools.values())$('pool').add(new Option(pool.label,pool.id));
+  $('pool').value=pools.has(selected)?selected:pools.keys().next().value;
+}
+function defaultVol() {
+  const pool=(app.apiPools||OFFLINE_POOLS).get($('pool').value),vol=pool&&pool.vol_assumption_annual;
+  if(finite(vol))$('vol').value=Math.min(500,Math.max(0,Math.round(vol*1000)/10));
+  updateOutputs();
+}
+function renderFacts(pool,known) {
+  const rows=[['Giá ('+pool.quote+'/'+pool.base+')',price(pool.p0)],['TVL',money(pool.tvl_usd)],['Volume 24h',money(pool.volume_24h_usd)],
+    ['Vol 7d / 30d',(finite(known?.vol_realized_7d)?pl(known.vol_realized_7d):'—')+' / '+(finite(known?.vol_realized_30d)?pl(known.vol_realized_30d):'—')]];
+  $('poolFacts').innerHTML='<dl>'+rows.map(([name,value])=>'<dt>'+esc(name)+'</dt><dd>'+esc(value)+'</dd>').join('')+'</dl>';
+}
+function renderSweep(result) {
+  const points=result.sweep;if(!points.length){$('cSweep').innerHTML=empty('Chưa có sweep.');return;}
+  const w=640,h=250,m={l:46,r:12,t:12,b:30},first=points[0].half_width,last=points[points.length-1].half_width;
+  const denominator=Math.max(Math.log(last/first),1e-9),sx=x=>m.l+Math.log(x/first)/denominator*(w-m.l-m.r);
+  const values=points.flatMap(p=>[p.fees,p.il+p.gas+(p.rebalance_cost||0),p.excess_vs_hodl]);
+  let low=Math.min(...values,0),high=Math.max(...values,.001),pad=(high-low)*.08;low-=pad;high+=pad;
+  const sy=value=>h-m.b-(value-low)/(high-low)*(h-m.t-m.b);let content='';
+  for(let i=0;i<=4;i++){const value=low+(high-low)*i/4;content+='<line x1="'+m.l+'" x2="'+(w-m.r)+'" y1="'+sy(value)+'" y2="'+sy(value)+'" stroke="var(--line)"/><text x="'+(m.l-6)+'" y="'+(sy(value)+4)+'" text-anchor="end">'+(value*100).toFixed(0)+'%</text>';}
+  for(const value of [.005,.02,.05,.1,.2,.5,1,2,5])if(value>=first&&value<=last)content+='<text x="'+sx(value)+'" y="'+(h-9)+'" text-anchor="middle">±'+(value*100)+'%</text>';
+  for(const [get,color] of [[p=>p.fees,'var(--fee)'],[p=>p.il+p.gas+(p.rebalance_cost||0),'var(--il)'],[p=>p.excess_vs_hodl,'var(--net)']])content+='<path d="'+line(points.map(p=>[p.half_width,get(p)]),sx,sy)+'" fill="none" stroke="'+color+'" stroke-width="2.4"/>';
+  if(result.optimum){const best=result.optimum;content+='<line x1="'+sx(best.half_width)+'" x2="'+sx(best.half_width)+'" y1="'+m.t+'" y2="'+(h-m.b)+'" stroke="var(--acc)"/><circle cx="'+sx(best.half_width)+'" cy="'+sy(best.excess_vs_hodl)+'" r="5" fill="var(--acc)"/>';}
+  $('cSweep').innerHTML=svg(w,h,content,'Phí, chi phí và ΔR từ kết quả hiện tại');
+}
+function renderPath(result,pool) {
+  const paths=result.sample_paths;if(!paths.length){$('cPath').innerHTML=empty('Chưa có đường giá.');return;}
+  const w=420,h=250,m={l:58,r:10,t:12,b:24},H=paths[0].length-1,all=paths.flat();
+  let low=Math.min(...all,result.optimum?.p_low||Infinity),high=Math.max(...all,result.optimum?.p_high||0);
+  if(high/low<1.02){low/=1.01;high*=1.01;}
+  const sx=day=>m.l+day/Math.max(H,1)*(w-m.l-m.r),sy=value=>h-m.b-Math.log(value/low)/Math.log(high/low)*(h-m.t-m.b);let content='';
+  if(result.optimum)content+='<rect x="'+m.l+'" y="'+sy(result.optimum.p_high)+'" width="'+(w-m.l-m.r)+'" height="'+(sy(result.optimum.p_low)-sy(result.optimum.p_high))+'" fill="var(--band)" stroke="var(--acc)" stroke-dasharray="4 3"/>';
+  for(const path of paths.slice(0,30))content+='<path d="'+line(path.map((value,day)=>[day,value]),sx,sy)+'" fill="none" stroke="var(--mute)" stroke-opacity=".35"/>';
+  for(const value of [high,pool.p0,low])content+='<text x="'+(m.l-5)+'" y="'+(sy(value)+4)+'" text-anchor="end">'+price(value)+'</text>';
+  content+='<text x="'+m.l+'" y="'+(h-6)+'">ngày 0</text><text x="'+(w-m.r)+'" y="'+(h-6)+'" text-anchor="end">ngày '+H+'</text>';
+  $('cPath').innerHTML=svg(w,h,content,'Đường giá '+pool.quote+'/'+pool.base+(result.optimum?' và range khả thi':''));
+}
+function drawPnl(points,target,label) {
+  if(!points.length){$(target).innerHTML=empty('Không có range tối ưu khả thi để vẽ P&L.');return;}
+  const w=640,h=260,m={l:46,r:12,t:12,b:24},all=points.flatMap(p=>[p.lp,p.hodl]);let low=Math.min(...all,0),high=Math.max(...all,0),pad=(high-low)*.1+.001;low-=pad;high+=pad;
+  const sx=index=>m.l+index/Math.max(points.length-1,1)*(w-m.l-m.r),sy=value=>h-m.b-(value-low)/(high-low)*(h-m.t-m.b);let content='';
+  for(let i=0;i<=4;i++){const value=low+(high-low)*i/4;content+='<line x1="'+m.l+'" x2="'+(w-m.r)+'" y1="'+sy(value)+'" y2="'+sy(value)+'" stroke="var(--line)"/><text x="'+(m.l-6)+'" y="'+(sy(value)+4)+'" text-anchor="end">'+(value*100).toFixed(0)+'%</text>';}
+  for(const [key,color] of [['hodl','var(--acc)'],['lp','var(--fee)']])content+='<path d="'+line(points.map((p,i)=>[i,p[key]]),sx,sy)+'" fill="none" stroke="'+color+'" stroke-width="2.4"/>';
+  content+='<text x="'+m.l+'" y="'+(h-6)+'">'+esc(points[0].timestamp?.slice(0,10)||'ngày 0')+'</text><text x="'+(w-m.r)+'" y="'+(h-6)+'" text-anchor="end">'+esc(points[points.length-1].timestamp?.slice(0,10)||'ngày '+points[points.length-1].day)+'</text>';
+  $(target).innerHTML=svg(w,h,content,label);
+}
+function renderTicks(result,pool,source,config) {
+  const w=420,h=250,m={l:12,r:12,t:15,b:25},ticks=[...result.liquidity_ticks].sort((a,b)=>a.tick-b.tick);
+  if(ticks.length<2){
+    if(source!=='javascript'){$('cTick').innerHTML=empty('Chưa có tick snapshot đủ dữ liệu; không vẽ thanh khoản thay thế.');$('tickCaption').textContent='Không có profile tick quan sát trong kết quả này.';return;}
+    const span=Math.max((result.optimum?.half_width||.2)*1.6,.3);
+    for(let i=0;i<41;i++){const log=(i/40-.5)*2*span;ticks.push({tick:i,price:pool.p0*Math.exp(log),liquidity:Math.exp(-log*log/(2*(span/2.2)**2))*pool.tvl_usd*CONC/2});}
+    $('tickCaption').textContent='Profile Gaussian minh họa · không phải dữ liệu on-chain.';
+  } else $('tickCaption').textContent='Snapshot block '+pool.block_number+' · L chuẩn hóa về USD tại giá đầu, không phải TVL.';
+  const low=Math.min(...ticks.map(t=>t.price)),high=Math.max(...ticks.map(t=>t.price)),own=result.optimum?pos(config.capital,1,result.optimum.half_width).L:0;
+  const max=Math.max(...ticks.map(t=>t.liquidity),own,1)*1.12,sx=value=>m.l+Math.log(value/low)/Math.log(high/low)*(w-m.l-m.r),sy=value=>h-m.b-value/max*(h-m.t-m.b);let content='';
+  for(let i=0;i<ticks.length-1;i++){const a=sx(ticks[i].price),b=sx(ticks[i+1].price);content+='<rect x="'+Math.min(a,b)+'" y="'+sy(ticks[i].liquidity)+'" width="'+Math.max(.05,Math.abs(b-a))+'" height="'+(h-m.b-sy(ticks[i].liquidity))+'" fill="var(--bar)"/>';}
+  if(result.optimum){const a=Math.max(low,result.optimum.p_low),b=Math.min(high,result.optimum.p_high);if(b>a)content+='<rect x="'+sx(a)+'" y="'+sy(own)+'" width="'+(sx(b)-sx(a))+'" height="'+(h-m.b-sy(own))+'" fill="var(--acc)" fill-opacity=".65"/>';}
+  for(const [value,anchor] of [[low,'start'],[Math.sqrt(low*high),'middle'],[high,'end']])content+='<text x="'+sx(value)+'" y="'+(h-7)+'" text-anchor="'+anchor+'">'+price(value)+'</text>';
+  $('cTick').innerHTML=svg(w,h,content,source==='javascript'?'Thanh khoản minh họa':'Thanh khoản theo các interval tick quan sát');
+}
+function renderResult(result,source,reason='') {
+  app.result=result;app.source=source;
+  const assumptions=result.meta.assumptions,config=assumptions.effective_config,pool=assumptions.pool,best=result.optimum;
+  const observed=source==='api'&&result.meta.data_kind==='observed_snapshot',known=observed?app.apiPools?.get(pool.id):null;
+  $('modePanel').dataset.mode=source==='api'?'api':'fallback';
+  $('modeLabel').textContent=observed?'API Python · dữ liệu quan sát':source==='api'?'API Python · Dữ liệu minh họa':'Dữ liệu minh họa · JavaScript';
+  $('apiStageStatus').textContent=reason||(observed?'Các biểu đồ dùng kết quả API. Giá, volume và thanh khoản là đầu vào quan sát; lợi nhuận là mô phỏng.':'Mô phỏng dùng preset minh họa; không dùng để kết luận hiệu quả thực tế.');
+  $('dataAsOf').textContent=observed?'Dữ liệu tới '+dateLabel(result.meta.data_asof)+' · '+pool.label+' · block '+pool.block_number:'Dữ liệu minh họa · không có mốc dữ liệu thị trường';
+  $('runId').textContent=result.meta.run_id||'Không có run_id API · JS offline';
+  $('configText').value=JSON.stringify({engine:source==='api'?'python_api':'javascript_offline',run_id:result.meta.run_id,config},null,2);
+  $('copyStatus').textContent='';$('copyConfig').disabled=false;
+  renderFacts(pool,known);
+  $('kRange').textContent=best?price(best.p_low)+' – '+price(best.p_high):'Không có range khả thi';
+  $('kRangeS').textContent=best?'±'+(best.half_width*100).toFixed(1)+'% theo log · '+pool.quote+'/'+pool.base:'Không điểm nào trên lưới thỏa ngưỡng rời range.';
+  $('kAct').textContent=best?pl(best.active_share):'—';$('kNet').textContent=best?pc(best.net):'—';
+  $('kNetS').textContent=best?'Phí '+pl(best.fees)+', IL '+pl(best.il)+', gas '+pl(best.gas):'';
+  $('kEx').textContent=best?pc(best.excess_vs_hodl):'—';$('kEx').className='big '+(best?cls(best.excess_vs_hodl):'');
+  $('kExS').textContent=best?'Q5% '+pc(best.q5)+' · rời range '+pl(best.exit_prob):'';
+  const bestMean=Math.max(...result.strategies.filter(row=>row.exit_prob<=config.risk_max_exit_prob).map(row=>row.excess_vs_hodl));
+  $('tbl').innerHTML=result.strategies.map(row=>'<tr class="'+(row.exit_prob<=config.risk_max_exit_prob&&row.excess_vs_hodl===bestMean?'best':'')+'"><td>'+esc(row.label)+'</td><td class="pos">'+pl(row.fees)+'</td><td class="neg">'+pl(row.il+(row.rebalance_cost||0))+'</td><td class="neg">'+pl(row.gas)+'</td><td class="'+cls(row.excess_vs_hodl)+'">'+pc(row.excess_vs_hodl)+'</td><td class="'+cls(row.q5)+'">'+pc(row.q5)+'</td><td>'+pl(row.active_share)+'</td><td class="'+(row.exit_prob<=config.risk_max_exit_prob?'pos':'neg')+'">'+pl(row.exit_prob)+'</td></tr>').join('');
+  renderSweep(result);renderPath(result,pool);renderTicks(result,pool,source,config);drawPnl(result.pnl_path,'cPnl','Lợi suất LP và HODL từ kết quả hiện tại');
+  const end=result.pnl_path[result.pnl_path.length-1];$('pnlEnd').innerHTML=end?'Cuối kỳ: LP <b class="'+cls(end.lp)+'">'+pc(end.lp)+'</b>, HODL <b class="'+cls(end.hodl)+'">'+pc(end.hodl)+'</b>':'';
+  $('nextPath').disabled=!best;$('pnlCaption').textContent='Đường '+(config.path_index+1)+'/'+config.n_paths+' · LP gồm phí, trừ gas và chi phí rebalance.';
+  $('stress').innerHTML=result.stress.length?result.stress.map(row=>'<div class="kpi"><small>Giá '+(row.shock>0?'tăng ':'giảm ')+Math.abs(row.shock*100)+'%</small><div class="big '+cls(row.excess_vs_hodl)+'">'+pc(row.excess_vs_hodl)+'</div><small>ΔR vs HODL · LP '+pc(row.lp_return)+', HODL '+pc(row.hodl_return)+'</small></div>').join(''):empty('Không có range tối ưu khả thi để tính stress.');
+  const notes=[observed?'Thanh khoản nền dùng active L quan sát, đổi đúng đơn vị; giữ cố định trong tương lai.':'TVL, volume và thanh khoản nền đều là giả định minh họa.',
+    'Gas $'+config.gas_usd+'/giao dịch; slippage '+config.rebalance_slippage_bps+' bps/rebalance. Chưa tính MEV/JIT.',
+    'Quote/USD giữ cố định trong từng kịch bản, kể cả WETH trong cặp WBTC/WETH.',
+    'Q5% và xác suất rời range là kết quả Monte Carlo, chưa được kiểm chứng ngoài mẫu.',...(known?.warnings||[]),...(result.meta.messages||[])];
+  if(observed)notes.push('Hiệu chỉnh chỉ dùng dữ liệu trước '+dateLabel(config.calibration_asof)+'. Volume theo chế độ biến động trễ một kỳ; multiplier innovation vẫn là giả định kịch bản.');
+  $('assumptionList').innerHTML=notes.map(note=>'<li>'+esc(note)+'</li>').join('');
+  $('modelNote').textContent=(source==='javascript'?'JS offline · GBM':assumptions.implemented_price_model.toUpperCase())+' · '+config.n_paths+' đường · seed '+config.seed+' · σ dùng cho range '+pl(assumptions.effective_vol_annual_for_width)+'.';
+  $('calculationStatus').textContent='Đã cập nhật '+pool.label+' · '+(best?'có range khả thi':'không có range khả thi')+'.';
+}
+function validateResult(result) {
+  const bad=()=>{throw new Error('API trả kết quả không đúng hợp đồng. Kiểm tra phiên bản backend và tải lại trang.');};
+  if(!result?.meta?.assumptions?.effective_config||!result.meta.assumptions.pool||!/^[0-9a-f]{64}$/.test(result.meta.run_id))bad();
+  const assumptions=result.meta.assumptions;
+  if(!finite(assumptions.pool.p0)||assumptions.pool.p0<=0||!finite(assumptions.effective_vol_annual_for_width)||!('optimum' in result))bad();
+  if(!Number.isInteger(assumptions.effective_config.n_paths)||!Number.isInteger(assumptions.effective_config.path_index))bad();
+  if(!['illustrative','observed_snapshot'].includes(result.meta.data_kind))bad();
+  for(const key of ['sweep','strategies','sample_paths','pnl_path','stress','liquidity_ticks'])if(!Array.isArray(result[key]))bad();
+  const metrics=[...result.sweep,...result.strategies,...(result.optimum?[result.optimum]:[])];
+  if(!metrics.length||metrics.some(row=>!['fees','il','gas','net','excess_vs_hodl','q5','active_share','exit_prob','p_low','p_high'].every(key=>finite(row[key]))))bad();
+  if(result.sample_paths.some(path=>!Array.isArray(path)||path.length<2||path.some(value=>!finite(value)||value<=0)))bad();
+  if(result.pnl_path.some(row=>!finite(row.lp)||!finite(row.hodl)))bad();
+  if(result.stress.some(row=>!['shock','lp_return','hodl_return','excess_vs_hodl'].every(key=>finite(row[key]))))bad();
+  if(result.liquidity_ticks.some(row=>!Number.isInteger(row.tick)||!finite(row.price)||row.price<=0||!finite(row.liquidity)||row.liquidity<0))bad();
+  if(result.optimum&&(!finite(result.optimum.half_width)||result.optimum.half_width<=0))bad();
+  if(result.optimum===null&&(result.pnl_path.length||result.stress.length))bad();
+}
+async function fetchJson(url,options) {
+  const response=await fetch(url,{cache:'no-store',...options});let payload;
+  try{payload=await response.json();}catch{throw new Error('API không trả JSON hợp lệ (HTTP '+response.status+').');}
+  if(!response.ok)throw new Error('HTTP '+response.status+': '+(typeof payload.detail==='string'?payload.detail:'Kiểm tra tham số và backend.').slice(0,500));
+  return payload;
+}
+async function loadPools(signal,revision) {
+  const payload=await fetchJson('/api/v1/pools',{signal});
+  if(!Array.isArray(payload.pools)||!payload.pools.length||!['illustrative','observed_snapshot'].includes(payload.data_kind))throw new Error('Danh sách pool API không hợp lệ.');
+  const pools=new Map();
+  for(const row of payload.pools){if(!/^[a-z0-9-]{1,80}$/.test(row.id)||!finite(row.p0)||row.p0<=0||!finite(row.fee_rate)||pools.has(row.id))throw new Error('Metadata pool API không hợp lệ.');pools.set(row.id,row);}
+  if(revision!==app.revision)return false;
+  app.apiPools=pools;populatePools(pools);if(!app.volTouched)defaultVol();
+  const selected=pools.get($('pool').value);if(selected.history_start)$('btStart').value=selected.history_start.slice(0,10);if(selected.history_end)$('btEnd').value=selected.history_end.slice(0,10);
+  return true;
+}
+function setBusy(busy) {
+  $('simulationPanel').setAttribute('aria-busy',String(busy));$('apiStageRetry').disabled=busy;
+  if(busy){$('copyConfig').disabled=true;$('nextPath').disabled=true;$('calculationStatus').textContent='Đang tính… các biểu đồ đang giữ kết quả của cấu hình trước.';}
+}
+async function requestSimulation(revision,refresh=false) {
+  let config;
+  try{config=readConfig();}catch(error){$('calculationStatus').textContent=error.message;$('copyConfig').disabled=true;setBusy(false);return;}
+  if(!['http:','https:'].includes(location.protocol)){
+    $('apiStageDocs').hidden=true;$('dataStatusLink').hidden=true;
+    renderResult(fallbackSimulate(config),'javascript','Mở file cục bộ · JS minh họa hoạt động độc lập. Mở http://127.0.0.1:8000 để dùng API và dữ liệu đã tải.');setBusy(false);return;
+  }
+  const controller=new AbortController();app.controller=controller;let timedOut=false;
+  const timeout=setTimeout(()=>{timedOut=true;controller.abort();},20000);setBusy(true);
+  try{
+    if(refresh||!app.apiPools){if(!await loadPools(controller.signal,revision))return;}
+    if(revision!==app.revision)return;
+    config=readConfig();
+    const result=await fetchJson('/api/v1/simulate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config),signal:controller.signal});
+    if(revision!==app.revision)return;
+    validateResult(result);renderResult(result,'api');
+  }catch(error){
+    if(revision!==app.revision)return;
+    if(error.input){$('calculationStatus').textContent=error.message;return;}
+    const reason=timedOut?'API quá thời gian chờ 20 giây':error.message;
+    renderResult(fallbackSimulate(config),'javascript',reason+'. Đang dùng JS minh họa. Kiểm tra tham số, khởi động máy chủ bằng run.cmd nếu cần, rồi chọn Thử lại API.');
+  }finally{clearTimeout(timeout);if(revision===app.revision){setBusy(false);app.controller=null;}}
+}
+function scheduleUpdate(immediate=false,refresh=false) {
+  app.revision++;if(app.controller)app.controller.abort();clearTimeout(app.timer);updateOutputs();setBusy(true);
+  const revision=app.revision;
+  if(immediate)return requestSimulation(revision,refresh);
+  app.timer=setTimeout(()=>requestSimulation(revision,refresh),300);
+}
+function invalidateBacktest() {
+  app.backtestRevision++;app.backtestController?.abort();$('backtestChart').innerHTML='';$('loadBacktest').disabled=false;
+  $('backtestSummary').innerHTML='';$('btMeta').textContent='';$('downloadBacktestCsv').hidden=true;$('downloadBacktestJson').hidden=true;$('backtestLegend').hidden=true;
+  $('btStatus').textContent='Cấu hình backtest đã thay đổi; chọn Tải backtest để truy vấn lại.';
+}
+async function loadBacktest() {
+  invalidateBacktest();const revision=app.backtestRevision,start=$('btStart').value,end=$('btEnd').value;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(start)||!/^\d{4}-\d{2}-\d{2}$/.test(end)||start>=end){$('btStatus').textContent='Chọn ngày bắt đầu trước ngày kết thúc.';return;}
+  if(!['http:','https:'].includes(location.protocol)){$('btStatus').textContent='Backtest cần API. Mở http://127.0.0.1:8000 rồi thử lại; không có backtest JS thay thế.';return;}
+  const controller=new AbortController();app.backtestController=controller;let timedOut=false;const timer=setTimeout(()=>{timedOut=true;controller.abort();},20000);
+  $('loadBacktest').disabled=true;$('btStatus').textContent='Đang truy vấn backtest…';
+  try{
+    const config=readConfig();
+    const params=new URLSearchParams({start,end,strategy:$('btStrategy').value,capital:config.capital,gas_usd:config.gas_usd,
+      min_rebalance_gap_days:config.min_rebalance_gap_days,max_rebalances:config.max_rebalances,rebalance_slippage_bps:config.rebalance_slippage_bps,
+      risk_max_exit_prob:config.risk_max_exit_prob,seed:config.seed,half_width:.2,allow_partial:true,
+      concentration:numberInput('btConcentration','Hệ số C',.1,100),protocol_fee_fraction:numberInput('btProtocolFee','Protocol fee (%)',0,100)/100,
+      volatility_window_days:numberInput('btVolWindow','Cửa sổ volatility',7,90,true),price_source:$('btPriceSource').value});
+    const result=await fetchJson('/api/v1/backtest/'+encodeURIComponent($('pool').value)+'?'+params,{signal:controller.signal});
+    if(revision!==app.backtestRevision)return;
+    if(result.returns_unit!=='fraction_of_initial_capital'||result.meta?.data_kind!=='historical_replay_modelled_fees'||!Array.isArray(result.equity_curve))throw new Error('API chưa trả historical replay có nhãn và đơn vị lợi suất hợp lệ.');
+    $('btMeta').textContent='run_id: '+result.meta.run_id+' · '+result.meta.effective_start.slice(0,10)+' → '+result.meta.effective_end.slice(0,10)+' · C='+result.meta.assumptions.concentration+'.';
+    $('downloadBacktestJson').href='/api/v1/runs/'+encodeURIComponent(result.meta.run_id);$('downloadBacktestJson').setAttribute('download','backtest-'+result.meta.run_id.slice(0,12)+'.json');$('downloadBacktestJson').hidden=false;
+    if(result.status==='infeasible'){$('btStatus').textContent='Không có range khả thi trong dự báo tại entry; không vẽ backtest hoặc thay bằng chiến lược vi phạm.';return;}
+    if(!result.equity_curve.length||result.equity_curve.some(row=>!row.timestamp||!finite(row.lp)||!finite(row.hodl)))throw new Error('API chưa trả equity_curve hợp lệ.');
+    drawPnl(result.equity_curve,'backtestChart','Historical replay LP và HODL; phí mô hình từ TVL trễ');
+    $('backtestLegend').hidden=false;
+    const summary=result.summary;
+    if(summary&&['net','excess_vs_hodl','fees','il','gas','rebalance_cost','active_share'].every(key=>finite(summary[key])))$('backtestSummary').innerHTML='<p>LP <b>'+pc(summary.net)+'</b> · ΔR <b>'+pc(summary.excess_vs_hodl)+'</b> · active '+pl(summary.active_share)+'</p><p class="sub">Phí ước tính '+pl(summary.fees)+' · IL '+pl(summary.il)+' · gas '+pl(summary.gas)+' · slippage '+pl(summary.rebalance_cost)+' · '+esc(summary.rebalance_count)+' rebalance.</p>';
+    $('downloadBacktestCsv').href='/api/v1/backtests/'+encodeURIComponent(result.meta.run_id)+'/curve.csv';$('downloadBacktestCsv').hidden=false;
+    $('btStatus').textContent='Giá/volume lịch sử quan sát; phí LP ước tính từ TVL trễ và gas giả định. '+(result.meta.partial_period?'Đã giới hạn vào phạm vi có dữ liệu sau warmup. ':'')+'Chưa xác nhận ngoài mẫu; xem giả định trước khi diễn giải lợi nhuận.';
+  }catch(error){if(revision===app.backtestRevision){$('backtestChart').innerHTML='';$('btStatus').textContent=(timedOut?'Backtest quá thời gian chờ 20 giây.':error.message)+' Không hiển thị đường mô phỏng thay thế.';}}
+  finally{clearTimeout(timer);if(revision===app.backtestRevision){$('loadBacktest').disabled=false;app.backtestController=null;}}
+}
+async function loadResearch() {
+  if(!['http:','https:'].includes(location.protocol)){$('researchStatus').textContent='Cần API để tải báo cáo nghiên cứu.';return;}
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);$('loadResearch').disabled=true;
+  $('researchStatus').textContent='Đang tải danh mục CSV/PNG và báo cáo…';$('researchFiles').innerHTML='';
+  try {
+    const result=await fetchJson('/api/v1/research/status',{signal:controller.signal});
+    if(!/^[0-9a-f]{64}$/.test(result.research_id)||!Array.isArray(result.files))throw new Error('Research manifest chưa hợp lệ.');
+    const labels={pool_characteristics:'Đặc điểm pool',strategy_returns:'Lợi suất và phân rã chiến lược',monthly_returns:'Cửa sổ 30 ngày',width_panel:'Panel độ rộng',regressions:'Hệ số hồi quy',stationarity_adf:'Kiểm định ADF',sensitivity:'Độ nhạy vốn/gas/min_gap',gas_break_even:'Gas hòa vốn',robustness:'Robustness',split_coverage:'Độ phủ train/validation/test',research_report:'Báo cáo nghiên cứu'};
+    const valid=result.files.filter(file=>/^[a-zA-Z0-9_.-]{1,100}$/.test(file.name));
+    $('researchFiles').innerHTML='<ul>'+valid.map(file=>'<li><a href="/api/v1/research/files/'+encodeURIComponent(file.name)+'" download>'+esc(labels[file.name.split('.')[0]]||file.name)+' · '+esc(file.kind.toUpperCase())+'</a></li>').join('')+'</ul>';
+    $('researchStatus').textContent=result.status.pool_count+' pool · '+result.status.panel_rows+' dòng panel · '+result.status.panel_time_windows+' cửa sổ. Giá/volume quan sát, phí mô hình; thiếu hiệu chỉnh 2022–2024 để xác nhận OOS. research_id: '+result.research_id;
+  }catch(error){$('researchStatus').textContent=error.name==='AbortError'?'Tải báo cáo quá thời gian chờ.':error.message;}
+  finally{clearTimeout(timer);$('loadResearch').disabled=false;}
+}
+function switchTab(backtest) {
+  $('tabSim').setAttribute('aria-selected',String(!backtest));$('tabBacktest').setAttribute('aria-selected',String(backtest));
+  $('tabSim').tabIndex=backtest?-1:0;$('tabBacktest').tabIndex=backtest?0:-1;
+  $('simulationPanel').hidden=backtest;$('backtestPanel').hidden=!backtest;
+}
+async function loadSavedRun(runId) {
+  if(!/^[0-9a-f]{64}$/.test(runId)){$('restoreStatus').textContent='run_id cần 64 ký tự hex viết thường.';return;}
+  if(!['http:','https:'].includes(location.protocol)){$('restoreStatus').textContent='Nạp run_id cần API đang chạy.';return;}
+  app.revision++;const revision=app.revision;clearTimeout(app.timer);app.controller?.abort();
+  const controller=new AbortController();app.controller=controller;const timeout=setTimeout(()=>controller.abort(),20000);setBusy(true);
+  $('restoreStatus').textContent='Đang nạp cấu hình đã lưu…';
+  try{
+    const record=await fetchJson('/api/v1/runs/'+runId,{signal:controller.signal});
+    if(revision!==app.revision)return;
+    if(!app.apiPools&&!await loadPools(controller.signal,revision))return;
+    const config=record.config;
+    if(!config||!app.apiPools.has(config.pool)||!['gbm','bootstrap','garch'].includes(config.price_model))throw new Error('Cấu hình đã lưu không phù hợp danh sách pool hiện tại.');
+    $('pool').value=config.pool;
+    $('hor').min=Math.min(7,config.horizon_days);$('hor').max=Math.max(180,config.horizon_days);
+    $('gas').max=Math.max(100,config.gas_usd);$('gas').step='any';$('vol').step='any';
+    for(const [id,key,suffix] of [['risk','risk_max_exit_prob',''],['reb','min_rebalance_gap_days',' ngày']]){
+      const value=String(config[key]);
+      if(!Array.from($(id).options).some(option=>option.value===value))$(id).add(new Option(id==='risk'?'Tùy chỉnh (≤ '+(config[key]*100)+'%)':value+suffix,value));
+    }
+    for(const [id,key,multiplier] of [['cap','capital',1],['hor','horizon_days',1],['vol','vol_annual',100],['gas','gas_usd',1],['risk','risk_max_exit_prob',1],['reb','min_rebalance_gap_days',1],['nPaths','n_paths',1],['seed','seed',1],['slippage','rebalance_slippage_bps',1],['maxRebalances','max_rebalances',1]])if(config[key]!==undefined)$(id).value=config[key]*multiplier;
+    $('priceModel').value=config.price_model;app.pathIndex=config.path_index||0;app.volTouched=true;app.extraConfig={};
+    for(const key of ['min_half_width','max_half_width','calibration_asof','bootstrap_mean_block_days'])if(config[key]!==undefined)app.extraConfig[key]=config[key];
+    $('savedRunId').value=runId;updateOutputs();invalidateBacktest();clearTimeout(timeout);
+    $('restoreStatus').textContent='Đã nạp cấu hình từ '+runId.slice(0,12)+'… Kết quả được tính lại với dữ liệu và phiên bản hiện tại.';
+    await requestSimulation(revision);
+  }catch(error){if(revision===app.revision)$('restoreStatus').textContent=error.name==='AbortError'?'Nạp cấu hình quá thời gian chờ.':error.message;}
+  finally{clearTimeout(timeout);if(revision===app.revision)setBusy(false);}
+}
+populatePools(OFFLINE_POOLS);updateOutputs();
+renderResult(fallbackSimulate(readConfig()),'javascript','Đang kết nối API; các biểu đồ tạm dùng dữ liệu minh họa.');
+for(const id of ['cap','hor','vol','gas','risk','reb','priceModel','nPaths','seed','slippage','maxRebalances'])$(id).addEventListener('input',()=>{if(id==='vol')app.volTouched=true;invalidateBacktest();scheduleUpdate();});
+$('pool').addEventListener('change',()=>{app.volTouched=false;app.pathIndex=0;delete app.extraConfig.calibration_asof;defaultVol();invalidateBacktest();const pool=app.apiPools?.get($('pool').value);if(pool?.history_start)$('btStart').value=pool.history_start.slice(0,10);if(pool?.history_end)$('btEnd').value=pool.history_end.slice(0,10);scheduleUpdate();});
+$('nextPath').addEventListener('click',()=>{app.pathIndex++;scheduleUpdate(true);});
+$('apiStageRetry').addEventListener('click',()=>scheduleUpdate(true,true));
+$('loadSavedRun').addEventListener('click',()=>loadSavedRun($('savedRunId').value.trim()));
+$('copyConfig').addEventListener('click',async()=>{try{if(!navigator.clipboard?.writeText)throw new Error('clipboard unavailable');await navigator.clipboard.writeText($('configText').value);$('copyStatus').textContent='Đã sao chép cấu hình và run_id.';}catch{$('configDetails').open=true;$('configText').focus();$('configText').select();$('copyStatus').textContent='Trình duyệt chưa cho ghi clipboard. Cấu hình đã được chọn; nhấn Ctrl+C để sao chép.';}});
+$('tabSim').addEventListener('click',()=>switchTab(false));$('tabBacktest').addEventListener('click',()=>switchTab(true));
+for(const id of ['tabSim','tabBacktest'])$(id).addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();const back=event.key==='End'||(event.key!=='Home'&&id==='tabSim');switchTab(back);$(back?'tabBacktest':'tabSim').focus();}});
+for(const id of ['btStart','btEnd','btStrategy','btConcentration','btProtocolFee','btVolWindow','btPriceSource'])$(id).addEventListener('input',invalidateBacktest);
+$('loadBacktest').addEventListener('click',loadBacktest);
+$('loadResearch').addEventListener('click',loadResearch);
+try{const theme=localStorage.getItem('uniswap-theme');if(['light','dark'].includes(theme))document.documentElement.setAttribute('data-theme',theme);}catch{}
+$('themeToggle').addEventListener('click',()=>{const root=document.documentElement,current=root.getAttribute('data-theme')||(window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'),next=current==='dark'?'light':'dark';root.setAttribute('data-theme',next);try{localStorage.setItem('uniswap-theme',next);}catch{}});
+const initialRun=/^#run=([0-9a-f]{64})$/.exec(location.hash||'');
+if(initialRun)loadSavedRun(initialRun[1]);else requestSimulation(app.revision,true);
+
+</script>
+</body></html>

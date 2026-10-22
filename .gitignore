@@ -1,0 +1,26 @@
+.venv/
+venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+.matplotlib/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.duckdb.wal
+*.duckdb.tmp
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+service-account*.json
+id_rsa
+id_ed25519
+.DS_Store
+Thumbs.db
+
+# Keep public research data and saved runs so a fresh clone is reproducible.

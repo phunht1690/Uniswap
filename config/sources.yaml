@@ -1,0 +1,25 @@
+history:
+  mode: all_available
+  start: null  # Resolve separately for each pool/source to earliest available record.
+  end: latest_available  # Never invent records after the source's latest timestamp.
+  levels: [pool_day, pool_hour, swaps, ticks, mint, burn]
+  pagination: cursor
+  resume: true
+  cache: true
+  # Per-source public history limits and gaps are recorded in data/coverage.json.
+  retry_attempts: 4
+  timeout_seconds: 30
+  max_requests_per_second: 2
+sources:
+  the_graph: {status: optional_authenticated_adapter, api_key_env: THE_GRAPH_API_KEY, subgraph_env: UNISWAP_SUBGRAPH_ID}
+  bigquery: {status: alternative_not_used, project_env: GOOGLE_CLOUD_PROJECT}
+  ethereum_rpc: {status: implemented_public, endpoint_env: ETHEREUM_RPC_URL, finalized_only: true}
+  geckoterminal: {status: implemented_public, min_request_gap_seconds: 6.2, purpose: pool_ohlcv}
+  defillama: {status: implemented_public, purpose: tvl_context_only}
+  binance: {status: implemented_public, purpose: offchain_reference}
+  coingecko: {status: implemented_public, purpose: offchain_usd_reference_365d}
+  fred: {status: implemented_optional_public_csv, predictive_eligible: false}
+  kaiko: {status: not_implemented}
+  x: {status: not_implemented}
+  reddit: {status: not_implemented}
+  cryptopanic: {status: not_implemented}

@@ -1,0 +1,13 @@
+{
+  "name": "rangelab-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node build.cjs"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17",
+    "@tailwindcss/forms": "0.5.10",
+    "cheerio": "1.1.2"
+  }
+}
