@@ -13,7 +13,7 @@ Thiết kế tham chiếu: `stitch_rangelab_uniswap_v3_analytics (1).zip`, gồm
 | Backtest `/strategy-backtesting` | Pool/fee, ngày, vốn, gas; giả định nâng cao; gợi ý khoảng liên tục; năm chiến lược; bật/tắt chart; USD/%; tooltip; bảng xếp hạng ex-post; phí/IL; gas; nhận định theo số liệu; hai nút xuất CSV | `POST /backtests/compare`, `/pools/{id}/backtest-availability`, `/backtests/comparisons/{id}/export.csv` |
 | Dữ liệu & Phương pháp `/data-and-methodology` | Coverage theo nguồn/dataset, số dòng/khoảng trống, phương trình mở rộng, run/data hash, seed, PDF phương pháp, JSON, tải 25 file nghiên cứu lưu trữ | `/data/status`, `/research/status`, `/research/files/{name}`, `/workbench/runs/{id}/methodology.pdf` |
 | Dùng chung | Điều hướng thật, thuật ngữ, thông tin workspace, lỗi và loading, kiểm tra đầu vào, cấu hình lưu trình duyệt, kết quả lưu content hash, bảo vệ phản hồi cũ | FastAPI/Pydantic + file cache nguyên tử |
-| Tin tức & cộng đồng `/risk-and-research?tab=news` | Đọc không cần run; chọn pool độc lập; lọc nguồn/token; tiêu đề, ngày đăng/lần lấy, nhãn phiên bản và trạng thái từng nguồn; link tìm kiếm X/Reddit và mở CryptoPanic | `GET /api/v1/news?pool=...`; cache chung, public 300 giây, X mặc định 300 giây, Reddit/CryptoPanic 60 giây; API chính thức có cấu hình khóa, OAuth, backoff và trạng thái thật; web đọc cache mỗi 30 giây |
+| Tin tức & cộng đồng `/risk-and-research?tab=news` | Đọc không cần run; chọn pool độc lập; lọc hai nguồn công khai và nội dung; tiêu đề, ngày đăng/lần lấy, nhãn phiên bản, trạng thái từng nguồn và liên kết bài gốc | `GET /api/v1/news?pool=...`; giao diện chỉ hiển thị Uniswap Blog và diễn đàn quản trị; nguồn kiểm tra mỗi 300 giây, trang đọc cache mỗi 30 giây khi bản tin đang mở |
 
 Nút chia sẻ tạo URL của run đã lưu, dùng được trên máy chủ có cùng run ID. Không tự công bố lên Internet. JSON xuất chứa config/result/provenance, không chứa toàn bộ raw dataset. Raw/Parquet và source log nằm trong thư mục `data` và bản ZIP đầy đủ.
 
@@ -40,7 +40,7 @@ Stress giữ giá cuối kỳ theo shock và dùng GBM log bridge cho đường 
 
 Các engine/API bước 1–5 và dashboard gốc còn ở `/legacy`, `/dashboard/`. Các run cũ và nghiên cứu lưu trữ không bị ghi đè. Lệnh research mới giữ phạm vi tám pool Ethereum ban đầu và có phiên bản riêng; sáu pool thêm chưa tự được đưa vào nghiên cứu hồi quy đã công bố.
 
-Giao diện RangeLab không còn liên kết điều hướng sang dashboard gốc. Tin tức hoạt động bằng worker riêng, không ghi vào registry, lịch sử, source ledger hoặc run đã lưu. Các origin/endpoint nguồn được cố định phía máy chủ; không nhận URL tùy ý từ trình duyệt. Bài lỗi định dạng hoặc quá cũ/tương lai bị bỏ qua, nội dung trùng URL được gộp, phản hồi nguồn giới hạn 2 MB. Nguồn hỏng giữ lần thành công trước và báo trạng thái. X/Reddit/CryptoPanic chỉ được gọi khi đã có cấu hình khóa. X dùng Bearer/recent search/since_id, Reddit dùng approved OAuth + r/Uniswap/new, CryptoPanic dùng /api/{plan}/v2/posts với UNI/public mode. Lỗi 401/402/403/429 có thông báo và thời điểm thử lại, không lộ body/URL chứa khóa. Một trang/lượt và X có cap số lượt theo ngày của phiên; không tự tạo tài khoản hoặc mua tín dụng. .env tự nạp khi web startup, không ghi khóa vào repo. Xem docs/news_api_setup.md.
+Giao diện RangeLab không còn liên kết điều hướng sang dashboard gốc. Tin tức hoạt động bằng worker riêng, không ghi vào registry, lịch sử, source ledger hoặc run đã lưu. Các origin/endpoint nguồn được cố định phía máy chủ; không nhận URL tùy ý từ trình duyệt. Bài lỗi định dạng hoặc quá cũ/tương lai bị bỏ qua, nội dung trùng URL được gộp, phản hồi nguồn giới hạn 2 MB. Nguồn hỏng giữ lần thành công trước và báo trạng thái. Giao diện chỉ đưa ra hai nguồn công khai đang sử dụng, không hiển thị hướng dẫn đăng ký API hoặc nguồn chưa kết nối.
 
 ## Chạy và cập nhật
 
@@ -80,3 +80,7 @@ Kiểm tra bổ sung: `node --test tests/stress_view.cjs` (3 kiểm thử hồi 
 Xác minh: 128 kiểm thử Python, 3 kiểm thử hồi quy biểu đồ, kiểm tra nguồn thật cho 14/14 pool, tối ưu/stress bằng dữ liệu live với WETH/USDC, WBTC/WETH và ARB/WETH, cùng thao tác tối ưu qua trình duyệt. Giá live được cập nhật trong khi kết quả đã lưu giữ nguyên.
 
 Tài liệu giao thức: [Ethereum JSON-RPC](https://ethereum.org/developers/docs/apis/json-rpc/), [Uniswap V3 pool state](https://github.com/Uniswap/v3-core/blob/main/contracts/interfaces/pool/IUniswapV3PoolState.sol), [GeckoTerminal API](https://api.geckoterminal.com/docs/index.html).
+
+## Tài liệu giải thích hệ thống
+
+Tài liệu tiếng Việt gồm chức năng, ba mô hình giá, định giá LP, dữ liệu và nguồn gốc, tối ưu hóa, policy, stress, độ nhạy, historical replay, nghiên cứu lưu trữ và vận hành. Xem `docs/dashboard_giai_thich_chuc_nang_du_lieu_mo_hinh.docx` hoặc `docs/dashboard_explained_vi.md`.
