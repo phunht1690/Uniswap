@@ -12,6 +12,7 @@ from api.schemas import BacktestQuery, BacktestRequest, BacktestRecord, PoolList
 from src.data.backtest import BacktestUnavailable
 from src.evaluation.backtest_service import BacktestService
 from src.evaluation.artifacts import artifact, latest_manifest
+from src.evaluation.reconciliation import research_reconciliation
 from src.models.service import SimulationInputError, StageNotImplemented, UnknownPool
 from src.data.market import MarketUnavailable
 
@@ -131,3 +132,13 @@ def research_file(name: str, request: Request):
     suffix=name.rsplit('.',1)[-1]
     media={'csv':'text/csv','png':'image/png','json':'application/json','md':'text/markdown'}.get(suffix,'application/octet-stream')
     return Response(data,media_type=media,headers={'Content-Disposition':f'attachment; filename="{name}"'})
+
+
+@router.get('/research/reconciliation')
+def research_evidence_reconciliation(request: Request):
+    try:
+        return research_reconciliation(request.app.state.service.state_dir)
+    except FileNotFoundError as exc:
+        raise HTTPException(404, detail='Chưa có đủ tệp nghiên cứu đã xuất để đối chiếu.') from exc
+    except (ValueError, OSError, KeyError, TypeError, csv.Error) as exc:
+        raise HTTPException(503, detail='Không đối chiếu được các tệp nghiên cứu cùng phiên bản và hash hợp lệ.') from exc

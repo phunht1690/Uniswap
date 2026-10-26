@@ -10,8 +10,8 @@ Thiết kế tham chiếu: `stitch_rangelab_uniswap_v3_analytics (1).zip`, gồm
 | Tối ưu `/lp-optimizer` | Chọn cặp và fee tier; vốn; 7/30/90 ngày hoặc tùy chỉnh; hồ sơ rủi ro; σ lịch sử/ghi đè; volume ghi đè; gas; policy; năm giới hạn; slippage; GBM/bootstrap/GARCH; N/seed/path/block; reset; preview; chạy thật | `POST /api/v1/workbench/run` |
 | Kết quả `/optimization-results?run_id=...` | Range, tick tham khảo đúng chiều token, hiệu quả vốn, sáu KPI, LP/HODL, phân rã, giá/wealth path, bảng chiến lược và lưới; chia sẻ; sửa tham số; stress; backtest; PDF/JSON | `/workbench/runs/{id}`, `/summary.pdf`, `/export.json` |
 | Rủi ro `/risk-and-research?run_id=...` | Năm kịch bản preset và tùy chỉnh; ba slider; stress backend; LP/HODL/IL/trạng thái range; chart so sánh; quét volatility 10 mức với biên sửa được; bảng số liệu; tab phương pháp | `POST /workbench/stress`, `/workbench/sensitivity` |
-| Backtest `/strategy-backtesting` | Pool/fee, ngày, vốn, gas; giả định nâng cao; gợi ý khoảng liên tục; năm chiến lược; bật/tắt chart; USD/%; tooltip; bảng xếp hạng ex-post; phí/IL; gas; nhận định theo số liệu; hai nút xuất CSV | `POST /backtests/compare`, `/pools/{id}/backtest-availability`, `/backtests/comparisons/{id}/export.csv` |
-| Dữ liệu & Phương pháp `/data-and-methodology` | Coverage theo nguồn/dataset, số dòng/khoảng trống, phương trình mở rộng, run/data hash, seed, PDF phương pháp, JSON, tải 25 file nghiên cứu lưu trữ | `/data/status`, `/research/status`, `/research/files/{name}`, `/workbench/runs/{id}/methodology.pdf` |
+| Backtest `/strategy-backtesting` | Preset nghiên cứu/hằng tuần và tùy chỉnh; pool/fee, kỳ, vốn, gas; gợi ý khoảng liên tục; năm nhóm LP gồm optimizer và HODL; cấu hình/quy tắc của kết quả; chart USD/%; xếp hạng ex-post; phân rã và CSV | `GET /backtests/presets`, `POST /backtests/compare`, `/pools/{id}/backtest-availability`, `/backtests/comparisons/{id}/export.csv` |
+| Dữ liệu & Phương pháp `/data-and-methodology` | Coverage, nguồn/hash, công thức có hedge, ví dụ tái lập workbench; đối chiếu H4, chi phí ghép hàng và bootstrap optimizer theo cửa sổ với archive đã kiểm tra hash; PDF/JSON và 25 file nghiên cứu | `/data/status`, `/research/status`, `/research/reconciliation`, `/research/files/{name}`, `/workbench/runs/{id}/methodology.pdf` |
 | Dùng chung | Điều hướng thật, thuật ngữ, thông tin workspace, lỗi và loading, kiểm tra đầu vào, cấu hình lưu trình duyệt, kết quả lưu content hash, bảo vệ phản hồi cũ | FastAPI/Pydantic + file cache nguyên tử |
 | Tin tức & cộng đồng `/risk-and-research?tab=news` | Đọc không cần run; chọn pool độc lập; lọc hai nguồn công khai và nội dung; tiêu đề, ngày đăng/lần lấy, nhãn phiên bản, trạng thái từng nguồn và liên kết bài gốc | `GET /api/v1/news?pool=...`; giao diện chỉ hiển thị Uniswap Blog và diễn đàn quản trị; nguồn kiểm tra mỗi 300 giây, trang đọc cache mỗi 30 giây khi bản tin đang mở |
 
@@ -34,13 +34,40 @@ Volume ghi đè là USD/ngày cố định. Nếu không ghi đè, engine dùng 
 
 Policy `none` giữ range; `weekly` recenter sau mỗi bảy ngày; `threshold` recenter khi tỷ trọng base lệch ngưỡng đặt; `hedged` short delta inventory theo ngày. Hedge tính gas và turnover bps lúc mở, điều chỉnh và đóng hedge. Không có funding, borrow, margin hoặc ràng buộc khả năng thanh toán; đây là xấp xỉ rời rạc cho tính năng hedging trong thiết kế.
 
+Công thức tổng quát workbench là `R_LP = (V_inventory + F − G − C + H) / K − 1` và `ΔR = (F − IL_loss − G − C + H) / K`, với `IL_loss = V_HODL − V_inventory` theo quy ước thiếu hụt dương và H là PnL phòng hộ có dấu. Không phòng hộ có H = 0; không trừ IL thêm lần nữa khỏi inventory.
+
 Stress giữ giá cuối kỳ theo shock và dùng GBM log bridge cho đường đi; volatility làm thay đổi thời gian trong range và phí. Không tối ưu lại range theo shock đã biết. Sensitivity dùng GBM, volume cố định, cùng seed và tối ưu lại mỗi σ; không phải kiểm định ngoài mẫu.
 
-`rangelab-comparison-v1` dùng cùng khoảng ngày và đầu vào cho năm chiến lược. Cố định mặc định ±0,15 log; volatility dùng rolling 14 ngày trễ và cập nhật mỗi tuần; dynamic giữ độ rộng volatility lúc entry và recenter tuần; full range và HODL giữ vị thế. Giá và volume là quan sát; active-L lịch sử, fee-growth, protocol fee/gas vintage và crossing nội ngày chưa được tái dựng. TVL dùng độ trễ giả định, chưa xác minh vintage công bố. Chưa đủ pool price/volume 2022–2024 để xác nhận OOS 2025–2026.
+`rangelab-comparison-v2` đưa `strategy_mode` vào cấu hình và hash của kết quả. `GET /api/v1/backtests/presets` cung cấp hai preset; giao diện mới mặc định `research` khi chưa có cấu hình lưu:
+
+| Thành phần | `research` | `weekly` |
+| --- | --- | --- |
+| Fixed half-width | 0,20 log | 0,15 log |
+| Cửa sổ biến động | 30 ngày | 14 ngày |
+| `dynamic` | Độ rộng tại entry, dời tâm khi ra ngoài khoảng | Độ rộng tại entry, dời tâm hằng tuần |
+| `vol_scaled` | Độ rộng tại entry và giữ vị thế | Rolling trễ, cập nhật độ rộng và tâm hằng tuần |
+
+Preset có vốn 50.000 USD, gas 15 USD/đơn vị, seed 42, concentration 3, min-gap 7 ngày, tối đa 52 lần dời, trượt giá và protocol fee bằng 0. `configuration_profile` nhận diện cấu hình khớp preset hoặc tùy chỉnh. Giao diện bổ sung optimizer để so sánh năm nhóm LP cùng HODL. Nhãn chuỗi, bảng cấu hình và CSV căn cứ kết quả đã chạy; `strategy_rules` ghi quy tắc từng chiến lược, CSV thêm phiên bản, chế độ, độ rộng và cửa sổ.
+
+Để tương thích, request API không gửi `strategy_mode` vẫn dùng `weekly`; schema giữ mặc định 0,15/14 và danh sách chiến lược cũ nếu client không gửi danh sách tường minh. Kết quả v1 đã lưu vẫn được GET đọc nguyên vẹn và được nhận diện là weekly, không chuyển nhãn theo preset mới. Request mới tạo kết quả v2 với hash riêng; archive `stage5-descriptive-research-v2` và các kết quả cũ không bị ghi đè.
+
+Giá và volume là quan sát; active-L lịch sử, fee-growth, protocol fee/gas vintage và crossing nội ngày chưa được tái dựng. TVL dùng độ trễ giả định, chưa xác minh vintage công bố. Chưa đủ pool price/volume 2022–2024 để xác nhận OOS 2025–2026. Chọn preset nghiên cứu không bảo đảm cùng số archive nếu khác pool, kỳ thực tế, dữ liệu/hash hoặc phiên bản.
 
 Các engine/API bước 1–5 và dashboard gốc còn ở `/legacy`, `/dashboard/`. Các run cũ và nghiên cứu lưu trữ không bị ghi đè. Lệnh research mới giữ phạm vi tám pool Ethereum ban đầu và có phiên bản riêng; sáu pool thêm chưa tự được đưa vào nghiên cứu hồi quy đã công bố.
 
 Giao diện RangeLab không còn liên kết điều hướng sang dashboard gốc. Tin tức hoạt động bằng worker riêng, không ghi vào registry, lịch sử, source ledger hoặc run đã lưu. Các origin/endpoint nguồn được cố định phía máy chủ; không nhận URL tùy ý từ trình duyệt. Bài lỗi định dạng hoặc quá cũ/tương lai bị bỏ qua, nội dung trùng URL được gộp, phản hồi nguồn giới hạn 2 MB. Nguồn hỏng giữ lần thành công trước và báo trạng thái. Giao diện chỉ đưa ra hai nguồn công khai đang sử dụng, không hiển thị hướng dẫn đăng ký API hoặc nguồn chưa kết nối.
+
+## Đối chiếu bằng chứng và API tái lập
+
+`GET /api/v1/research/reconciliation` chỉ đọc các tệp gắn với manifest archive, kiểm tra SHA256 và kiểm tra cùng manifest trong quá trình đọc. Endpoint trả 404 khi thiếu bộ tệp và 503 khi không thể đối chiếu cùng phiên bản/hash hợp lệ; không tự chạy lại nghiên cứu hoặc dùng dữ liệu minh họa thay thế.
+
+Giao diện hiển thị riêng:
+
+- H4: 72/72 dòng có lợi ích tăng thêm trước gas bằng 0, extra gas bằng 0 và ngưỡng hòa vốn trống; mẫu này chưa nhận diện đánh đổi tái cân bằng nên chưa đủ bằng chứng cho H4.
+- Phân rã: 40 kết quả toàn kỳ có gas 0,06% vốn và slippage 0; kiểm tra residual trên từng hàng. Không suy gas/slippage từ phần dư của các trung vị độc lập.
+- Optimizer: trung vị toàn kỳ theo pool 16,26% so với fixed 21,24%, khác phép đo trung bình chênh lệch ghép cặp theo cửa sổ 30 ngày +1,48 điểm %, CI bootstrap thăm dò +0,94 đến +2,04. Bộ sau gồm 88 cặp, 11 cửa sổ, 999 lần bootstrap; chưa xác nhận OOS.
+
+Phần tái lập dùng `/api/v1/workbench/run` với body `config` lồng bên trong. Khi mở một workbench record, ví dụ gửi lại nguyên `saved.config` bằng `ConvertTo-Json -Depth 20`, so sánh `run.meta.run_id` với `saved.result.meta.run_id`. Không chụp snapshot mới khi mục tiêu là tái lập cùng run; `/simulate` và `/runs` chỉ thuộc hợp đồng legacy. Xem [đối chiếu tám vấn đề](thesis_alignment_audit.md) và [ví dụ đầy đủ](../README.md#ví-dụ-tái-lập-một-lần-chạy-workbench). Word bài luận gốc được giữ nguyên; các đoạn cần chỉnh trong bài được liệt kê riêng trong báo cáo đối chiếu.
 
 ## Chạy và cập nhật
 
@@ -83,4 +110,4 @@ Tài liệu giao thức: [Ethereum JSON-RPC](https://ethereum.org/developers/doc
 
 ## Tài liệu giải thích hệ thống
 
-Tài liệu tiếng Việt gồm chức năng, ba mô hình giá, định giá LP, dữ liệu và nguồn gốc, tối ưu hóa, policy, stress, độ nhạy, historical replay, nghiên cứu lưu trữ và vận hành. Xem `docs/dashboard_giai_thich_chuc_nang_du_lieu_mo_hinh.docx` hoặc `docs/dashboard_explained_vi.md`.
+Tài liệu Word `docs/dashboard_giai_thich_chuc_nang_du_lieu_mo_hinh.docx` và bản đọc `docs/dashboard_explained_vi.md` là bản **22/10/2026**, giới thiệu chức năng, mô hình, dữ liệu và vận hành trước khi thêm các preset comparison mới. Chúng không được viết lại trong đợt này. Với quy tắc research/weekly và bằng chứng đã đối chiếu ngày **26/10/2026**, xem [báo cáo đối chiếu](thesis_alignment_audit.md) và [hướng dẫn sử dụng cập nhật](dashboard_user_guide.md).

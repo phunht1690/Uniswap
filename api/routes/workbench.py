@@ -13,7 +13,7 @@ from api.app_schemas import WorkbenchRequest,StressRequest,SensitivityRequest,Ba
 from src.data.backtest import BacktestUnavailable,logged_frame
 from src.data.market import MarketUnavailable
 from src.data.availability import backtest_availability
-from src.evaluation.comparison import ComparisonService
+from src.evaluation.comparison import ComparisonService,comparison_presets
 from src.evaluation.pdf_report import pdf_bytes
 from src.models.workbench import WorkbenchService
 from src.models.service import SimulationInputError,UnknownPool
@@ -89,6 +89,10 @@ def history(pool_id:str,request:Request,days:int=30):
 def compare(body:BacktestComparison,request:Request):return guarded(lambda:ComparisonService(request.app.state.service.state_dir).run(body))
 
 
+@router.get('/backtests/presets')
+def backtest_presets():return comparison_presets()
+
+
 @router.get('/pools/{pool_id}/backtest-availability')
 def availability(pool_id:Annotated[str,Path(pattern='^[a-z0-9-]{1,80}$')],request:Request,window:Annotated[int,Query(ge=7,le=90)]=14):
     return guarded(lambda:backtest_availability(request.app.state.service.state_dir,pool_id,window))
@@ -101,11 +105,20 @@ def comparison(run_id:RunId,request:Request):return guarded(lambda:ComparisonSer
 @router.get('/backtests/comparisons/{run_id}/export.csv')
 def comparison_csv(run_id:RunId,request:Request):
     result=guarded(lambda:ComparisonService(request.app.state.service.state_dir).get(run_id))['result']
-    rows=[]
+    rows=[];meta=result['meta'];config=meta['effective_config']
+    mode=meta.get('strategy_mode','weekly' if meta['model_version']=='rangelab-comparison-v1' else '')
+    profile=meta.get('configuration_profile',{}).get('id','legacy_v1' if meta['model_version']=='rangelab-comparison-v1' else '')
     for strategy in result['strategies']:
+        rule=strategy.get('rules',meta.get('strategy_rules',{}).get(strategy['id'],{}))
+        if not rule and mode=='weekly':
+            rule={'rebalance_rule':'weekly' if strategy['id'] in {'dynamic','vol_scaled'} else 'none',
+                  'width_rule':{'full':'full','fixed':'fixed','vol_scaled':'rolling_weekly','dynamic':'volatility_at_entry','optimizer':'optimizer_at_entry','hodl':'hodl'}[strategy['id']]}
         for row in strategy['equity_curve']:
             rows.append({'run_id':run_id,'strategy':strategy['id'],'label':strategy['label'],**row,'capital_usd':result['meta']['effective_config']['capital'],
-                'data_kind':result['meta']['data_kind'],'effective_start':result['meta']['effective_start'],'effective_end':result['meta']['effective_end']})
+                'data_kind':result['meta']['data_kind'],'effective_start':result['meta']['effective_start'],'effective_end':result['meta']['effective_end'],
+                'model_version':meta['model_version'],'strategy_mode':mode,'configuration_profile':profile,
+                'half_width':config.get('half_width'),'volatility_window_days':config.get('volatility_window_days'),
+                'rebalance_rule':rule.get('rebalance_rule',''),'width_rule':rule.get('width_rule','')})
     stream=io.StringIO(newline='');writer=csv.DictWriter(stream,fieldnames=list(rows[0]) if rows else ['run_id','strategy','timestamp'])
     writer.writeheader();writer.writerows(rows)
     return Response('\ufeff'+stream.getvalue(),media_type='text/csv; charset=utf-8',headers={'Content-Disposition':f'attachment; filename="rangelab-backtest-{run_id[:12]}.csv"'})

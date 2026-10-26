@@ -40,7 +40,8 @@ def pdf_bytes(record,methodology=False):
         if opt:
             rows=[['Chỉ tiêu','Giá trị'],['Range liên tục (quote/base)',f"{opt['p_low']:,.8g} - {opt['p_high']:,.8g}"],
                 ['Vốn / mô hình / số đường',f'{cfg.capital:,.2f} USD / {cfg.price_model} / {cfg.n_paths}'],['Phí / IL (USD)',f"{opt['fees']*cfg.capital:,.2f} / {opt['il']*cfg.capital:,.2f}"],
-                ['Gas / ma sát (USD)',f"{opt['gas']*cfg.capital:,.2f} / {opt['rebalance_cost']*cfg.capital:,.2f}"],['Lợi nhuận ròng LP',f"{opt['net']:.3%}"],
+                ['Gas / ma sát (USD)',f"{opt['gas']*cfg.capital:,.2f} / {opt['rebalance_cost']*cfg.capital:,.2f}"],
+                ['Lãi/lỗ phòng hộ (USD)',f"{opt.get('hedge_pnl',0)*cfg.capital:,.2f}"],['Lợi nhuận ròng LP',f"{opt['net']:.3%}"],
                 ['Chênh lệch so với HODL',f"{opt['excess_vs_hodl']:.3%}"],['Tỷ lệ ngày trong range / xác suất từng rời range',f"{opt['active_share']:.2%} / {opt['exit_prob']:.2%}"],
                 ['Q5 / CVaR5 chênh lệch cuối kỳ',f"{opt['q5']:.3%} / {opt['cvar5']:.3%}"],['Policy / seed',record.config.rebalance_policy+' / '+str(cfg.seed)]]
             table(rows)
@@ -61,6 +62,9 @@ def pdf_bytes(record,methodology=False):
             'Phí dùng volume pool và active-L snapshot, giữ cố định thanh khoản nền trong tương lai. Quote/USD không đổi, phí không tái đầu tư. Gas và ma sát là giả định người dùng. PnL hedge theo ngày được tách riêng nếu chọn phòng hộ.',
             'Giới hạn: quan sát ngày bỏ qua dao động nội ngày, funding và MEV/JIT. Không có ràng buộc khả năng thanh toán hoặc khẳng định OOS. Xem PDF phương pháp và JSON của run để có giả định đầy đủ.']
     for text in method_paragraphs:story.append(p(text))
+    story.append(p('Công thức đầy đủ và quy ước dấu','Heading2'))
+    story.append(p('Với K là vốn ban đầu, V_inventory là giá trị token trong LP, F là phí, G là gas, C là ma sát và H là PnL phòng hộ: R_LP = (V_inventory + F - G - C + H)/K - 1.'))
+    story.append(p('IL_loss = V_HODL - V_inventory là phần thiếu hụt inventory; chênh lệch ΔR = (F - IL_loss - G - C + H)/K. Khi không phòng hộ, H = 0. Không trừ IL thêm lần nữa nếu đã dùng V_inventory. Công thức không có H chỉ áp dụng cho chiến lược không phòng hộ.'))
     story.append(p('Tái lập và nguồn dữ liệu','Heading2'))
     provenance_rows=[['Tham số','Giá trị'],['Volatility hiệu lực / volume ngày trung bình',f"{result['effective_vol_annual']:.3%} / {result['mean_daily_volume_usd']:,.2f} USD"],
         ['Gas mỗi đơn vị / phí trượt giá',f'{cfg.gas_usd:,.2f} USD / {cfg.rebalance_slippage_bps:g} bps'],['Giới hạn xác suất / độ rộng min-max',f'{cfg.risk_max_exit_prob:.2%} / {cfg.min_half_width:g} - {cfg.max_half_width or "auto"} log'],

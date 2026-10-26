@@ -2,6 +2,8 @@
 
 RangeLab giúp bạn thử việc cung cấp thanh khoản trên Uniswap: chọn khoảng giá, so sánh với giữ token và kiểm tra các tình huống rủi ro. Các phép tính là mô phỏng theo dữ liệu và giả định được hiển thị; ứng dụng không gửi giao dịch hay sử dụng tiền trong ví.
 
+Cập nhật hướng dẫn ngày **26/10/2026**. [Bản đối chiếu bài luận và dashboard](thesis_alignment_audit.md) giải thích quy tắc và bằng chứng của lần cập nhật này. Tài liệu Word `dashboard_giai_thich_chuc_nang_du_lieu_mo_hinh.docx` và bản đọc `dashboard_explained_vi.md` vẫn là bản **22/10/2026**, chưa mô tả các preset mới; đọc kèm bản đối chiếu. Bài luận Word gốc được giữ nguyên.
+
 ## Hiểu nhanh trước khi bắt đầu
 
 | Thuật ngữ | Cách hiểu |
@@ -61,11 +63,36 @@ Nhãn **Token liên quan** nghĩa là bài nhắc tới một token trong cặp 
 
 ## Thử chiến lược trong quá khứ
 
-Chọn pool, khoảng ngày, vốn và phí mạng, rồi chạy để so sánh các chiến lược trên cùng giai đoạn. Bạn có thể đổi giữa USD và tỷ lệ lợi nhuận, bật/tắt từng đường biểu đồ hoặc tải CSV để kiểm tra chi tiết.
+Chọn **Bộ cấu hình** trước khi đặt pool và khoảng ngày. Màn hình mới khi chưa có cấu hình lưu mặc định **Tái lập quy tắc nghiên cứu**. Có năm nhóm LP, gồm optimizer, cùng mốc HODL; bạn có thể bật/tắt chuỗi, đổi USD/phần trăm và tải CSV.
+
+| Quy tắc hoặc tham số | Tái lập quy tắc nghiên cứu | Biến thể hằng tuần của giao diện cũ |
+| --- | --- | --- |
+| Độ rộng fixed | w = 0,20 log | w = 0,15 log |
+| Cửa sổ biến động | 30 ngày | 14 ngày |
+| Khoảng động | Giữ độ rộng lúc mở; chỉ dời tâm sau khi giá ra ngoài khoảng | Giữ độ rộng lúc mở; xét dời tâm hằng tuần |
+| Theo biến động | Giữ độ rộng và khoảng tính tại thời điểm mở | Cập nhật độ rộng và tâm hằng tuần từ biến động trễ |
+
+Preset đặt vốn 50.000 USD, gas 15 USD mỗi đơn vị và seed 42. Bạn vẫn có thể đổi tham số; khi đó màn hình ghi cấu hình tùy chỉnh nếu không còn khớp một preset. Đổi bộ cấu hình chưa sửa kết quả đã tính: bấm chạy lại để áp dụng, và luôn đọc phần **Cấu hình của kết quả đang hiển thị**.
+
+Kết quả comparison v1 đã lưu giữ quy tắc hằng tuần, không được đổi tên thành nghiên cứu sau khi cập nhật. Cấu hình cũ trong trình duyệt cũng được giữ; để chủ động áp dụng quy tắc mới, chọn lại preset nghiên cứu. Với người gọi API, `strategy_mode` phân biệt `research` và `weekly`; body cũ bỏ trường này vẫn dùng weekly cùng mặc định 0,15/14 để tương thích.
+
+Khớp preset chỉ là khớp quy tắc và tham số. Để tái lập số trong bài, còn cần đúng pool, khoảng ngày thực tế, dữ liệu/hash và phiên bản archive. Không coi kết quả mới trên 14 pool là tự động tái lập nghiên cứu lưu trữ 8 pool.
 
 Nếu có ngày thiếu, dùng khoảng liên tục được giao diện gợi ý. Một số pool có lịch sử ngắn; số ngày dùng để ước tính biến động trước ngày bắt đầu cũng được hiển thị. Giai đoạn ngắn cho ít bằng chứng hơn về hiệu quả chiến lược.
 
 Giá và khối lượng giao dịch lấy từ dữ liệu quan sát, nhưng phí nhận được, thanh khoản nền và khớp lệnh vẫn được mô hình hóa theo ngày. Kết quả không tái dựng từng giao dịch hay lợi nhuận thực tế của một vị thế trên chuỗi. Chiến lược đứng đầu chỉ là tốt nhất trong **giai đoạn đã chọn**, không xác nhận hiệu quả tương lai hoặc kiểm định ngoài mẫu.
+
+## Đọc bằng chứng nghiên cứu và cách tái lập
+
+Tab **Dữ liệu & Phương pháp** có phần **Nghiên cứu lưu trữ và quy tắc đang chạy**. Các số được lấy từ file nghiên cứu cùng phiên bản sau khi kiểm tra hash, kèm research ID. Nếu thiếu tệp hoặc hash sai, giao diện báo không đọc được bằng chứng, không thay bằng số minh họa.
+
+Trong bộ nghiên cứu đang đối chiếu, cả 72 tình huống gas hòa vốn có lợi ích tăng thêm trước gas và số đơn vị gas tăng thêm bằng 0. Không phát sinh dời khoảng nên **chưa đủ bằng chứng cho H4**; ngưỡng hòa vốn không xác định, không phải bằng 0. 40 kết quả toàn kỳ có gas 0,06% vốn và trượt giá 0. Chi phí này lấy trực tiếp trên từng hàng; phần dư khi trừ các trung vị độc lập không phải chi phí thực.
+
+Hai ô optimizer trả lời hai câu hỏi khác nhau. Trung vị ΔR toàn kỳ theo pool của optimizer thấp hơn fixed; còn trung bình chênh lệch optimizer − fixed trên cửa sổ 30 ngày là **+1,48 điểm phần trăm**, CI thăm dò 95% **+0,94 đến +2,04**, dựa trên 88 cặp pool/cửa sổ và 11 cửa sổ thời gian. Đây là hai phép đo khác chân trời và cách tổng hợp; không có nghĩa optimizer tốt hơn ở mọi pool hoặc đã được xác nhận ngoài mẫu.
+
+Phần **Tái lập đúng phiên bản và công thức** có ví dụ gọi `/api/v1/workbench/run` với `config` lồng bên trong. Khi đã có kết quả, gửi lại nguyên `config` hiệu lực của bản ghi ở `/api/v1/workbench/runs/{run_id}` và giữ đúng snapshot, dữ liệu, phiên bản, môi trường. `/simulate` là API legacy, không thay cho workbench, comparison hoặc toàn bộ nghiên cứu. Xem [ví dụ PowerShell trong README](../README.md#ví-dụ-tái-lập-một-lần-chạy-workbench).
+
+Khi bật phòng hộ, tài sản LP còn cộng lãi/lỗ hedge. Với `IL_loss = HODL − inventory` là phần thiếu hụt theo quy ước dương, công thức là `ΔR = (phí − IL_loss − gas − ma sát + PnL phòng hộ) / vốn`. Không phòng hộ có thành phần này bằng 0. Không trừ thêm IL khỏi giá trị inventory vì sẽ tính hai lần. Phòng hộ rời rạc theo ngày chưa tính funding, lãi vay, ký quỹ hoặc thanh lý.
 
 ## Dữ liệu thị trường cập nhật và kết quả đã lưu
 

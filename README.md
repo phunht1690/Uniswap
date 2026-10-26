@@ -4,7 +4,7 @@ RangeLab là web mô phỏng việc cung cấp thanh khoản trên Uniswap v3. B
 
 Giao diện có hiệu ứng ngắn khi đổi tab, vẽ biểu đồ và nhận số liệu mới. Giá trị thật luôn xuất hiện ngay; các lần kiểm tra API không có số mới sẽ không làm số liệu nhấp nháy. Hiệu ứng tự tắt khi thiết bị bật **Giảm chuyển động**.
 
-Xem [tài liệu Word về chức năng, dữ liệu và mô hình](docs/dashboard_giai_thich_chuc_nang_du_lieu_mo_hinh.docx) hoặc [bản đọc trực tiếp](docs/dashboard_explained_vi.md) để hiểu cơ chế hoạt động, cách đọc kết quả và giới hạn của dashboard.
+Xem [hướng dẫn sử dụng hiện tại](docs/dashboard_user_guide.md) và [đối chiếu bài luận với dashboard ngày 26/10/2026](docs/thesis_alignment_audit.md) để hiểu cấu hình, quy tắc và phạm vi bằng chứng. [Tài liệu Word về chức năng, dữ liệu và mô hình](docs/dashboard_giai_thich_chuc_nang_du_lieu_mo_hinh.docx) cùng [bản đọc trực tiếp](docs/dashboard_explained_vi.md) là bản **22/10/2026**, chưa mô tả các preset mới; đọc kèm bản đối chiếu ngày 26/10/2026. Bài luận Word gốc không được sửa bởi cập nhật dashboard này.
 
 ## Mở web trên máy hiện tại
 
@@ -75,9 +75,27 @@ Internet cần cho lần cài thư viện và cho chế độ theo dõi thị tr
 2. **Tìm khoảng giá LP:** nhập vốn, số ngày, mức chấp nhận rủi ro và các giả định; bấm **Chạy tối ưu hóa RangeLab**.
 3. **Kết quả tối ưu hóa:** đọc khoảng giá, phí, lợi nhuận ròng và chênh lệch với giữ token. Có thể tải PDF/JSON hoặc sao chép liên kết kết quả.
 4. **Kiểm tra rủi ro & dữ liệu:** thử tình huống giá, dao động và phí mạng; phân tích độ nhạy; xem nguồn và cách tính. Sau khi chỉnh thanh trượt, bấm **Chạy kiểm tra rủi ro** để cập nhật biểu đồ.
-5. **Thử chiến lược trong quá khứ:** chọn khoảng ngày, chạy so sánh trên cùng dữ liệu và tải CSV. Nếu thiếu ngày, dùng khoảng liên tục được gợi ý.
+5. **Thử chiến lược trong quá khứ:** chọn bộ cấu hình, pool và khoảng ngày, rồi chạy so sánh trên cùng dữ liệu và tải CSV. Màn hình mới mặc định **Tái lập quy tắc nghiên cứu**; cấu hình và kết quả đã lưu vẫn giữ quy tắc của chúng. Nếu thiếu ngày, dùng khoảng liên tục được gợi ý.
 
 Nút **Thuật ngữ** giải thích các từ và chỉ số trong dashboard, kèm ví dụ. Nút **ⓘ Thông tin** giới thiệu mục đích, quy trình và cách đọc kết quả. Xem thêm [hướng dẫn sử dụng đầy đủ](docs/dashboard_user_guide.md) và [ma trận tính năng/API](docs/rangelab_integration.md).
+
+## Chọn đúng cấu hình khi so sánh quá khứ
+
+Comparison mới dùng `rangelab-comparison-v2`, có trường `strategy_mode` để phân biệt hai quy tắc. Giao diện gọi `GET /api/v1/backtests/presets` và mặc định chọn preset nghiên cứu khi chưa có cấu hình lưu. Mỗi preset đặt vốn 50.000 USD, gas 15 USD/đơn vị, seed 42, hệ số thanh khoản 3, trượt giá 0 và tối đa 52 lần dời khoảng; người dùng vẫn có thể sửa thành cấu hình tùy chỉnh.
+
+| Tham số hoặc chiến lược | Tái lập quy tắc nghiên cứu | Biến thể hằng tuần của giao diện cũ |
+| --- | --- | --- |
+| `strategy_mode` | `research` | `weekly` |
+| Fixed `half_width` | 0,20 log | 0,15 log |
+| Cửa sổ biến động | 30 ngày | 14 ngày |
+| `dynamic` | Giữ độ rộng tại entry; dời tâm sau quan sát giá ra ngoài khoảng | Giữ độ rộng tại entry; xét dời tâm hằng tuần |
+| `vol_scaled` | Giữ độ rộng và khoảng tính từ biến động tại entry | Cập nhật độ rộng và tâm hằng tuần từ biến động rolling trễ |
+
+Giao diện so sánh **năm nhóm LP, gồm optimizer, cùng HODL**. Đổi preset hoặc tham số chưa làm thay đổi kết quả đang xem cho đến khi chạy lại. Bảng cấu hình của kết quả, nhãn chiến lược và CSV ghi quy tắc của chính lần chạy đó; không đổi nhãn một kết quả cũ theo lựa chọn hiện tại.
+
+Để tương thích client cũ, API `POST /api/v1/backtests/compare` **không gửi `strategy_mode`** vẫn dùng `weekly` và các mặc định schema 0,15/14. Muốn quy tắc nghiên cứu qua API phải gửi rõ `strategy_mode='research'`, `half_width=0.20`, `volatility_window_days=30` và các tham số cần khớp khác. `strategies` của API vẫn hỗ trợ danh sách tường minh; thêm `optimizer` khi cần so với bộ tối ưu. Các bản ghi comparison v1 được đọc lại nguyên vẹn và nhận diện là quy tắc weekly; run mới có phiên bản v2 và danh tính riêng.
+
+Preset khớp quy tắc không bảo đảm khớp số đã công bố: cần cùng pool, kỳ thực tế, dữ liệu/hash, chi phí và phiên bản nghiên cứu. Xem [bảng đối chiếu và kiểm tra số liệu gốc](docs/thesis_alignment_audit.md).
 
 ## Tin tức & cộng đồng
 
@@ -189,12 +207,39 @@ Dashboard tại `/legacy` hoặc `dashboard/index.html` có debounce 300 ms, sao
 | GET /api/v1/workbench/runs/{run_id} | Xem cấu hình và kết quả RangeLab đã lưu |
 | POST /api/v1/workbench/stress | Chạy tình huống rủi ro trên bộ đầu vào của kết quả gốc |
 | POST /api/v1/workbench/sensitivity | Thử nhiều mức biến động giá và tối ưu lại từng mức |
-| POST /api/v1/backtests/compare | So sánh chiến lược trên cùng mẫu lịch sử |
+| GET /api/v1/backtests/presets | Hai preset research/weekly, tham số và phiên bản comparison |
+| POST /api/v1/backtests/compare | So sánh chiến lược với `strategy_mode`, cấu hình hiệu lực và quy tắc từng chuỗi |
+| GET /api/v1/research/reconciliation | Đối chiếu archive đã kiểm tra hash: H4, phân rã từng hàng và bootstrap optimizer−fixed |
 | GET /api/v1/backtests/comparisons/{run_id}/export.csv | Tải chi tiết backtest |
 
 Kết quả RangeLab nằm ở `outputs/workbench/`; các bản đầu vào thị trường đã chụp nằm ở `outputs/market_snapshots/`. Trường `run_id` của RangeLab dùng endpoint `/workbench/runs/{run_id}`, không dùng endpoint `/runs/{run_id}` của engine gốc.
 
-### Dữ liệu chung và engine gốc
+### Ví dụ tái lập một lần chạy workbench
+
+Giao diện tối ưu hóa dùng body có `config` lồng bên trong. Ví dụ sau dùng dữ liệu nghiên cứu đã lưu; nó không tạo snapshot thị trường mới và không tái lập đồng thời báo cáo 8 pool hoặc comparison lịch sử:
+
+```powershell
+$config = @{pool='weth-usdc-500'; capital=50000; horizon_days=60; vol_annual=0.65; gas_usd=15; risk_max_exit_prob=0.4; min_rebalance_gap_days=7; price_model='gbm'; n_paths=300; seed=42; path_index=0}
+$request = @{
+    config = $config
+    rebalance_policy = 'none'
+    delta_threshold = 0.1
+    volume_daily_override_usd = $null
+    market_snapshot_id = $null
+}
+$run = Invoke-RestMethod -Method Post `
+    -Uri 'http://127.0.0.1:8000/api/v1/workbench/run' `
+    -ContentType 'application/json' -Body ($request | ConvertTo-Json -Depth 20)
+$saved = Invoke-RestMethod -Uri ('http://127.0.0.1:8000/api/v1/workbench/runs/' + $run.meta.run_id)
+$replay = Invoke-RestMethod -Method Post `
+    -Uri 'http://127.0.0.1:8000/api/v1/workbench/run' `
+    -ContentType 'application/json' -Body ($saved.config | ConvertTo-Json -Depth 20)
+$run.meta.run_id -eq $saved.result.meta.run_id -and $run.meta.run_id -eq $replay.meta.run_id
+```
+
+Kết quả workbench dùng `rangelab-workbench-v3` và lưu trong `outputs/workbench/`. Gửi lại nguyên cấu hình hiệu lực đã lưu, cùng snapshot, dữ liệu và môi trường số để kiểm tra cùng `run_id`. Nếu dùng thị trường mới, chụp snapshot một lần và gửi lại đúng `market_snapshot_id`; không tạo snapshot mới cho lần tái lập.
+
+### Dữ liệu chung và API legacy của engine gốc
 
 | Route | Trạng thái bước 5 |
 | --- | --- |
@@ -203,14 +248,14 @@ Kết quả RangeLab nằm ở `outputs/workbench/`; các bản đầu vào th�
 | GET /api/v1/pools | 14 pool trong bộ nghiên cứu đã lưu, giá/TVL/volume/vol/asof; thiếu registry mới dùng 4 fixture có nhãn |
 | GET /api/v1/market/live | Giá/active-L theo block mới và TVL/volume có thời điểm/trạng thái riêng; đọc cache tức thì |
 | POST /api/v1/market/snapshot | Chụp đầu vào thị trường mới và lịch sử hiệu chỉnh thành bản bất biến cho mô phỏng |
-| POST /api/v1/simulate | Mô phỏng NumPy; GBM chạy ngay; bootstrap/GARCH cần lịch sử đã ghi nguồn và calibration_asof |
-| GET /api/v1/runs/{run_id} | Trả config + result đã lưu |
+| POST /api/v1/simulate | **Legacy:** mô phỏng NumPy của engine gốc, không thay cho workbench; bootstrap/GARCH cần lịch sử và calibration_asof |
+| GET /api/v1/runs/{run_id} | **Legacy:** đọc config + result của engine gốc hoặc historical replay, không đọc run workbench |
 | GET /api/v1/backtest/{pool}?start&end&strategy | Historical replay với giá/volume quan sát và phí mô hình từ TVL trễ |
 | GET /api/v1/backtests/{run_id}/curve.csv | Curve CSV có nhãn và run_id |
 | GET /api/v1/research/status | Manifest CSV/PNG, phạm vi và giới hạn nghiên cứu |
 | GET /api/v1/research/files/{name} | Tải file nằm trong manifest, xác minh SHA256 |
 
-Input `/simulate`: `pool`, `capital`, `horizon_days`, `vol_annual`, `gas_usd`, `risk_max_exit_prob`, `min_rebalance_gap_days`, `price_model`, `n_paths`, `seed`, `path_index`. Ví dụ `pool="weth-usdc-500"`, `vol_annual=0.65` nghĩa là 65%/năm. Giới hạn: horizon 1–365, n_paths 1–5000, n_paths×horizon≤1.000.000. Sai schema trả 422; pool/asof sai trả 400, run không tồn tại trả 404, dữ liệu quan sát thiếu/hỏng trả 503, phạm vi backtest không đủ trả 400. Dashboard gọi API cùng origin. CORS bổ sung chỉ cho localhost cổng 3000/5173.
+Input **legacy** `/simulate`: `pool`, `capital`, `horizon_days`, `vol_annual`, `gas_usd`, `risk_max_exit_prob`, `min_rebalance_gap_days`, `price_model`, `n_paths`, `seed`, `path_index`. Ví dụ `pool="weth-usdc-500"`, `vol_annual=0.65` nghĩa là 65%/năm. Giới hạn: horizon 1–365, n_paths 1–5000, n_paths×horizon≤1.000.000. Sai schema trả 422; pool/asof sai trả 400, run không tồn tại trả 404, dữ liệu quan sát thiếu/hỏng trả 503, phạm vi backtest không đủ trả 400. Dashboard gọi API cùng origin. CORS bổ sung chỉ cho localhost cổng 3000/5173.
 
 Tham số bổ sung: `max_rebalances` (mặc định 52), `rebalance_slippage_bps` (0), `min_half_width` (0.005), `max_half_width` (null → tự tính), `bootstrap_mean_block_days` (10), `calibration_asof` (ISO 8601 có múi giờ). Vốn từ 1 đến 100 triệu USD. API tính lợi suất theo tỷ lệ vốn: 0.01 = 1%, không phải 0.01 USD.
 
@@ -218,16 +263,9 @@ Không đọc/ghi được cache trả 503 kèm thông báo quyền thư mục; 
 
 `optimum=null`, `meta.optimization_status="infeasible"` và thông báo rõ nếu không điểm nào trên lưới thỏa ngưỡng rủi ro. Không trả range vi phạm như một nghiệm tối ưu. Khi đó `pnl_path`/`stress` rỗng và bảng chỉ có bốn chiến lược cơ sở. Ngưỡng rủi ro là xác suất rời range từng ghi nhận tại các mốc ngày trên tập Monte Carlo, chưa phải bảo đảm ngoài mẫu.
 
-```powershell
-$config = @{pool='weth-usdc-500'; capital=50000; horizon_days=60; vol_annual=0.65; gas_usd=15; risk_max_exit_prob=0.4; min_rebalance_gap_days=7; price_model='gbm'; n_paths=300; seed=42; path_index=0}
-$run = Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8000/api/v1/simulate' -ContentType 'application/json' -Body ($config | ConvertTo-Json)
-$saved = Invoke-RestMethod -Uri ('http://127.0.0.1:8000/api/v1/runs/' + $run.meta.run_id)
-# Re-submit the saved configuration with the same data/settings/model version.
-$replay = Invoke-RestMethod -Method Post -Uri 'http://127.0.0.1:8000/api/v1/simulate' -ContentType 'application/json' -Body ($saved.config | ConvertTo-Json)
-$run.meta.run_id -eq $replay.meta.run_id
-```
 
-Run được lưu tại `outputs/runs/<sha256>.json`. Hash bao gồm cấu hình chuẩn hóa, registry/tick hash, snapshot lịch sử trước asof, provenance, YAML settings, model_version và phiên bản thư viện số; không gồm thời gian chạy. Phiên bản hiện tại là `stage4-observed-inputs-v2`. Cùng config/seed/dữ liệu/settings/phiên bản cho cùng run_id và result, kể cả khởi động lại. Thay code mô hình phải tăng model_version. Đổi `path_index` cũng đổi run_id. Thêm dữ liệu sau calibration_asof không đổi snapshot lịch sử/hash trước mốc đó khi registry/ticks/settings không đổi. Run cũ vẫn đọc được; muốn tái tính phiên bản cũ cần giữ code/config/data tương ứng. Có thể đặt `UNISWAP_STATE_DIR` để chuyển vị trí data và outputs.
+
+Với **legacy `/simulate`**, run được lưu tại `outputs/runs/<sha256>.json`. Hash bao gồm cấu hình chuẩn hóa, registry/tick hash, snapshot lịch sử trước asof, provenance, YAML settings, model_version và phiên bản thư viện số; không gồm thời gian chạy. Phiên bản engine legacy là `stage4-observed-inputs-v2`; đây không phải phiên bản của workbench hoặc comparison. Cùng config/seed/dữ liệu/settings/phiên bản cho cùng run_id và result, kể cả khởi động lại. Thay code mô hình phải tăng model_version. Đổi `path_index` cũng đổi run_id. Thêm dữ liệu sau calibration_asof không đổi snapshot lịch sử/hash trước mốc đó khi registry/ticks/settings không đổi. Run cũ vẫn đọc được; muốn tái tính phiên bản cũ cần giữ code/config/data tương ứng. Có thể đặt `UNISWAP_STATE_DIR` để chuyển vị trí data và outputs.
 
 Trong chế độ quan sát, thiếu `calibration_asof` được giải thành mốc muộn nhất giữa thời gian block, thời gian tải metadata và context. Không cho đặt asof sớm hơn thời điểm biết snapshot hiện tại. Đây là dự báo có điều kiện trên snapshot đã tải, chưa phải backtest lịch sử.
 
@@ -238,12 +276,12 @@ Trong chế độ quan sát, thiếu `calibration_asof` được giải thành m
 - `strategies.py`: full, fixed log ±0.2, volatility-scaled 1.5σ√T và dynamic recenter. Phí không tái đầu tư; một gas mở, hai gas/recenter, chưa tính gas đóng. `min_gap` ngăn hai lần recenter quá gần; lần đầu có thể xảy ra ngày 1, giống JS. Recenter sau khi tính phí của bar; range mới sinh phí từ bar sau. Slippage là bps × giá trị inventory được dời, ghi riêng vào cash cost. Không áp ràng buộc khả năng tài trợ khi gas lớn, nên tổng wealth có thể âm.
 - Optimizer dùng chung đường giá cho mọi range/chiến lược. Lưới log 20 điểm từ min_half_width đến max_half_width; mặc định max = max(0.5, 4σ√T), thay lưới cũ quá hẹp. Chỉ chọn điểm khả thi có ΔR kỳ vọng cao nhất. Đây là tối ưu trong kịch bản mô phỏng; kiểm chứng ngoài mẫu còn thiếu dữ liệu hiệu chỉnh pool.
 - `fees.py`: quan sát dùng current raw L đã quy đổi đúng đơn vị engine, **không suy L từ TVL**. Giữ L này cố định theo thời gian và giá tương lai; tick chart là profile snapshot, chưa dùng tick tương lai để thay L nền. Bootstrap lấy cặp return–volume lịch sử. GBM/GARCH hiệu chỉnh ba mức volume theo volatility trễ một kỳ trên 180 ngày trước asof (tối thiểu 10 mẫu/mức), fallback mean 30 ngày hoặc volume 24h quan sát nếu thiếu lịch sử. Hệ số innovation, cap 3 và scale 0.8 vẫn là giả định kịch bản được ghi trong meta. σ=0 dùng mean của regime. Chế độ fixture/offline giữ giả định TVL×CONC/2 có nhãn.
-- `evaluation/metrics.py` tính fees, IL, gas, slippage, net, ΔR, Q5, CVaR5, active, exit và số rebalance. ΔR = (inventory + fees − gas − slippage − HODL)/capital, không trừ IL hai lần. Q5 theo order statistic floor(N×0.05), CVaR lấy trung bình ceil(N×0.05) kết quả xấu nhất.
+- `evaluation/metrics.py` tổng hợp fees, IL, gas, slippage, net, ΔR, Q5, CVaR5, active, exit và số rebalance. Workbench có phòng hộ dùng ΔR = (inventory + fees − gas − slippage + hedge_pnl − HODL)/capital. Tương đương ΔR = (fees − IL_loss − gas − slippage + hedge_pnl)/capital với IL_loss = HODL − inventory là khoản thiếu hụt theo quy ước dương. Không phòng hộ có hedge_pnl = 0; không trừ IL hai lần khỏi inventory. Q5 theo order statistic floor(N×0.05), CVaR lấy trung bình ceil(N×0.05) kết quả xấu nhất.
 - `features/point_in_time.py` dùng rolling features trễ một kỳ, snapshot chỉ lấy timestamp < calibration_asof, không backfill. Hàm tuning chỉ trả train+validation 2022–2024, loại test 2025–2026.
 
 Bootstrap/GARCH qua API yêu cầu `data/processed/history_<pool>.parquet` gồm `timestamp` (UTC), `price` (quote/base), `volume_usd`; giá ngày liên tiếp, không trùng, không thiếu, giá dương và volume không âm. File phải có SHA256 khớp `data/source_log.csv`. Bootstrap cần ≥31 quan sát giá; GARCH ≥101 và lợi suất không hằng. Thiếu lịch sử/asof hoặc fit không hội tụ trả 400 có lý do, không tự chuyển sang dữ liệu giả. Bộ tải bước 3 đã cung cấp lịch sử theo phạm vi aggregator cho phép; nguồn có ngày trống có thể chưa đủ điều kiện chạy mô hình ngày. Các unit test lịch sử dùng dữ liệu tổng hợp trong thư mục tạm có nhãn.
 
-Với bootstrap/GARCH, volatility dùng chọn S3/lưới là ước lượng trước asof; `vol_annual` điều khiển GBM. Giá p0 và L nền lấy snapshot đã xác minh. Giữ quote/USD tại snapshot cho mọi pool; riêng WBTC/WETH điều này giữ WETH/USD cố định, chưa phải mô hình chung hai tài sản theo USD. Stress ±30% giữ phí kỳ vọng không đổi, không mô hình hóa phản ứng volume/thanh khoản với cú sốc.
+Với bootstrap/GARCH, volatility dùng chọn S3/lưới là ước lượng trước asof; `vol_annual` điều khiển GBM. Giá p0 và L nền lấy snapshot đã xác minh. Giữ quote/USD tại snapshot cho mọi pool; riêng WBTC/WETH điều này giữ WETH/USD cố định, chưa phải mô hình chung hai tài sản theo USD. Stress ±30% của engine legacy giữ phí kỳ vọng không đổi. Stress workbench dùng log bridge có giá cuối kỳ cố định, chạy lại policy và tính phí theo thời gian trong khoảng, nhưng giữ volume trung bình và active-L cố định; không mô hình hóa phản ứng thị trường đầy đủ với cú sốc.
 
 ## Dữ liệu toàn bộ lịch sử
 
@@ -299,7 +337,7 @@ Nguồn kỹ thuật: [Uniswap LiquidityAmounts](https://github.com/Uniswap/v3-p
 # hoặc trên macOS/Linux: make research
 ```
 
-Lệnh đọc dữ liệu đã ghi nguồn, không cần key và không tải thêm mạng. Kết quả ở `outputs/research/<research_id>/`; `outputs/research/latest.json` là manifest có SHA256 từng CSV/PNG/JSON/Markdown, hash code/config/input và phiên bản thư viện. Các file có thể tải từ tab **Backtest lịch sử → Báo cáo nghiên cứu**. Lệnh không chọn hyperparameter theo kết quả test. Một lần chạy đầy đủ có thể mất vài phút.
+Lệnh đọc dữ liệu đã ghi nguồn, không cần key và không tải thêm mạng. Kết quả ở `outputs/research/<research_id>/`; `outputs/research/latest.json` là manifest có SHA256 từng CSV/PNG/JSON/Markdown, hash code/config/input và phiên bản thư viện. Các file có thể tải từ tab **Dữ liệu & Phương pháp → Kết quả nghiên cứu lưu trữ & hồi quy**. Lệnh không chọn hyperparameter theo kết quả test. Một lần chạy đầy đủ có thể mất vài phút.
 
 Backtest API nhận thêm: `capital`, `gas_usd`, `half_width` (fixed), `min_rebalance_gap_days`, `max_rebalances`, `rebalance_slippage_bps`, `risk_max_exit_prob`, `concentration` (mặc định 3), `protocol_fee_fraction` (mặc định 0, chỉ là kịch bản), `volatility_window_days` (30), `price_source=pool|reference`, `allow_partial=true`, `seed` (42). Không dùng volatility slider GBM cho lịch sử: ước lượng từ dữ liệu trước entry.
 
@@ -325,7 +363,13 @@ Fee model lịch sử là **ước tính**, không dùng current ticks/active L 
 
 Nghiên cứu mặc định: 8 pool, 5 chiến lược toàn kỳ; các vị thế 30 ngày không chồng lấn trong mỗi pool/chiến lược, lưới w=0.05/0.1/0.2/0.4, panel thêm dynamic. Các quy tắc có sẵn được giữ cố định. Hồi quy dùng vol và log mean volume trễ trước entry, log width, rebalance policy dự kiến. Pool FE **bỏ fee tier vì đồng tuyến tính**; mô hình pair FE riêng nhận diện liên hệ fee tier giữa hai pool cùng cặp. OLS dùng Driscoll–Kraay HAC và bậc tự do theo số kỳ; quantile τ=0.1/0.5/0.9 có circular common-time block bootstrap 99 lần (ghi rõ fit không hội tụ), không dùng p-value IID. ADF/Breusch–Pagan/VIF là chẩn đoán mô tả. Chỉ có 11 kỳ nên inference mang tính thăm dò.
 
-So sánh optimizer−fixed có CI block bootstrap 999 lần, giữ pairing và lấy mẫu chung theo thời gian cho tất cả pool. Bảng sensitivity so sánh vốn 5k/50k/500k USD × gas 0/15/100 × min_gap 1/7/30; có static cùng độ rộng với dynamic để tìm gas hòa vốn. Bảng robustness kiểm tra thanh khoản C, protocol fee, slippage, cửa sổ vol và nguồn giá; so sánh cửa sổ vol dùng cùng thời kỳ để tránh thay đổi mẫu.
+So sánh optimizer−fixed có CI block bootstrap 999 lần, giữ pairing và lấy mẫu chung theo thời gian cho tất cả pool. `GET /api/v1/research/reconciliation` đọc các tệp cùng manifest, kiểm tra SHA256 và trả bằng chứng cho giao diện; không chạy lại hoặc ghi đè archive. Với archive `2cffb779…c38e`:
+
+- **H4:** 72/72 dòng có lợi ích tăng thêm trước gas bằng 0 và số đơn vị gas tăng thêm bằng 0; ngưỡng gas hòa vốn để trống. Chưa đủ bằng chứng đánh đổi chi phí do dời khoảng, không phải ngưỡng gas bằng 0 hoặc H4 đã được xác nhận.
+- **Phân rã từng hàng:** 40/40 kết quả toàn kỳ có gas 0,06% vốn, trượt giá 0 và không dời khoảng. Hiệu `median(phí) − median(IL) − median(ΔR)` không phải trung vị chi phí; kiểm tra residual trên từng hàng thay vì suy chi phí từ các trung vị độc lập.
+- **Hai cách đo optimizer:** trung vị toàn kỳ theo pool là 16,26% cho optimizer và 21,24% cho fixed; trung bình chênh lệch ghép cặp theo cửa sổ 30 ngày là **+1,48 điểm phần trăm**, CI bootstrap thăm dò 95% **+0,94 đến +2,04 điểm phần trăm**, trên 88 cặp và 11 cửa sổ. Hai kết quả khác chân trời và phép tổng hợp, nên có thể khác dấu mà không mâu thuẫn; chưa phải xác nhận OOS.
+
+Bảng sensitivity so sánh vốn 5k/50k/500k USD × gas 0/15/100 × min_gap 1/7/30; phải dùng static cùng độ rộng với dynamic để tách ảnh hưởng dời tâm khi nghiên cứu gas hòa vốn. Bảng robustness kiểm tra thanh khoản C, protocol fee, slippage, cửa sổ vol và nguồn giá; so sánh cửa sổ vol dùng cùng thời kỳ để tránh thay đổi mẫu.
 
 Các bảng chính: đặc điểm pool, returns/decomposition, monthly returns/risk, width panel, regressions, ADF, sensitivity, gas break-even, robustness, split coverage và daily equity. Hình: equity curves, fee decomposition, width tradeoff, price/ranges, optimal width–volatility, regression coefficients, gas sensitivity và current ticks (ghi rõ không dùng cho lịch sử).
 

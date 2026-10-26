@@ -44,4 +44,6 @@ class SensitivityRequest(ApiModel):
 class BacktestComparison(BacktestRequest):
     half_width: float = Field(default=.15,ge=.000001,le=20)
     volatility_window_days: int = Field(default=14,ge=7,le=90)
+    # Omitted by pre-alignment clients: retain their weekly comparison behavior.
+    strategy_mode: Literal['research','weekly'] = 'weekly'
     strategies: list[Literal['full','fixed','vol_scaled','dynamic','optimizer','hodl']] = Field(default_factory=lambda:['full','fixed','vol_scaled','dynamic','hodl'],min_length=1,max_length=6)
