@@ -1,0 +1,2 @@
+source,endpoint,downloaded_at_utc,period_start,period_end,row_count,file_path,sha256,data_kind
+geckoterminal,https://api.geckoterminal.com/api/v2/networks/eth/pools/0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8/ohlcv/day,2026-10-20T15:31:19.586903+00:00,2025-10-22T00:00:00+00:00,2026-10-20T00:00:00+00:00,364,data/processed/history_weth-usdc-3000.parquet,b2e95ef0b56e573e675c625215f64245e180a8a02c915f06ee892aa0b76651a5,onchain_aggregator
