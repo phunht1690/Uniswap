@@ -73,6 +73,7 @@ class LiveMarket:
         self.metadata_interval_seconds = float(metadata_interval_seconds)
         if not all(math.isfinite(v) and v > 0 for v in [self.interval_seconds, self.metadata_interval_seconds]):
             raise ValueError('Live refresh intervals must be finite and positive.')
+        self.metadata_retry_interval_seconds = min(30., self.metadata_interval_seconds)
         self._transport = transport
         self._client = None
         self._task = None
@@ -122,6 +123,7 @@ class LiveMarket:
         return {'server_time': _iso(now), 'interval_seconds': self.interval_seconds,
                 'refresh_interval_seconds': self.interval_seconds,
                 'metadata_interval_seconds': self.metadata_interval_seconds,
+                'metadata_retry_interval_seconds': self.metadata_retry_interval_seconds,
                 'registry_error': self._registry_error, 'pools': rows}
 
     def _success(self, pool_id, section, values):
@@ -195,10 +197,19 @@ class LiveMarket:
             if force_rpc or now >= self._next_rpc:
                 self._next_rpc = now+self.interval_seconds
                 work = [self._rpc_chain(chain, pools) for chain, pools in groups.items()]
-            if now >= self._next_metadata:
+            metadata_due = now >= self._next_metadata
+            if metadata_due:
                 self._next_metadata = now+self.metadata_interval_seconds
                 work += [self._metadata_chain(chain, pools) for chain, pools in groups.items()]
             await asyncio.gather(*work)
+            if metadata_due:
+                # A failed first read must not leave the panel empty for the
+                # full successful-data cadence. _json still honors Retry-After.
+                with self._state_lock:
+                    failed = any(row['metadata']['status'] != 'ok' for row in self._rows.values())
+                if failed:
+                    self._next_metadata = min(self._next_metadata,
+                        time.monotonic()+self.metadata_retry_interval_seconds)
 
     async def _json(self, method, endpoint, source, **kwargs):
         # Never include URLs, raw exception text, RPC error messages or response

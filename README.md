@@ -110,6 +110,7 @@ API `GET /api/v1/news?pool=weth-usdc-500` cung cấp bản tin và trạng thái
 ## Dữ liệu thị trường mới và kết quả đã lưu
 
 - **Thị trường đang theo dõi:** giá và thanh khoản được kiểm tra mỗi **30 giây**; TVL, khối lượng 24 giờ và giá quy đổi USD mỗi **300 giây**. Giao diện đọc trạng thái mỗi 30 giây khi tab hoạt động. Đây là cập nhật gần thời gian thực theo chu kỳ, có độ trễ của nguồn.
+- **Khi nguồn TVL/khối lượng lỗi:** tự thử lại sau khoảng **30 giây**, thay vì đợi đủ 5 phút; nếu nguồn giới hạn lượt truy cập, vẫn tôn trọng thời gian chờ của nguồn. Khi đã từng lấy thành công, giữ số liệu gần nhất cùng mốc thời gian và trạng thái. “Chưa lấy được” nghĩa là chưa nhận được dữ liệu, không phải TVL hoặc khối lượng bằng 0.
 - **Thời điểm dữ liệu:** giờ của block khác với giờ lấy dữ liệu thành công. TVL/khối lượng có mốc lấy riêng; vừa kiểm tra không có nghĩa mọi số liệu tại nguồn đều mới. Trạng thái mới/trễ/lỗi được hiển thị riêng.
 - **Mô phỏng mới:** mặc định chọn **Dữ liệu thị trường mới**. Khi bấm chạy, hệ thống chụp giá, thanh khoản và thông tin pool thành một bộ đầu vào cố định, cùng bản lịch sử hiệu chỉnh đã lưu. Thiếu dữ liệu mới hoặc thanh khoản hoạt động thì báo lý do.
 - **Kết quả đã lưu:** giá mới không tự sửa kết quả cũ. Stress và độ nhạy dùng đúng đầu vào đã lưu của kết quả đang xem. Muốn dùng thời điểm khác, tạo mô phỏng mới.

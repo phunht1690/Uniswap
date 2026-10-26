@@ -261,6 +261,31 @@ def test_concurrent_refreshes_are_single_flight(fixed_now):
     asyncio.run(scenario())
 
 
+def test_failed_metadata_retries_early_then_resumes_normal_cadence(fixed_now, monkeypatch):
+    clock = [1000.]
+    monkeypatch.setattr(live, 'time', SimpleNamespace(monotonic=lambda: clock[0]))
+    upstream = Upstream(specs())
+    upstream.metadata_http = 503
+    svc = live.LiveMarket(service(upstream.pools), transport=httpx.MockTransport(upstream))
+
+    async def scenario():
+        await svc.refresh()
+        assert all(row['metadata']['status'] == 'error' for row in svc.snapshot()['pools'])
+        assert svc._next_metadata == 1030.
+        calls = upstream.metadata_count
+        upstream.metadata_http = 200
+        clock[0] = 1029.
+        await svc.refresh()
+        assert upstream.metadata_count == calls
+        clock[0] = 1030.
+        await svc.refresh()
+        assert all(row['metadata']['status'] == 'ok' for row in svc.snapshot()['pools'])
+        assert svc._next_metadata == 1330.
+        assert svc.snapshot()['metadata_retry_interval_seconds'] == 30.
+        await svc.stop()
+    asyncio.run(scenario())
+
+
 def test_start_is_nonblocking_and_shutdown_cancels_inflight_requests(fixed_now):
     entered = asyncio.Event()
     active = [0]
